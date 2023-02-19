@@ -2,15 +2,25 @@
 title: ""
 ---
 
+## Preface
 
 **Digital soil mapping (DSM)** is a technique that uses advanced technologies such as remote sensing, geographic information systems (GIS), and statistical modeling to create high-resolution maps of soil properties and characteristics. These maps can be used to support a variety of applications, including land use planning, precision agriculture, natural resource management, and environmental modeling.
 
 DSM typically involves the collection of soil data from a variety of sources, including soil surveys, soil samples, and remote sensing data such as satellite imagery. This data is then combined and analyzed using a range of statistical and machine learning algorithms to develop predictive models of soil properties, such as soil texture, organic matter content, and nutrient availability.
 
+![](images/paste-DCFB6973.png){width="4.7in"}
+
 The resulting soil maps are highly detailed and can provide valuable information about soil characteristics at the landscape level, such as soil types, soil health, and soil fertility. This information can be used to optimize crop management practices, evaluate the environmental impacts of land use changes, and support conservation efforts.
 
 Overall, digital soil mapping is an important tool for understanding the complex interactions between soil, land use, and the environment, and can help support more sustainable and effective land management practices.
 
+## Components of DSM
+
+**INPUT**: field and laboratory observations, environmental covariates
+
+**PROCESS**: mathematical or statistical models (spatial and non-spatial)
+
+**OUTPUT**: The output includes raster of prediction maps with the uncertainty of prediction. This output can be readily updated as new information becomes available
 
 ## Digital Soil Mapping in Bangladesh
 
@@ -32,9 +42,9 @@ Overall, DSM in Bangladesh has the potential to improve agricultural productivit
 
 [R](https://www.r-project.org/) is an open-source statistical computing and visualization environment. It is based on the S language developed at Bell Laboratories in the 1980s. Now it is one of the most robust, programmable, portable, and open computing environments for data analysis and visualization without any restrictions on access or use.
 
-Although several books and online tutorials are available related to DSM in R, this training-workshop targets national scientists in Bangladesh who have working experience soil science, GIS, and statistics.    
+Although several books and online tutorials are available related to DSM in R, this training-workshop targets national scientists in Bangladesh who have working experience soil science, GIS, and statistics.
 
-This training-workshop will covered following lessons: 
+This training-workshop will covered following lessons:
 
 1.  Getting Started with R
 2.  Data Import-Export
@@ -45,11 +55,9 @@ This training-workshop will covered following lessons:
 7.  Spatial Data Processing
 8.  Digital Terrain Modeling
 9.  Remote Sensing
-10.  Spatial Interpolation
+10. Spatial Interpolation
 
-
-After finishing these lessons all participant will work on soil data and will produce digital soil maps of Bangladesh.  
-
+After finishing these lessons all participant will work on soil data and will produce digital soil maps of Bangladesh.
 
 **Zia U Ahmed, PhD**
 

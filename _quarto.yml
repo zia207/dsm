@@ -1,8 +1,10 @@
 project:
   type: website
+  output-dir: docs
+  
 
 website:
-  title: "dsm"
+  title: "Digital Soil Mapping"
   navbar:
     left:
       - href: index.qmd

@@ -1,0 +1,10 @@
+# Getting Started with R {.unnumbered}
+
+The goal of this section is to give you a rapid overview of [R](https://www.r-project.org/) and [R-Studio](https://posit.co/download/rstudio-desktop/) installation, and some basic concepts of R and data import/export to/from R.
+
+This section consists of three main Chapters:
+
+1.  [Download and Installation R](download-install-r.html)
+
+2.  [Introduction to Using R](introduction-to-r.html)
+

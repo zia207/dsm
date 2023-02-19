@@ -1,0 +1,889 @@
+# Introduction to Using R {.unnumbered}
+
+## Introduction
+
+R is an object-oriented programming language like [Python](https://www.python.org/), [Julia](https://julialang.org/), and [JavaScript](https://www.javascript.com/). Like these programming languages, R has a specific syntax or function, which is essential to understand if you want to use its features to accomplish thousands of things with R. However, one of the most challenging parts of learning R is finding your way around. In section of tutorial you will learn some basic of R such as syntax of R programming, assignment statements, r-data types, control statements and simple r-function.
+
+## Screen Prompt
+
+The **screen prompt \>** in R-console is an place to put command or instruction for R to work. Press the "Ctrl" + "L" keys simultaneously. The screen will now be refreshed and the console should be cleared.
+
+![R Screen Prompt](Image/sreen_prompt.png){#fig-screen_prompt}
+
+## R as a Calculator
+
+We can use R as a calculators, at the prompt, we enter the expression that we want evaluated and when we hit enter, it will compute the result for us . For Example:
+
+For addition:
+
+```{r}
+2+2
+```
+
+And for subtraction:
+
+```{r}
+4-2
+```
+
+For multiplication:
+
+```{r}
+4*2
+```
+
+
+For raised to the power:
+
+```{r}
+2^2
+```
+
+
+Use parentheses to ensure that it understands what you are trying to compute.
+
+https://www.geeksforgeeks.org/control-statements-in-r-programming/?ref=lbp
+
+## Syntax of R program
+
+**Variables**, **Comments**, and **Keywords** are the three main components in R- programming. Variables are used to store the data, Comments are used to improve code readability, and Keywords are reserved words that hold a specific meaning to the compiler.
+
+## Built in Function
+
+There are so many built-in mathematical functions are available in base-R. Some are shown in below table:
+
+![Built-in Math Functions](Image/Table_math_function.png){#tbl-mathfunction}
+
+Here below some examples of R built-in R-functions
+
+```{r}
+log10(2)
+```
+
+```{r}
+exp(1)
+```
+
+```{r}
+pi
+```
+
+```{r}
+sin(pi/2)
+```
+
+## Number with Exponents
+
+We can use very big numbers or very small numbers in R using the following scheme:
+
+```{r}
+1.2e3 # means 1200 because the e3 means ‘move the decimal point 3 places to the right 
+```
+
+```{r}
+1.2e-2 # means 0.012 because the e-2 means ‘move the decimal point 2 places to the left’
+```
+
+## Modulo and Integer Quotients
+
+Suppose we want to know the integer part of a division: say, how many 13s are there in 119:
+
+```{r}
+119 %/% 13
+```
+
+Suppose we wanted to know the remainder (what is left over when 119 is divided by 13: in maths this is known as modulo
+
+```{r}
+119 %% 13
+```
+
+## Rounding
+
+Several types of rounding (rounding up, rounding down, rounding to the nearest integer) can be done easily with R.
+
+The 'greatest integer less than' function is **floor()**
+
+```{r}
+floor(5.7)
+```
+
+The 'next integer' function is **ceiling**()
+
+```{r}
+ceiling(5.7)
+```
+
+## Assignment Statements
+
+Just like in algebra, we often want to store a computation under some variable name. The result is assigned to a variable with the symbols = or <- which is formed by the "less than" symbol followed immediately by a hyphen.
+
+```{r}
+x<-10; # or
+y = 12
+```
+
+When you want to know what is in a variable simply ask by typing the variable name.
+
+```{r}
+x; # or
+y
+```
+
+We can store a computation of two variable names and do some calculation and the result is assigned to a new variable
+
+```{r}
+a=2;
+b=3;
+c=a+b;
+c
+```
+
+## Variable Names
+
+-   Do not begin a variable name with a period or a number. Variable names are case (upper/lower) sensitive.
+
+-   Variable names in R are case-sensitive so x is not the same as X.
+
+-   Variable names should not begin with numbers (e.g. 1x) or symbols (e.g. %x).
+
+-   Variable names should not contain blank spaces: use grain.yield
+
+## Operators
+
+```{r}
+# + - */%% ^ arithmetic
+# > >= < <= == != relational
+# ! &  logical
+# ~ model formulae
+# <- -> assignment
+# $ list indexing (the ‘element name’ operator)
+# : create a sequence
+```
+
+## R Data Types
+
+R has a wide variety of data types including scalars, vectors (numerical, character, logical), matrices, data frames, and lists.
+
+### Vectors
+
+Vectors is data-type with one or more values of the same type such as logical, integer, real, complex, string (or character) or raw vectors. Unlike Python, the indexing of the vector in R will start from '1' and not from '0'.
+
+A scalar data structure is the most basic data type that holds only a **single atomic value** at a time. Using scalars, more complex data types can be constructed. The most commonly used scalar types in R:
+
+-   Numeric
+
+-   Character or strings
+
+-   Integer
+
+-   Logical
+
+-   Complex
+
+**Numeric** is the default type used in R for mathematical computations. Examples of numeric are decimal numbers and whole numbers.
+
+```{r}
+x=1.2
+x
+class(x)
+```
+
+**Character** objects are **strings**. They could be any sequence of characters including alphabets, numbers, punctuation marks, etc. enclosed in quotes.
+
+```{r}
+Department = 'Chemistry'
+School= "University at Buffalo"
+class(School)
+paste(Department,",", School)
+```
+
+**Logical** values are **boolean** values of **TRUE** or **FALSE**. Note that R needs logical values of TRUE or FALSE to be in upper case. If you use mixed case or lowercase, you'll get an error or unpredictable results.
+
+```{r}
+u = TRUE; 
+v = FALSE
+class(u)
+class(v)
+```
+
+A list of numbers or charterers together to form a **Multiple Elements Vector**. Values can be assigned to vectors in many different ways. We can create a vector of number from 1 to 10, using the concatenation function **c**
+
+```{r}
+a <- c(1,2,5.3,6,7,8,9,10)
+a
+```
+
+```{r}
+s <- c('apple','red',5,TRUE)
+print(s)
+```
+
+It can be generated by the sequence of integer values 1 to 10 using : (colon), the sequence-generating operator,
+
+```{r}
+a<-1:10
+a
+```
+
+We can also create a vector using Using sequence (Seq.) operator.
+
+```{r}
+# Create vector with elements from 5 to 9 incrementing by 0.4.
+b = seq(5, 9, by = 0.4)
+b
+```
+
+R has ability to evaluate functions over entire vectors, so no need to write , for loops and subscripts. Important vector functions are listed in below Table:
+
+![Vector Functions](Image/vector_functions.png){#tbl-vector}
+
+Once we have a vector of numbers we can apply certain built-in functions to them to get useful summaries. For example:
+
+```{r}
+sum(a)        # sums the values in the vector 
+ 
+length(a)     # number of the values in the vector 
+
+mean (a)      # the average of the values in the vector 
+
+var (a)        # the sample variance of the values 
+
+sd(a)         # the standard of deviations of the values  
+
+max(a)        # the largest value in the vector  
+
+min(a)        # the smallest number in the vector 
+
+median(a)     # the sample median 
+```
+
+**Summary()** function will calculate summary statistics of a vector
+
+```{r}
+summary(a)
+```
+
+Two vectors of same length can be added, subtracted, multiplied or divided giving the result as a vector output.
+
+```{r}
+# Create two vectors.
+v1 <- c(3,8,4,5,0,11)
+v2 <- c(4,11,0,8,1,2)
+```
+
+```{r}
+# Vector addition.
+add.result <- v1+v2
+print(add.result)
+```
+
+```{r}
+# Vector subtraction.
+sub.result <- v1-v2
+print(sub.result)
+```
+
+```{r}
+# Vector multiplication.
+multi.result <- v1*v2
+print(multi.result)
+```
+
+```{r}
+# Vector division.
+divi.result <- v1/v2
+print(divi.result)
+```
+
+### Matrix
+
+Matrices is a two-dimensional rectangular layout of number in rows and columns. All columns in a matrix must have the same mode (numeric, character, etc.) and the same length.
+
+All columns in a matrix must have the same mode (numeric, character, etc.) and the same length. There are several ways of making a matrix. Suppose you were interested in the matrix of 2 x 3. You could form the two rows (vectors) and then bind (**rbind**) them together to form the matrix:
+
+```{r}
+r1=c(6,2,10)     # row 1
+r2=c(1,3,-2)     # row 2
+X=rbind(r1,r2)   # binds the vectors into rows a matrix
+X
+class(X)
+```
+
+We can bind them (**cbind**) the same vectors into columns of a matrix
+
+```{r}
+Y=cbind(r1,r2)   
+Y
+```
+
+A Matrix cab be created using the **matrix()** function from the given set of values. The basic function of a matrix is:
+
+> matrix(data, nrow, ncol, byrow, dimnames)
+
+The values are:
+
+-   **data** is the input vector which becomes the data elements of the matrix.
+
+-   **nrow** is the number of rows to be created.
+
+-   **ncol** is the number of columns to be created.
+
+-   **byrow** is a logical clue. If TRUE then the input vector elements are arranged by row.
+
+-   **dimname** is the names assigned to the rows and columns.
+
+```{r}
+X <- matrix(1:9, nrow = 4, ncol = 3, byrow=T) # row matrix
+X
+```
+
+```{r}
+class(X)
+attributes(X)
+```
+
+The class and attributes of X indicate that it is a matrix of four rows and three columns (these are its dim attributes)
+
+We can create matrix with row and column names:
+
+```{r}
+# create a vector 
+cells=c(1,26,24,68,35,68,73,18,2,56,4,5,34,21,24,20)  # create a vector
+# names of column rows
+cnames = c("C1","C2","C3","C4") 
+# names of two rows
+rnames = c("R1","R2","R3","R4") 
+# matrix
+Z= matrix(cells,nrow=4, ncol=4, byrow=TRUE,dimnames=list(rnames,cnames))
+Z
+```
+
+Or, we can easily naming the rows and columns of matrices. Suppose we want to labels rows with Trial names, like Trial.1, Trial.2 etc.:
+
+```{r}
+rownames(X)<-rownames(X, do.NULL=FALSE, prefix="Trial.")
+X
+```
+
+For column names, we will create a vector of different names for the three most commonly used drugs used in the trial, and use this to specify the colnames(X):
+
+```{r}
+drug.names<-c("Aspirin", "Acetaminophen", "Ibuprofen")
+colnames(X)<-drug.names
+X
+```
+
+We can access elements of a matrix using the square bracket \[\] indexing method. Elements can be accessed as var\[row, column\]. Here rows and columns are vectors.
+
+```{r}
+X[,2]  # 2nd column of a matrix
+X[3,]  # 3rd row of a matrix
+```
+
+```{r}
+X[,2:3] # 2nd and 3rd column
+```
+
+```{r}
+X[2:4,1:2]     # rows 2,3,4 of columns 1 and 2
+```
+
+We can use **summary()** function to get row and column wise summary statistics of a matrix
+
+```{r}
+# summary statistics of each column
+summary(X)
+```
+
+```{r}
+# summary statistics and mean of the column 1 of matrix
+summary(X[,1])
+# mean
+mean(X[,1])
+```
+
+Calculated over all the rows and the mean & variance of the bottom row (Trial.4)
+
+```{r}
+mean(X[4,])
+var(X[4,])
+```
+
+There are some special functions for calculating summary statistics on matrices
+
+```{r}
+# Total
+rowSums(X)
+colSums(X)
+```
+
+```{r}
+# Mean
+rowMeans(X)
+colMeans(X)
+```
+
+We can also use **apply()** function to calculate row and column means. Here columns are margin no. 2 (rows are margin no. 1
+
+```{r}
+apply(X,2,mean)
+```
+
+```{r}
+apply(X,1,mean)
+```
+
+### Factors
+
+Factors are data structures that are implemented to categorize the data or represent categorical data and store it on multiple levels.
+
+In R, **factor()** function create or convert string-vectors to factors:
+
+```{r}
+# string vectors
+gender <- c(rep("male",20), rep("female", 30))
+# define factors
+gender <- factor(gender) # # 1=female, 2=male internally (alphabetically)
+# checking the factors
+print(is.factor(gender))
+class(gender) # 
+summary(gender)
+```
+
+### Array
+
+Arrays is data storage structures with fixed number of dimensions. An array in R can be created with the use of **array()** function.
+
+```{r}
+arr = array(2:13, dim = c(2, 3, 2))
+print(arr)
+```
+
+Vectors of different lengths can also be fed as input into the array() function
+
+```{r}
+vec1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+vec2 <- c(10, 11, 12)
+  
+# elements are combined into a single vector, 
+# vec1 elements followed by vec2 elements.
+arr = array(c(vec1, vec2), dim = c(2, 3, 2))
+print (arr)
+```
+
+### Lists
+
+List is a one-detrimental data element which consist of several objects in a order. The object in a list may be mixed data types or different data types.The list can be a list of vectors, a list of matrices, a list of characters and a list of functions, and so on.
+
+list in R is created with the use of **list()** function.
+
+```{r}
+my.list <- list(Location="NY", 
+                Year = 2021,
+                LabExp=X) # Lab experimental data
+             
+
+list(my.list)
+```
+
+Components of a list can be accessed in similar fashion like matrix or data frame:
+
+```{r}
+my.list["LabExp"]
+my.list["FieldData"]
+```
+
+### Data Frames
+
+In R, tabular data are stored as Data Frame which is made up of three principal components, the data, rows, and columns. It is more general than a matrix, in that different columns can have different modes (numeric, character, factor, etc.).
+
+To create a data frame in R use **data.frame()** command and then pass each of the vectors you have created as arguments to the function
+
+```{r}
+ID = c(1,2,3,4)    # create a vector of ID coloumn 
+Landcover = c("Grassland","Forest", "Arable", "Urban") # create a text vector 
+Settlement  = c (FALSE, FALSE, FALSE, TRUE) # creates a logical vector
+pH   = c(6.6,4.5, 6.8, 7.5)   # create a numerical vector
+SOC  = c (1.2, 3.4, 1.1, 0.12) # create a numerical vector
+my.df=data.frame(ID,Landcover,Settlement, pH, SOC) # create a data frame
+
+my.df
+```
+
+we can see the detail of structure using **str()** function
+
+```{r}
+str(my.df)
+```
+
+```{r}
+head(my.df)
+```
+
+```{r}
+summary(my.df$pH)
+summary(my.df[,4:5])
+```
+
+Components of data frame can be accessed like a list or like a matrix.
+
+```{r}
+my.df["Landcover"]
+my.df[[2]]
+my.df[,4:5]
+```
+
+## Control Statements
+
+**Control flow** is the order in which a statement execute and **control statements** use to control the execution and flow of the program based on conditions provided in the statements.
+
+The eight major types of control statements are follows:
+
+-   `if`: statement for conditional programming
+-   `if..else`: statement for conditional programming
+-   `for`: loop to iterate over a fixed number of iterations
+-   `while`: loop to iterate until a logical statement returns FALSE
+-   `repeat`: loop to execute until told to break
+-   `break/next`:break/next arguments to exit and skip interations in a loop
+
+### if Statement
+
+If the expression is true, the statement gets executed. But if the expression is FALSE, nothing happens.
+
+```{r}
+x <- 12
+# condition
+if(x > 10){
+print(paste(x, "is greater than 10"))
+}
+```
+
+### if-else Condition
+
+It is similar to **if** condition but when the test expression in **if** condition fails, then statements in **else** condition are executed.
+
+```{r}
+x <- c(3, 3, -2, 1)
+
+if(any(x < 0)){
+        print("x contains negative numbers")
+} else{
+        print("x contains all positive numbers")
+}
+```
+
+```{r}
+x <- c(3, 3, 3, 1)
+
+if(any(x < 0)){
+        print("x contains negative numbers")
+} else{
+        print("x contains all positive numbers")
+}
+```
+
+### for loop
+
+The for loop is used to execute repetitive code statements for a particular number of time. It is useful to iterate over the elements of a list, dataframe, vector, matrix, or any other object.
+
+```{r}
+for (i in 10:15){
+        output <- paste("The number is", i)
+        print(output)
+}
+```
+
+```{r}
+# for loop with vector
+x <- c(-8, 3, 12, 15)
+for (i in x)
+{
+    print(i)
+}
+```
+
+### while loop
+
+While loop executes the same code again and again until a stop condition is met
+
+```{r}
+result <- 1
+i <- 1
+# test expression
+while (i < 5) {
+    print(result)
+# update expression
+   i = i + 1
+   result = result + 1
+}
+```
+
+Following example show the **while** statement with **break**
+
+```{r}
+result <- 1
+i <- 1
+# test expression
+while (i < 5) {
+    print(result)
+# add break after 2 element 
+  if (i==2){
+    break
+  }
+# update expression
+   i = i + 1
+   result = result + 1
+}
+```
+
+### repeat loop
+
+A repeat loop is used to iterate over a block of code multiple number of times.
+
+```{r}
+# randomly draw values from a uniform distribution between 1 and 15.
+result <- 1
+x <- NULL
+# random draws of values between 1 and 15 
+repeat {
+        x <- c(x, round(runif(1, min = 1, max = 15)))
+       if(all(1:15 %in% x)) {
+# for exit the loop
+          break
+        }
+result<- result + 1
+}
+result
+```
+
+## Writing R Functions
+
+Writing custom functions is an important part of programming in R.
+
+To create a new R function we need to think about 4 major things:
+
+-   the **name** of the function
+
+-   the **arguments** (inputs) the function will take
+
+-   the **code** the function will run
+
+-   the **output** the function will **return** for the user
+
+To create a function, use the **function(**) keyword:
+
+```{r}
+# create a function with the name my_function
+my_function <- function() { 
+  print("Hello World!")
+}
+# call the function
+my_function()
+```
+
+Arguments are specified after the function name, inside the parentheses. The following example has a function (full_name) with one arguments (last_name). When the function is called, we pass along a first name, which is used inside the function to print the full name:
+
+```{r}
+fulll_name <- function(last_name) {
+  paste("Zia",  last_name)
+}
+fulll_name("Ahmed")
+```
+
+To return the results of a function, use the **return(**) function:
+
+```{r}
+addition <- function(x) {
+  return (1 + x)
+}
+print(addition(2))
+print(addition(3))
+```
+
+We can create a simple equation with two arguments (x, y):
+
+```{r}
+equation <- function(x, y) {
+  a <- x + y
+  return(a)
+}
+equation(2,2)
+```
+
+We can Call a function within another function:
+
+```{r}
+equation(equation(2,4), equation(3,3))
+```
+
+> The output above function is therefore (2+4) + (3+3) = 12.
+
+We can also write a function within a function:
+
+```{r}
+x <- 10 
+y<- function() {
+        r <- 2
+        n <- 5
+        z <- function() {
+                (1+r)^n
+        }
+        x/z()
+}
+y()
+```
+
+Returning Multiple Outputs from a Function:
+
+```{r}
+results_all <- function(x, y) {
+        results1 <- 2*x + y
+        results2 <- x + 2*y
+        results3 <- 2*x + 2*y
+        results4 <- x/y
+        c(results1, results2, results3, results4)
+}
+results_all(1, 2)
+```
+
+Following function shows an example to convert temperature from Celsius (C) to Fahrenheit (F):
+
+```{r}
+C_to_F = function(C) {
+ f = (9/5) * C + 32; # formula
+ return(f); # return to
+}
+C_to_F(10)
+C= c(4:10)
+C_to_F(C)
+```
+
+## Apply Family
+
+The apply family consists of vectorized functions which minimize our need to explicitly create loops. These family is an inbuilt R package, so no need to install any packages for the execution.
+
+-   **apply(**) for matrices and data frames
+
+-   **lapply()** for lists...output as list
+
+-   **sapply(**) for lists...output simplified
+
+-   **tapply()** for vectors
+
+-   **mapply()** for multi-variant
+
+### apply
+
+apply() returns a vector or array or list of values obtained by applying a function to margins of an array or matrix or dataframe. Using `apply()` is not faster than using a loop function, but it is highly compact and can be written in one line.
+
+> apply(x,MARGIN, FUN,...)
+
+Where:
+
+-   **x** is the matrix, dataframe or array
+
+-   **MARGIN** is a vector giving the subscripts which the function will be applied over. E.g., for a matrix 1 indicates rows, 2 indicates columns, c(1, 2) indicates rows and columns.
+
+-   **FUN** is the function to be applied
+
+-   **...** is for any other arguments to be passed to the function
+
+```{r}
+# Crate a dataframe
+df <- cbind(x1 = 1:8, x2 = 2:9, x3=3:10)
+# add row names
+dimnames(df)[[1]] <- letters[1:8] 
+```
+
+Let's calculate column mean:
+
+```{r}
+apply(df, 2, mean, trim = 0.2)
+```
+
+Row mean:
+
+```{r}
+apply(df, 1, mean, trim = .2)
+```
+
+Get column quantile:
+
+```{r}
+apply(df, 2, quantile, probs = c(0.10, 0.25, 0.50, 0.75, 0.90))
+```
+
+### lapply
+
+lapply() returns a list of the same length as X (list), each element of which is the result of applying FUN to the corresponding element of X. It loops over a list, iterating over each element in that list and then applies a function to each element of the list and finally returns a list (l stand for list).
+
+> lapply(x, FUN, ...)
+
+Where:
+
+-   **x** is the list
+
+-   **FUN** is the function to be applied
+
+-   **...** is for any other arguments to be passed to the function
+
+```{r}
+# Create a list
+mylist<-list(A=matrix(1:9,nrow=3),B=1:5,C=c(8,5),  logic = c(TRUE,FALSE,FALSE,TRUE, TRUE))
+mylist
+```
+
+```{r}
+lapply(mylist, mean)
+```
+
+You can see how the results are saved as a list form. We can easily unlist the results:
+
+```{r}
+unlist(lapply(mylist,mean))
+```
+
+### sapply
+
+sapply() is a wrapper of lapply() to simplify the result to vector or matrix.
+
+```{r}
+sapply(mylist, mean)
+```
+
+### tapply
+
+tapply() is used to apply a function over subsets of a vector when a dataset can be broken up into groups (via categorical variables - aka factors)
+
+```{r}
+my.df
+```
+
+We can use tapply() to calculate mean values of pH an SOC for land cover
+
+```{r}
+apply(my.df[4:5], 2, function(x) tapply(x, my.df$Landcover, mean))
+```
+
+### mapply
+
+mapply() is a multivariate version of sapply(). mapply() applies FUN to the first elements of each ... argument, the second elements, the third elements, and so on.
+
+```{r}
+list( rep(2, 4), rep(3, 3), rep(4, 2))
+```
+
+You can see that the same function (rep) is being called repeatedly where the first argument (number vector) varies from 2 to 4, and the second argument (rep) varies from 4 to 2. Instead, you can use mapply()
+
+```{r}
+mapply(rep, 2:4, 4:2)
+```
+
+## Further Reading
+
+1.  [An Introduction to R - The Comprehensive R Archive](Networkhttps://cran.r-project.org/doc/manuals/r-release/R-intro.pdf)
+
+2.  [R Introduction - W3Schools](https://www.w3schools.com/r/r_intro.asp)
+
+3.  [An Introduction to R](https://intro2r.com)

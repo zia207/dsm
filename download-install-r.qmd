@@ -1,0 +1,189 @@
+# Download and Installation of R and R-Studio {.unnumbered}
+
+## Introduction
+
+This tutorial will teach you how to begin programming with **R** using **RStudio**. We'll install R, and RStudio, a popular development environment for R. We'll also learn how to install **R-package** and some key RStudio features to start programming in R on our own.
+
+## What is R?
+
+[R](https://www.r-project.org/) is one of the most popular open-source statistical computing and visualization environments. It was developed in 1980 based on the [S-language](https://en.wikipedia.org/wiki/S_(programming_language)), and an open-source community regularly updates the software for a robust, programmable, portable, and open-source computing environment. We can use it to solve complex and sophisticated problems and "routine" analysis without restrictions on access or use.
+
+## Download R
+
+We can download R from the [R project](https://www.r-project.org/) of a repository CRAN. The version of R to download depends on our operating system. We can also install [Microsoft R Open](https://mran.microsoft.com/download), the enhanced distribution of R from Microsoft. It includes additional capabilities for improved performance and reproducibility and support for Windows and Linux-based platforms.
+
+1.  Click [this link](https://www.r-project.org//) to download the latest stable version of R
+2.  Select a CRAN location (a mirror site) close to you
+3.  Click on the "Download R for Windows"
+4.  Click on the "install R for the first time" link at the top corner of the page
+5.  Click "Download R for Windows" and it will download to local download folder
+
+{{< video https://www.youtube.com/embed/XIi0rfm0zIg >}}
+
+## Install R
+
+Installation instruction of R in Windows and MAC could be found [here](https://courses.edx.org/courses/UTAustinX/UT.7.01x/3T2014/56c5437b88fa43cf828bff5371c6a924/). Detail Installation steps of Microsoft R Open in different operating systems can be found [here](https://mran.microsoft.com/documents/rro/installation).
+
+### Windows
+
+1.  Open Windows Explorer
+2.  Navigate to the directory where the downloaded R.4.2.#-win.exe (the latest version) file is exit.
+3.  Double-click this **exe** file and follow the instruction as shown in the video below:
+
+{{< video https://www.youtube.com/embed/jXq0OFt_tmo >}}
+
+### Mac OSX
+
+Installing R on Mac OS is similar to Windows. The easiest way is to install it through CRAN by going to the CRAN downloads page and following description as as shown [here](https://itslinuxfoss.com/install-r-ubuntu-22-04/). In brief, download the **.pkg** and open the .pkg file and follow the standard instructions for installing applications on MAC OS X.
+
+### Ubuntu
+
+Step 1: Update and Upgrade the Ubuntu 22.04
+
+To update and upgrade packages on Ubuntu 22.04, firstly, open up the terminal by pressing "CTRL+ALT+T" and execute the following command:
+
+> sudo apt update
+
+> sudo apt upgrade
+
+Step 2: Add dependencies
+
+Now, on your Ubuntu 22.04 system, download and install required dependencies. These dependencies are used to execute the R on Ubuntu 22.04. Run the following command for the specified purpose:
+
+> sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+
+Step 3: Authenticate the packages
+
+Authenticate the installed packages by writing out the following command:
+
+> sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+
+Step 4: Import GPG key
+
+Next, import the GPG key in your system through below command:
+
+> wget -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \| sudo gpg --dearmor \| sudo tee /usr/share/keyrings/cran.gpg
+
+Step 5: Add CRAN repository
+
+After importing the GPG key, you need to add the CRAN repository that is highly recommended for R installation:
+
+> echo deb \[signed-by=/usr/share/keyrings/cran.gpg\] https://cloud.r-project.org/bin/linux/ubuntu \$(lsb_release -cs)-cran40/ \| sudo tee /etc/apt/sources.list.d/cran.list
+
+> sudo apt update
+
+Step 6: Install R through CRAN repository Now, your Ubuntu 22.04 system is ready to install the R language from the CRAN repository. To do so, type the following command:
+
+> sudo apt install r-base
+
+> sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev liblapack-dev
+
+Step 7: Check R -version
+
+> R --version
+
+## Open R-Base
+
+After R installation in Windows, double click on the desktop icon or open the program from START to run R. R will be open as a **Console** window.
+
+![Interface of R-base](Image/R_BASE.png){#fig-rbase}
+
+You can work in the console and the command line. However, the command line can be pretty daunting to a beginner. It is better to work in **R Editor**. First, you must create a **New script** from **File** menu. Any code you run in R-script output will be displayed in the console window. You can save all your R codes as an R script file and output in the console as an R-Data file.
+
+{{< video https://www.youtube.com/embed/bJRq1-trxcY >}}
+
+## Integrated Development Environment for R
+
+R can be run in the command line and graphical user interfaces in [integrated development environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment). Below are the best programming IDE for R:
+
+1.  [RStudio](https://www.rstudio.com/)
+2.  [R Tools for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/rtvs/installing-r-tools-for-visual-studio?view=vs-2017)
+3.  [Rattle](https://rattle.togaware.com/)
+4.  [ESS](https://www.dunebook.com/best-r-programming-ide/)
+5.  [Tinn-R](https://tinn-r.software.informer.com/)
+6.  [R AnalyticalFlow](https://r.analyticflow.com/en/)
+7.  [Radiant](https://radiant-rstats.github.io/docs/install.html)
+8.  [RBox](https://atom.io/packages/rbox)
+9.  [Code](https://code.visualstudio.com/)
+
+### Download and Installation RStudio
+
+[RStudio](https://posit.co) is one of the best [integrated development environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment) for R that includes a [console](https://support.rstudio.com/hc/en-us/articles/200404846-Working-in-the-Console), a [terminal](https://support.rstudio.com/hc/en-us/articles/115010737148-Using-the-RStudio-Terminal-in-the-RStudio-IDE) syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management. RStudio Desktop and RStudio Server for Windows, Mac, and Linux are open sources.
+
+RStudio is now Posit. First, you have to download the latest version of RStudio according to your operating system from [here](https://posit.co/download/rstudio-desktop/#download).
+
+{{< video https://www.youtube.com/embed/dxkkrc0X36k >}}
+
+For windows user, and just run the installation file and it normally detects your latest installed R version automatically. If you want to do some extra configuration, you need follow some steps which can be found [here](http://www.dummies.com/programming/r/how-to-install-and-configure-rstudio/)
+
+For installation instruction of R and RStudio in Mac OS could be found [here](https://web.stanford.edu/~kjytay/courses/stats32-aut2018/Session%201/Installation%20for%20Mac.html).
+
+Installing R Studio on Ubuntu could be found [here](https://www.geeksforgeeks.org/how-to-install-r-studio-on-windows-and-linux/)
+
+We may open RStudio just double click Rstudio icon on your Desktop or on the task bar. The RStudio interface has four main panels:
+
+-   Console: where you can type commands and see output.
+
+-   Script editor: where you can type out commands and save to file.
+
+-   Environment/History: environment shows all active objects and history keeps track of all commands run in console.
+
+-   Files/Plots/Packages/Help etc.
+
+![RStudio interface](Image/RSTUDIO.png){#fig-rsudio}
+
+## R Packages or Libraries
+
+R Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the **library**. We can install any R 'package' or multiple package directly from the console, using r-script and GUI (Tools \> Install Packages) through internet.
+
+Use **install.packages()** function in your console or in a script:
+
+> install.packages("raster", dependencies = TRUE)
+
+For multiple packages:
+
+> install.packages(c("raster","gstat"), dependencies = TRUE)
+
+If we want see content of any library, just use **help()** function or package specific:
+
+> library(help=spatial)
+
+## R Markdown
+
+Markdown is a lightweight markup language for creating formatted text using a plain-text editor. Markdown is widely used in blogging, instant messaging, online forums, collaborative software, documentation pages, and readme files ([wikipedia)](https://en.wikipedia.org/wiki/Markdown).
+
+R Markdown is an excellent platform for data analysis and turns it into a high-quality document, webpage, dashboard, and presentation. It is reproducible and supports multiple languages, including R, Python, and SQL. R Markdown supports dozens of static and dynamic output formats, including HTML, PDF, MS Word, Beamer, HTML5 slides, Tufte-style handouts, books, dashboards, shiny applications, scientific articles, websites, and more. ([R Markdown)](https://rmarkdown.rstudio.com/index.html)
+
+You can use a single R Markdown file to i) save and execute code and ii) generate high quality reports that can be shared with an audience.
+
+A brief overview could be found [here](https://rmarkdown.rstudio.com/lesson-1.html):
+
+For a brief a brief tutorial, please visit [here](https://rmarkdown.rstudio.com/lesson-2.html)
+
+![R-Markdown Cheat Sheet -1](Image/rarkdown_cheat_sheet_01.png){#fig-cheat_sheet-1}
+
+![R-Markdown Cheat Sheet -2](Image/rarkdown_cheat_sheet_02.png){#fig-cheat_sheet-2}
+
+## Quarto
+
+Like, R Markdown, [Quarto](https://quarto.org/) is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org/), a universal document converter. It creates dynamic content with [Python](https://quarto.org/docs/computations/python.html), [R](https://quarto.org/docs/computations/r.html), [Julia](https://quarto.org/docs/computations/julia.html), and [Observable](https://quarto.org/docs/computations/ojs.html)for publishing high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more.
+
+Like R Markdown, Quarto uses *Knitr* to execute R code. So it can render most existing **Rmd** files without modification. The difference between R Markdown and Quarto is related to output formats. Quarto includes many more built-in output formats (and more options for customizing each format). Quarto also has native features for particular project types like Websites, Books, and Blogs (rather than relying on external packages).
+
+To run Quarto on RStudio, you must install it in your system. You can download it from [here](https://quarto.org/docs/get-started/) according to your operating system. After installation, you need to install the **quarto** package to render documents from the R console.
+
+> install.packages("quarto") 
+
+> quarto::quarto_render("hello.qmd")
+
+[Andy Field](https://www.youtube.com/@ProfAndyField) have series of YouTube video tutorials related to Quarto. Link of these are in below:
+
+[Quarto part 1](https://youtu.be/31Q9ZTZOHIM)
+
+[Quarto part 2](https://youtu.be/QlYgnf_qCNo)
+
+[Quarto part 3](https://youtu.be/Au7MqvBCi5Y)
+
+[Quarto part 4](https://youtu.be/Auo1hjyeCl4)
+
+[Quarto part 5](https://youtu.be/wVf-k1azNE0)

@@ -9,8 +9,13 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
-
+      - href: getting-started-r.qmd
+        text: Getting Started R
+        menu:
+        - href: download-install-r.qmd
+          text: Download and Installation R
+        - href: introduction-to-r
+          text: Introduction to R
 format:
   html:
     theme: sandstone

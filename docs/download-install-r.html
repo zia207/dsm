@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Digital Soil Mapping – download-install-r</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Digital Soil Mapping</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./getting-started-r.html">
+ <span class="menu-text">Getting Started R</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#download-and-installation-of-r-and-r-studio" id="toc-download-and-installation-of-r-and-r-studio" class="nav-link active" data-scroll-target="#download-and-installation-of-r-and-r-studio">Download and Installation of R and R-Studio</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#what-is-r" id="toc-what-is-r" class="nav-link" data-scroll-target="#what-is-r">What is R?</a></li>
+  <li><a href="#download-r" id="toc-download-r" class="nav-link" data-scroll-target="#download-r">Download R</a></li>
+  <li><a href="#install-r" id="toc-install-r" class="nav-link" data-scroll-target="#install-r">Install R</a>
+  <ul class="collapse">
+  <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a></li>
+  <li><a href="#mac-osx" id="toc-mac-osx" class="nav-link" data-scroll-target="#mac-osx">Mac OSX</a></li>
+  <li><a href="#ubuntu" id="toc-ubuntu" class="nav-link" data-scroll-target="#ubuntu">Ubuntu</a></li>
+  </ul></li>
+  <li><a href="#open-r-base" id="toc-open-r-base" class="nav-link" data-scroll-target="#open-r-base">Open R-Base</a></li>
+  <li><a href="#integrated-development-environment-for-r" id="toc-integrated-development-environment-for-r" class="nav-link" data-scroll-target="#integrated-development-environment-for-r">Integrated Development Environment for R</a>
+  <ul class="collapse">
+  <li><a href="#download-and-installation-rstudio" id="toc-download-and-installation-rstudio" class="nav-link" data-scroll-target="#download-and-installation-rstudio">Download and Installation RStudio</a></li>
+  </ul></li>
+  <li><a href="#r-packages-or-libraries" id="toc-r-packages-or-libraries" class="nav-link" data-scroll-target="#r-packages-or-libraries">R Packages or Libraries</a></li>
+  <li><a href="#r-markdown" id="toc-r-markdown" class="nav-link" data-scroll-target="#r-markdown">R Markdown</a></li>
+  <li><a href="#quarto" id="toc-quarto" class="nav-link" data-scroll-target="#quarto">Quarto</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="download-and-installation-of-r-and-r-studio" class="level1 unnumbered">
+<h1 class="unnumbered">Download and Installation of R and R-Studio</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This tutorial will teach you how to begin programming with <strong>R</strong> using <strong>RStudio</strong>. We’ll install R, and RStudio, a popular development environment for R. We’ll also learn how to install <strong>R-package</strong> and some key RStudio features to start programming in R on our own.</p>
+</section>
+<section id="what-is-r" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-r">What is R?</h2>
+<p><a href="https://www.r-project.org/">R</a> is one of the most popular open-source statistical computing and visualization environments. It was developed in 1980 based on the <a href="https://en.wikipedia.org/wiki/S_(programming_language)">S-language</a>, and an open-source community regularly updates the software for a robust, programmable, portable, and open-source computing environment. We can use it to solve complex and sophisticated problems and “routine” analysis without restrictions on access or use.</p>
+</section>
+<section id="download-r" class="level2">
+<h2 class="anchored" data-anchor-id="download-r">Download R</h2>
+<p>We can download R from the <a href="https://www.r-project.org/">R project</a> of a repository CRAN. The version of R to download depends on our operating system. We can also install <a href="https://mran.microsoft.com/download">Microsoft R Open</a>, the enhanced distribution of R from Microsoft. It includes additional capabilities for improved performance and reproducibility and support for Windows and Linux-based platforms.</p>
+<ol type="1">
+<li>Click <a href="https://www.r-project.org//">this link</a> to download the latest stable version of R</li>
+<li>Select a CRAN location (a mirror site) close to you</li>
+<li>Click on the “Download R for Windows”</li>
+<li>Click on the “install R for the first time” link at the top corner of the page</li>
+<li>Click “Download R for Windows” and it will download to local download folder</li>
+</ol>
+<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/XIi0rfm0zIg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+<section id="install-r" class="level2">
+<h2 class="anchored" data-anchor-id="install-r">Install R</h2>
+<p>Installation instruction of R in Windows and MAC could be found <a href="https://courses.edx.org/courses/UTAustinX/UT.7.01x/3T2014/56c5437b88fa43cf828bff5371c6a924/">here</a>. Detail Installation steps of Microsoft R Open in different operating systems can be found <a href="https://mran.microsoft.com/documents/rro/installation">here</a>.</p>
+<section id="windows" class="level3">
+<h3 class="anchored" data-anchor-id="windows">Windows</h3>
+<ol type="1">
+<li>Open Windows Explorer</li>
+<li>Navigate to the directory where the downloaded R.4.2.#-win.exe (the latest version) file is exit.</li>
+<li>Double-click this <strong>exe</strong> file and follow the instruction as shown in the video below:</li>
+</ol>
+<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/jXq0OFt_tmo" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+<section id="mac-osx" class="level3">
+<h3 class="anchored" data-anchor-id="mac-osx">Mac OSX</h3>
+<p>Installing R on Mac OS is similar to Windows. The easiest way is to install it through CRAN by going to the CRAN downloads page and following description as as shown <a href="https://itslinuxfoss.com/install-r-ubuntu-22-04/">here</a>. In brief, download the <strong>.pkg</strong> and open the .pkg file and follow the standard instructions for installing applications on MAC OS X.</p>
+</section>
+<section id="ubuntu" class="level3">
+<h3 class="anchored" data-anchor-id="ubuntu">Ubuntu</h3>
+<p>Step 1: Update and Upgrade the Ubuntu 22.04</p>
+<p>To update and upgrade packages on Ubuntu 22.04, firstly, open up the terminal by pressing “CTRL+ALT+T” and execute the following command:</p>
+<blockquote class="blockquote">
+<p>sudo apt update</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>sudo apt upgrade</p>
+</blockquote>
+<p>Step 2: Add dependencies</p>
+<p>Now, on your Ubuntu 22.04 system, download and install required dependencies. These dependencies are used to execute the R on Ubuntu 22.04. Run the following command for the specified purpose:</p>
+<blockquote class="blockquote">
+<p>sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common</p>
+</blockquote>
+<p>Step 3: Authenticate the packages</p>
+<p>Authenticate the installed packages by writing out the following command:</p>
+<blockquote class="blockquote">
+<p>sudo apt-key adv –keyserver keyserver.ubuntu.com –recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9</p>
+</blockquote>
+<p>Step 4: Import GPG key</p>
+<p>Next, import the GPG key in your system through below command:</p>
+<blockquote class="blockquote">
+<p>wget -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo gpg –dearmor | sudo tee /usr/share/keyrings/cran.gpg</p>
+</blockquote>
+<p>Step 5: Add CRAN repository</p>
+<p>After importing the GPG key, you need to add the CRAN repository that is highly recommended for R installation:</p>
+<blockquote class="blockquote">
+<p>echo deb [signed-by=/usr/share/keyrings/cran.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/ | sudo tee /etc/apt/sources.list.d/cran.list</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>sudo apt update</p>
+</blockquote>
+<p>Step 6: Install R through CRAN repository Now, your Ubuntu 22.04 system is ready to install the R language from the CRAN repository. To do so, type the following command:</p>
+<blockquote class="blockquote">
+<p>sudo apt install r-base</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev liblapack-dev</p>
+</blockquote>
+<p>Step 7: Check R -version</p>
+<blockquote class="blockquote">
+<p>R –version</p>
+</blockquote>
+</section>
+</section>
+<section id="open-r-base" class="level2">
+<h2 class="anchored" data-anchor-id="open-r-base">Open R-Base</h2>
+<p>After R installation in Windows, double click on the desktop icon or open the program from START to run R. R will be open as a <strong>Console</strong> window.</p>
+<div id="fig-rbase" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Image/R_BASE.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Interface of R-base</figcaption><p></p>
+</figure>
+</div>
+<p>You can work in the console and the command line. However, the command line can be pretty daunting to a beginner. It is better to work in <strong>R Editor</strong>. First, you must create a <strong>New script</strong> from <strong>File</strong> menu. Any code you run in R-script output will be displayed in the console window. You can save all your R codes as an R script file and output in the console as an R-Data file.</p>
+<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/bJRq1-trxcY" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+<section id="integrated-development-environment-for-r" class="level2">
+<h2 class="anchored" data-anchor-id="integrated-development-environment-for-r">Integrated Development Environment for R</h2>
+<p>R can be run in the command line and graphical user interfaces in <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">integrated development environment (IDE)</a>. Below are the best programming IDE for R:</p>
+<ol type="1">
+<li><a href="https://www.rstudio.com/">RStudio</a></li>
+<li><a href="https://docs.microsoft.com/en-us/visualstudio/rtvs/installing-r-tools-for-visual-studio?view=vs-2017">R Tools for Visual Studio</a></li>
+<li><a href="https://rattle.togaware.com/">Rattle</a></li>
+<li><a href="https://www.dunebook.com/best-r-programming-ide/">ESS</a></li>
+<li><a href="https://tinn-r.software.informer.com/">Tinn-R</a></li>
+<li><a href="https://r.analyticflow.com/en/">R AnalyticalFlow</a></li>
+<li><a href="https://radiant-rstats.github.io/docs/install.html">Radiant</a></li>
+<li><a href="https://atom.io/packages/rbox">RBox</a></li>
+<li><a href="https://code.visualstudio.com/">Code</a></li>
+</ol>
+<section id="download-and-installation-rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="download-and-installation-rstudio">Download and Installation RStudio</h3>
+<p><a href="https://posit.co">RStudio</a> is one of the best <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">integrated development environment (IDE)</a> for R that includes a <a href="https://support.rstudio.com/hc/en-us/articles/200404846-Working-in-the-Console">console</a>, a <a href="https://support.rstudio.com/hc/en-us/articles/115010737148-Using-the-RStudio-Terminal-in-the-RStudio-IDE">terminal</a> syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management. RStudio Desktop and RStudio Server for Windows, Mac, and Linux are open sources.</p>
+<p>RStudio is now Posit. First, you have to download the latest version of RStudio according to your operating system from <a href="https://posit.co/download/rstudio-desktop/#download">here</a>.</p>
+<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/dxkkrc0X36k" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>For windows user, and just run the installation file and it normally detects your latest installed R version automatically. If you want to do some extra configuration, you need follow some steps which can be found <a href="http://www.dummies.com/programming/r/how-to-install-and-configure-rstudio/">here</a></p>
+<p>For installation instruction of R and RStudio in Mac OS could be found <a href="https://web.stanford.edu/~kjytay/courses/stats32-aut2018/Session%201/Installation%20for%20Mac.html">here</a>.</p>
+<p>Installing R Studio on Ubuntu could be found <a href="https://www.geeksforgeeks.org/how-to-install-r-studio-on-windows-and-linux/">here</a></p>
+<p>We may open RStudio just double click Rstudio icon on your Desktop or on the task bar. The RStudio interface has four main panels:</p>
+<ul>
+<li><p>Console: where you can type commands and see output.</p></li>
+<li><p>Script editor: where you can type out commands and save to file.</p></li>
+<li><p>Environment/History: environment shows all active objects and history keeps track of all commands run in console.</p></li>
+<li><p>Files/Plots/Packages/Help etc.</p></li>
+</ul>
+<div id="fig-rsudio" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Image/RSTUDIO.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: RStudio interface</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="r-packages-or-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="r-packages-or-libraries">R Packages or Libraries</h2>
+<p>R Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the <strong>library</strong>. We can install any R ‘package’ or multiple package directly from the console, using r-script and GUI (Tools &gt; Install Packages) through internet.</p>
+<p>Use <strong>install.packages()</strong> function in your console or in a script:</p>
+<blockquote class="blockquote">
+<p>install.packages(“raster”, dependencies = TRUE)</p>
+</blockquote>
+<p>For multiple packages:</p>
+<blockquote class="blockquote">
+<p>install.packages(c(“raster”,“gstat”), dependencies = TRUE)</p>
+</blockquote>
+<p>If we want see content of any library, just use <strong>help()</strong> function or package specific:</p>
+<blockquote class="blockquote">
+<p>library(help=spatial)</p>
+</blockquote>
+</section>
+<section id="r-markdown" class="level2">
+<h2 class="anchored" data-anchor-id="r-markdown">R Markdown</h2>
+<p>Markdown is a lightweight markup language for creating formatted text using a plain-text editor. Markdown is widely used in blogging, instant messaging, online forums, collaborative software, documentation pages, and readme files (<a href="https://en.wikipedia.org/wiki/Markdown">wikipedia)</a>.</p>
+<p>R Markdown is an excellent platform for data analysis and turns it into a high-quality document, webpage, dashboard, and presentation. It is reproducible and supports multiple languages, including R, Python, and SQL. R Markdown supports dozens of static and dynamic output formats, including HTML, PDF, MS Word, Beamer, HTML5 slides, Tufte-style handouts, books, dashboards, shiny applications, scientific articles, websites, and more. (<a href="https://rmarkdown.rstudio.com/index.html">R Markdown)</a></p>
+<p>You can use a single R Markdown file to i) save and execute code and ii) generate high quality reports that can be shared with an audience.</p>
+<p>A brief overview could be found <a href="https://rmarkdown.rstudio.com/lesson-1.html">here</a>:</p>
+<p>For a brief a brief tutorial, please visit <a href="https://rmarkdown.rstudio.com/lesson-2.html">here</a></p>
+<div id="fig-cheat_sheet-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Image/rarkdown_cheat_sheet_01.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: R-Markdown Cheat Sheet -1</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-cheat_sheet-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Image/rarkdown_cheat_sheet_02.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: R-Markdown Cheat Sheet -2</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="quarto" class="level2">
+<h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
+<p>Like, R Markdown, <a href="https://quarto.org/">Quarto</a> is an open-source scientific and technical publishing system built on <a href="https://pandoc.org/">Pandoc</a>, a universal document converter. It creates dynamic content with <a href="https://quarto.org/docs/computations/python.html">Python</a>, <a href="https://quarto.org/docs/computations/r.html">R</a>, <a href="https://quarto.org/docs/computations/julia.html">Julia</a>, and <a href="https://quarto.org/docs/computations/ojs.html">Observable</a>for publishing high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more.</p>
+<p>Like R Markdown, Quarto uses <em>Knitr</em> to execute R code. So it can render most existing <strong>Rmd</strong> files without modification. The difference between R Markdown and Quarto is related to output formats. Quarto includes many more built-in output formats (and more options for customizing each format). Quarto also has native features for particular project types like Websites, Books, and Blogs (rather than relying on external packages).</p>
+<p>To run Quarto on RStudio, you must install it in your system. You can download it from <a href="https://quarto.org/docs/get-started/">here</a> according to your operating system. After installation, you need to install the <strong>quarto</strong> package to render documents from the R console.</p>
+<blockquote class="blockquote">
+<p>install.packages(“quarto”)</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>quarto::quarto_render(“hello.qmd”)</p>
+</blockquote>
+<p><a href="https://www.youtube.com/@ProfAndyField">Andy Field</a> have series of YouTube video tutorials related to Quarto. Link of these are in below:</p>
+<p><a href="https://youtu.be/31Q9ZTZOHIM">Quarto part 1</a></p>
+<p><a href="https://youtu.be/QlYgnf_qCNo">Quarto part 2</a></p>
+<p><a href="https://youtu.be/Au7MqvBCi5Y">Quarto part 3</a></p>
+<p><a href="https://youtu.be/Auo1hjyeCl4">Quarto part 4</a></p>
+<p><a href="https://youtu.be/wVf-k1azNE0">Quarto part 5</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

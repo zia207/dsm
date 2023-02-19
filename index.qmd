@@ -1,5 +1,5 @@
 ---
-title: "Digital Soil Mapping"
+title: ""
 ---
 
 

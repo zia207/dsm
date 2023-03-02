@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Digital Soil Mapping with R – data-exploration-basic</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Digital Soil Mapping with R</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page">
+ <span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207/dsm"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started-r.html" class="sidebar-item-text sidebar-link">Getting Started DSM with R</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basic R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-install-r.html" class="sidebar-item-text sidebar-link">Download and Installation R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction-to-r.html" class="sidebar-item-text sidebar-link">Introduction to use R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-export-import.html" class="sidebar-item-text sidebar-link">Data export/import to/from R</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Data Wragling with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-basic.html" class="sidebar-item-text sidebar-link">Introduction to Data Wragling</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-dplyr.html" class="sidebar-item-text sidebar-link">Data Wrangling with dplyr and tidyr</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-janitor.html" class="sidebar-item-text sidebar-link">Data Wrangling with janitor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Data Exploration with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-exploration-basic.html" class="sidebar-item-text sidebar-link active">Introduction to Data Exploration</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-data-exploration" id="toc-introduction-to-data-exploration" class="nav-link active" data-scroll-target="#introduction-to-data-exploration">Introduction to Data Exploration</a>
+  <ul>
+  <li><a href="#load-package" id="toc-load-package" class="nav-link" data-scroll-target="#load-package">Load Package</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load data</a></li>
+  <li><a href="#check-data-structure" id="toc-check-data-structure" class="nav-link" data-scroll-target="#check-data-structure">Check data Structure</a></li>
+  <li><a href="#check-missing-values" id="toc-check-missing-values" class="nav-link" data-scroll-target="#check-missing-values">Check missing values</a></li>
+  <li><a href="#dealing-with-missing-values" id="toc-dealing-with-missing-values" class="nav-link" data-scroll-target="#dealing-with-missing-values">Dealing with missing values</a>
+  <ul class="collapse">
+  <li><a href="#remove-missing-values" id="toc-remove-missing-values" class="nav-link" data-scroll-target="#remove-missing-values">Remove missing values</a></li>
+  </ul></li>
+  <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link" data-scroll-target="#descriptive-statistics">Descriptive statistics</a></li>
+  <li><a href="#data-distribution" id="toc-data-distribution" class="nav-link" data-scroll-target="#data-distribution">Data Distribution</a></li>
+  <li><a href="#visual-inspection-of-data-distribution" id="toc-visual-inspection-of-data-distribution" class="nav-link" data-scroll-target="#visual-inspection-of-data-distribution">Visual Inspection of Data Distribution</a></li>
+  <li><a href="#histograms" id="toc-histograms" class="nav-link" data-scroll-target="#histograms">Histograms</a></li>
+  <li><a href="#kernel-density-plots" id="toc-kernel-density-plots" class="nav-link" data-scroll-target="#kernel-density-plots">Kernel Density Plots</a></li>
+  <li><a href="#qq-plot" id="toc-qq-plot" class="nav-link" data-scroll-target="#qq-plot">QQ-Plot</a></li>
+  <li><a href="#normality-test" id="toc-normality-test" class="nav-link" data-scroll-target="#normality-test">Normality Test</a></li>
+  <li><a href="#measures-of-skewness-and-kurtosis" id="toc-measures-of-skewness-and-kurtosis" class="nav-link" data-scroll-target="#measures-of-skewness-and-kurtosis">Measures of Skewness and Kurtosis</a></li>
+  <li><a href="#data-transformation-for-normality" id="toc-data-transformation-for-normality" class="nav-link" data-scroll-target="#data-transformation-for-normality">Data Transformation for Normality</a></li>
+  <li><a href="#identify-outliers" id="toc-identify-outliers" class="nav-link" data-scroll-target="#identify-outliers">Identify outliers</a></li>
+  <li><a href="#visual-inspection-with-boxplot" id="toc-visual-inspection-with-boxplot" class="nav-link" data-scroll-target="#visual-inspection-with-boxplot">Visual inspection with Boxplot</a></li>
+  <li><a href="#tukeys-method" id="toc-tukeys-method" class="nav-link" data-scroll-target="#tukeys-method">Tukey’s method</a></li>
+  <li><a href="#z-score-method" id="toc-z-score-method" class="nav-link" data-scroll-target="#z-score-method">Z-score method</a></li>
+  <li><a href="#box-jitter-plot" id="toc-box-jitter-plot" class="nav-link" data-scroll-target="#box-jitter-plot">Box-Jitter plot</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+<section id="introduction-to-data-exploration" class="level1 unnumbered">
+<h1 class="unnumbered">Introduction to Data Exploration</h1>
+<p>Data Exploration or Exploratory Data Analysis (EDA) is an approach to analyzing data in which you investigate and summarize the data’s main characteristics, aiming to understand the underlying patterns and relationships between variables. EDA helps you identify potential data problems, discover outliers, and generate ideas for further analysis.</p>
+<p>Here are below basic steps for data exploration in R:</p>
+<ul>
+<li><p>Import data: The first step in data exploration is to import your data into R. You can import data from various sources such as Excel, CSV, or databases.</p></li>
+<li><p>Check the structure of data: Use the str() function to check the structure of your data. This function will give you information about the dimensions of your data and the types of variables in your data.</p></li>
+<li><p>check data distribution and visualize the data distribution using histograms, density plot and qqplots. Perform normality test to determine whether a given data sample is derived from a normally distributed population.</p></li>
+<li><p>Check for missing values: Use the is.na() function to check for missing values in your data. If you have missing values, you can use the na.omit() function to remove the missing values from your data.</p></li>
+<li><ul>
+<li>Summarize or descriptive statisics of the data: Start by summarizing the main characteristics of the data, such as the mean, median, standard deviation, and range of each variable.</li>
+</ul></li>
+<li><p>box plot to identify outliers, which are observations significantly different from the rest of the data.</p></li>
+<li><p>Perform statistical tests: Use the t.test() function to perform statistical tests on your data. You can use this function to test whether the means of two groups are significantly different.</p></li>
+<li><p>Explore and visualize the relationships between two variables using scatter plot and correlation analysis.</p></li>
+<li><p>Look for patterns and trends: Search for patterns and trends in the data that can help you to generate new hypotheses or insights. You can use clustering and principal component analysis (PCA) techniques in R.</p></li>
+</ul>
+<p>Overall, EDA is an important first step in any data analysis project, as it helps you to understand the data and generate hypotheses that can guide further analysis. R provides many powerful tools for EDA, making it a popular language for data scientists and analysts.</p>
+<p>We will some basic R functions to explore soil heavy metal data of the USA (usa_soil_heavy_metal.csv). This data could be found <a href="https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0">here</a></p>
+<section id="load-package" class="level3">
+<h3 class="anchored" data-anchor-id="load-package">Load Package</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="load-data" class="level3">
+<h3 class="anchored" data-anchor-id="load-data">Load data</h3>
+<p>In this exercise we will use <a href="https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0">US soil heavy metal data</a>from USA-Geological Survey.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/USA/"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mf<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder, <span class="st">"usa_soil_heavy_metal.csv"</span>), <span class="at">header=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="check-data-structure" class="level3">
+<h3 class="anchored" data-anchor-id="check-data-structure">Check data Structure</h3>
+<p>In R, the str() function is a useful tool for examining the structure of an object. It provides a compact and informative description of the object’s internal structure, including its type, length, dimensions, and contents.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(mf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   4807 obs. of  17 variables:
+ $ A_LabID    : chr  "C-318585" "C-318476" "C-318498" "C-318512" ...
+ $ SiteID     : int  3515 3419 3374 3259 3163 3003 2939 2875 2763 2747 ...
+ $ StateID    : chr  "NH" "IN" "TX" "TX" ...
+ $ Latitude   : num  43.1 38.2 31.6 31.2 45.9 ...
+ $ Longitude  : num  -71.5 -86.3 -94.8 -96.1 -112.4 ...
+ $ Landcover  : chr  "Forested" "Forested" "Planted/Cultivated" "Forested" ...
+ $ Developed  : chr  "No" "No" "No" "No" ...
+ $ Agriculture: chr  "No" "No" "Yes" "No" ...
+ $ As         : num  103 94.5 84.2 77.3 66.7 63.8 62.8 62.3 59.9 56.1 ...
+ $ Cd         : num  0.05 1.4 0.05 0.2 1 0.5 1.7 0.2 0.7 0.05 ...
+ $ Cr         : num  17 217 95 120 11 15 50 20 34 101 ...
+ $ Fe         : num  1.44 8.28 12.7 13.9 1.69 3.05 2.58 2.9 2.13 7.9 ...
+ $ Mn         : num  516 480 183 1390 1870 1020 612 610 622 406 ...
+ $ A          : num  0.57 5.02 1.96 0.76 1.35 1.18 4.57 2.28 0.87 1.05 ...
+ $ Pb         : num  36.5 259 26.3 40.4 55.3 10.7 19.2 19.9 36.4 21.7 ...
+ $ Se         : num  0.1 1.3 1.9 0.9 0.1 0.1 1.7 0.1 0.1 0.7 ...
+ $ Zn         : num  31 536 73 158 99 133 157 74 104 58 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="check-missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="check-missing-values">Check missing values</h3>
+<p>In R, the is.na() function is used to test for missing values (NA) in an object. It returns a logical vector indicating which elements of the object are missing.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(mf))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 71</code></pre>
+</div>
+</div>
+</section>
+<section id="dealing-with-missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="dealing-with-missing-values">Dealing with missing values</h3>
+<p>Dealing with missing values is an important task in data analysis. There are way we can deal with missing values in data. The choice of method depends on the specific dataset and the analysis goals. It’s important to carefully consider each approach’s implications and select the most appropriate method for the data at hand</p>
+<p>Here are some common strategies for handling missing data:</p>
+<ol type="1">
+<li><p>Delete the rows or columns with missing data: This is the simplest approach, but it can result in the loss of valuable information if there are many missing values.</p></li>
+<li><p>Imputation: Imputation involves filling in the missing values with estimated values based on other data points. Standard imputation techniques include mean imputation, median imputation, and regression imputation.</p></li>
+<li><p>Multiple imputations: This involves creating several imputed datasets and analyzing each separately, then combining the results to obtain a final estimate.</p></li>
+<li><p>Modeling: This involves building a predictive model that can estimate the missing values based on other variables in the dataset.</p></li>
+<li><p>Domain-specific knowledge: Sometimes, domain-specific knowledge can help to fill in missing values. For example, if a person’s age is missing but their date of birth is available, their age can be calculated based on the current date.</p></li>
+</ol>
+<p>In this exercise, we only show to remove missing values in data-frame. Later we will show you how to impute these missing values with machine learning.</p>
+<section id="remove-missing-values" class="level4">
+<h4 class="anchored" data-anchor-id="remove-missing-values">Remove missing values</h4>
+<p>We can remove missing values from a data frame using the <strong>na.omit()</strong> function. This function removes any rows that contain missing values (NA values) in any column.</p>
+<p>Here’s an example to remove missing values:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df<span class="ot">&lt;-</span><span class="fu">na.omit</span>(mf)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="descriptive-statistics">Descriptive statistics</h3>
+<p>Descriptive statistics are used to summarize and describe the main features of a dataset. Some common descriptive statistics include measures of central tendency (such as mean, median, and mode), measures of variability (such as variance, standard deviation, and range), and measures of shape (such as skewness and kurtosis).</p>
+<p>The <strong>summarize(</strong>) function in R is used to create summary statistics of a data frame or a grouped data frame. This function can be used to calculate a variety of summary statistics, including mean, median, minimum, maximum, standard deviation, and percentiles.</p>
+<p>The basic syntax for using the summarize function is as follows:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   A_LabID              SiteID        StateID             Latitude    
+ Length:4740        Min.   :    8   Length:4740        Min.   :25.14  
+ Class :character   1st Qu.: 3238   Class :character   1st Qu.:34.98  
+ Mode  :character   Median : 6558   Mode  :character   Median :39.23  
+                    Mean   : 6584                      Mean   :39.14  
+                    3rd Qu.: 9890                      3rd Qu.:43.34  
+                    Max.   :31081                      Max.   :48.98  
+   Longitude        Landcover          Developed         Agriculture       
+ Min.   :-124.40   Length:4740        Length:4740        Length:4740       
+ 1st Qu.:-110.29   Class :character   Class :character   Class :character  
+ Median : -99.48   Mode  :character   Mode  :character   Mode  :character  
+ Mean   : -99.46                                                           
+ 3rd Qu.: -89.47                                                           
+ Max.   : -67.52                                                           
+       As                Cd                Cr                Fe        
+ Min.   :  0.600   Min.   : 0.0500   Min.   :   0.50   Min.   : 0.020  
+ 1st Qu.:  3.200   1st Qu.: 0.1000   1st Qu.:  18.00   1st Qu.: 1.320  
+ Median :  5.300   Median : 0.2000   Median :  31.00   Median : 2.000  
+ Mean   :  6.213   Mean   : 0.2616   Mean   :  37.49   Mean   : 2.218  
+ 3rd Qu.:  7.800   3rd Qu.: 0.3000   3rd Qu.:  42.00   3rd Qu.: 2.760  
+ Max.   :103.000   Max.   :46.6000   Max.   :3850.00   Max.   :13.900  
+       Mn               A                Pb                Se        
+ Min.   :   2.5   Min.   : 0.030   Min.   :   1.20   Min.   :0.1000  
+ 1st Qu.: 297.0   1st Qu.: 0.520   1st Qu.:  13.38   1st Qu.:0.1000  
+ Median : 503.0   Median : 0.790   Median :  17.90   Median :0.2000  
+ Mean   : 627.6   Mean   : 1.008   Mean   :  21.95   Mean   :0.3177  
+ 3rd Qu.: 799.5   3rd Qu.: 1.130   3rd Qu.:  23.30   3rd Qu.:0.4000  
+ Max.   :6850.0   Max.   :44.100   Max.   :1510.00   Max.   :8.3000  
+       Zn         
+ Min.   :   0.50  
+ 1st Qu.:  37.00  
+ Median :  59.00  
+ Mean   :  64.52  
+ 3rd Qu.:  81.25  
+ Max.   :1440.00  </code></pre>
+</div>
+</div>
+</section>
+<section id="data-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="data-distribution">Data Distribution</h3>
+<p>In statistics, a data distribution refers to the pattern of how data points are spread out over a range of values. Understanding the data distribution is important in statistical analysis, as it can help select appropriate statistical tests, detect outliers, and identify patterns and trends. It is often represented graphically using histograms, density, or qq-plots or probability plots.</p>
+<p>There are several types of data distributions, including:</p>
+<ol type="1">
+<li><p><strong>Normal distribution</strong>: Also known as Gaussian distribution, it is a bell-shaped curve that is symmetric around the mean. It is used to model data that is distributed evenly around the mean, with a few data points on the tails of the distribution.</p></li>
+<li><p><strong>Skewed distribution</strong>: A skewed distribution is one in which the data points are not evenly distributed around the mean. There are two types skewed distributions: positively skewed (skewed to the right) and negatively skewed (skewed to the left). In a positively skewed distribution, the tail of the distribution is longer on the right side, while in a negatively skewed distribution, the tail is longer on the left side.</p></li>
+<li><p><strong>Bimodal distribution</strong>: A bimodal distribution has two peaks or modes, indicating that the data can be divided into two groups with different characteristics.</p></li>
+<li><p>Uniform distribution: A uniform distribution is one in which all the data points are equally likely to occur. This type of distribution is often used in simulations and random number generation.</p></li>
+<li><p><strong>Exponential distribution</strong>: An exponential distribution describes the time between two events occurring in a Poisson process. It is used to model data with a constant occurrence rate over time.</p></li>
+</ol>
+</section>
+<section id="visual-inspection-of-data-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="visual-inspection-of-data-distribution">Visual Inspection of Data Distribution</h3>
+<p>Here, we’ll describe how to check the normality of the data by visual inspection by:</p>
+<ul>
+<li><p>Histogram</p></li>
+<li><p>Kernel density Plots</p></li>
+<li><p>Quantile-Quantile Plots (qq-plot)</p></li>
+</ul>
+</section>
+<section id="histograms" class="level3">
+<h3 class="anchored" data-anchor-id="histograms">Histograms</h3>
+<p>A histogram is a graphical representation of the distribution of numerical data. They are commonly used in statistics to show the frequency distribution of a data set for identifying patterns, outliers, and skewness in the data. Histograms are also helpful in visualizing the shape of a distribution, such as whether it is symmetric or skewed, and whether it has one or more peaks.</p>
+<p>In R, hist() function is used to create histograms of numerical data. It takes one or more numeric vectors as input and displays a graphical representation of the distribution of the data in the form of a histogram.</p>
+<p>We can also create histograms using the <a href="https://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a> package, which is a powerful data visualization tool based on The Grammar of Graphics.</p>
+<p><img src="Image/ggplot_logo.png" class="img-fluid" width="286"></p>
+<p>The ggplot2 allows you to create complex and customizable graphics using a layered approach, which involves building a plot by adding different layers of visual elements. It comes with “tidyverse” package.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R-base function hist()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">ggplot2 geom_histogram()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>As, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># plot title</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Soil As"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Soil As (mg/kg)"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()<span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X-axis title</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Frequency"</span>)<span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Histogram of Soil As"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="kernel-density-plots" class="level3">
+<h3 class="anchored" data-anchor-id="kernel-density-plots">Kernel Density Plots</h3>
+<p>A kernel density plot (or kernel density estimation plot) is a non-parametric way of visualizing the probability density function of a variable. It represents a smoothed histogram version, where the density estimate is obtained by convolving the data with a kernel function. The kernel density plot is a helpful tool for exploring data distribution, identifying outliers, and comparing distributions.</p>
+<p>In practice, kernel density estimation involves selecting a smoothing parameter (known as the bandwidth) that determines the width of the kernel function. The choice of bandwidth can significantly impact the resulting density estimate, and various methods have been developed to select the optimal bandwidth for a given dataset.</p>
+<p>To create a density plot in R, you can use the density() function to estimate the density of a variable, and then plot it using the plot() function. If you want to use ggplot2, you can create a density plot with the geom_density() function, like this:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R-base function density()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">ggplot2 geom_density()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate the density</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">density</span>(df<span class="sc">$</span>As)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot density</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># plot title</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Kernel Density of Soil As"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis tittle</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Soil As (mg/kg)"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As)) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()<span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># x-axis title</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Density"</span>)<span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Kernel Density of Soil As"</span>)<span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Center the plot title</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="qq-plot" class="level3">
+<h3 class="anchored" data-anchor-id="qq-plot">QQ-Plot</h3>
+<p>A Q-Q plot (quantile-quantile plot) is a graphical method used to compare two probability distributions by plotting their quantiles against each other. The two distributions being compared are first sorted in ascending order to create a Q-Q plot. Then, the corresponding quantile in the other distribution is calculated for each data point in one distribution. The resulting pairs of quantiles are plotted on a scatter plot, with one distribution’s quantiles on the x-axis and the other on the y-axis. If the two distributions being compared are identical, the points will fall along a straight line.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Probability distribution</strong> is a function that describes the likelihood of obtaining different outcomes in a random event. It gives a list of all possible outcomes and their corresponding probabilities. The probabilities assigned to each outcome must add up to 1, as one of the possible outcomes will always occur.</p>
+</div>
+</div>
+<p>In R, you can create a Q-Q plot using the two functions:</p>
+<p><strong>qqnorm()</strong> is a generic function the default method of which produces a normal QQ plot of the values in y.</p>
+<p><strong>qqline()</strong> adds a line to a “theoretical”, by default normal, quantile-quantile plot which passes through the probs quantiles, by default the first and third quartiles.</p>
+<p>We can create a QQ plot using the ggplot() and stat_qq() functions and then use stat_qq_line() function to add a line indicating the expected values under the assumption of a normal distribution.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R-base function: QQ-plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">ggplot2 QQ-Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># draw normal QQ plot</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(df<span class="sc">$</span>As)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add reference or theoretical line</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(df<span class="sc">$</span>As,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Q-Q plot of Soil As from a Normal Distribution"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis tittle</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Theoretical Quantiles"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Sample Quantiles"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> As)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># x-axis title</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Theoretical Quantiles)"</span>) <span class="sc">+</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sample Quantiles"</span>)<span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Q-Q plot of Soil As from a Normal Distribution"</span>)<span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Center the plot title</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># x-axis title font size</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># y-axis title font size</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="normality-test" class="level3">
+<h3 class="anchored" data-anchor-id="normality-test">Normality Test</h3>
+<p>Normality test is used to determine whether a given data sample is derived from a normally distributed population. It is important to note that a normality test does not prove normality but rather provides evidence for or against it. Additionally, even if a dataset passes a normality test, it is still important to visually inspect the data and consider the context of the data before assuming normality.</p>
+<p>Statistical tests for normality include:</p>
+<p><strong>Shapiro-Wilk test</strong>: The Shapiro-Wilk test is a commonly used test to check for normality. The test calculates a W statistic. If the p-value associated with the test is greater than a chosen significance level (usually 0.05), it suggests that the data is normally distributed.</p>
+<p><strong>Anderson-Darling test</strong>: The Anderson-Darling test is another test that can be used to check for normality. The test calculates an A2 statistic, and if the p-value associated with the test is greater than a chosen significance level, it suggests that the data is normally distributed</p>
+<p><strong>Kolmogorov-Smirnov test</strong>:The Kolmogorov-Smirnov (KS) test is a statistical test used to determine if two datasets have the same distribution. The test compares the empirical cumulative distribution function (ECDF) of the two datasets and calculates the maximum vertical distance between the two ECDFs. The KS test statistic is the maximum distance and the p-value is calculated based on the distribution of the test statistic.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Shapiro-Wilk test</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Anderson-Darling test</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false">Kolmogorov-Smirnov test</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>The <strong>shapiro.test()</strong> function can be used to perform the Shapiro-Wilk test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$As
+W = 0.62072, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.</p>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>The <strong>ad.test()</strong> function from the <strong>nortest</strong> package can be used to perform the Anderson-Darling test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. It is important to note that the Anderson-Darling test is also sensitive to sample size, and may not be accurate for small sample sizes. Additionally, the test may not be appropriate for non-normal distributions with heavy tails or skewness. Therefore, it is recommended to use the test in conjunction with visual inspection of the data to determine if it follows a normal distribution.</p>
+<blockquote class="blockquote">
+<p>install.package(nortest)</p>
+</blockquote>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nortest)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>nortest<span class="sc">::</span><span class="fu">ad.test</span>(df<span class="sc">$</span>As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Anderson-Darling normality test
+
+data:  df$As
+A = 268.37, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.</p>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<p><strong>The ks.test()</strong> function can be used to perform the Kolmogorov-Smirnov test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. <strong>pnorm</strong> specifies the cumulative distribution function to use as the reference distribution for the test. I</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ks.test</span>(df<span class="sc">$</span>As, <span class="st">"pnorm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Asymptotic one-sample Kolmogorov-Smirnov test
+
+data:  df$As
+D = 0.88497, p-value &lt; 2.2e-16
+alternative hypothesis: two-sided</code></pre>
+</div>
+</div>
+<p>The test result shows that the maximum distance between the two ECDFs is 0.88 and the p-value is very small, which means that we can reject the null hypothesis that the two samples are from the same distribution.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="measures-of-skewness-and-kurtosis" class="level3">
+<h3 class="anchored" data-anchor-id="measures-of-skewness-and-kurtosis">Measures of Skewness and Kurtosis</h3>
+<p><strong>Skewness</strong> is a measure of the asymmetry of a probability distribution. In other words, it measures how much a distribution deviates from symmetry or normal distribution. A <strong>positive</strong> skewness indicates that the distribution has a longer right tail, while a <strong>negative</strong> skewness indicates that the distribution has a longer left tail. A skewness of <strong>zero</strong> indicates a perfectly symmetric distribution.</p>
+<p><strong>Kurtosis</strong> measures how much a distribution deviates from a normal distribution in terms of the concentration of scores around the mean. A <strong>positive</strong> kurtosis indicates a more peaked distribution than a normal distribution, while a <strong>negative</strong> kurtosis indicates a flatter distribution than a normal distribution. A kurtosis of <strong>zero</strong> indicates a normal distribution.</p>
+<p>we will use <strong>skewness()</strong> and <strong>kurtosis()</strong> functions from the <strong>moments</strong> library in R:</p>
+<blockquote class="blockquote">
+<p>install.package(“moments”)</p>
+</blockquote>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">Skewness</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">kurtosis</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df<span class="sc">$</span>As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.168896</code></pre>
+</div>
+</div>
+<p>High positive value indicates that the distribution is highly skewed at right-hand sight, which means that in some sites soil are highly contaminated with As.</p>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">kurtosis</span>(df<span class="sc">$</span>As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 73.82006</code></pre>
+</div>
+</div>
+<p>Again, high positive kurtosis value indicates that Soil As is not normal distributed</p>
+</div>
+</div>
+</div>
+</section>
+<section id="data-transformation-for-normality" class="level3">
+<h3 class="anchored" data-anchor-id="data-transformation-for-normality">Data Transformation for Normality</h3>
+<p>Data transformation is a technique used to modify the scale or shape of a distribution. Transforming data can help make the data distribution more normal, which is often desirable for statistical analyses. Here are some common data transformations used to achieve normality:</p>
+<ol type="1">
+<li><strong>Logarithmic transformation</strong>: If the data are skewed to the right, taking the data’s logarithm can help reduce the skewness and make the distribution more normal.</li>
+</ol>
+<ul>
+<li><p>log10(x) for positively skewed data,</p></li>
+<li><p>log10(max(x+1) - x) for negatively skewed data</p></li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Square root transformation</strong>: Similar to logarithmic transformation, taking the square root of the data can help reduce the distribution’s skewness.</li>
+</ol>
+<ul>
+<li><p>sqrt(x) for positively skewed data,</p></li>
+<li><p>sqrt(max(x+1) - x) for negatively skewed data</p></li>
+</ul>
+<ol start="3" type="1">
+<li><p><strong>Inverse transformation</strong>: If the data are skewed to the left, taking the inverse of the data (1/x) can help to reduce the skewness and make the distribution more normal.</p></li>
+<li><p><strong>Box-Cox transformation</strong>: The Box-Cox transformation is a method of data transformation that is used to stabilize the variance of a dataset and make it more normally distributed. The Box-Cox transformation involves applying a power transformation to the data, which is determined by a parameter λ. The general formula for the Box-Cox transformation is:</p></li>
+</ol>
+<p><img src="Image/boxcox.png" class="img-fluid" width="283"></p>
+<p>where y(λ) is the transformed data, x is the original data, and λ is the Box-Cox parameter. When λ=0, the formula becomes y=log(x), which is the logarithmic transformation. When λ=1, the formula becomes y=x, which is no transformation at all.</p>
+<p>When choosing a data transformation method, it is important to consider the type of data, the purpose of the analysis, and the assumptions of the statistical method being used. It is also important to check the normality of the transformed data using visual inspection (histogram) and statistical tests, such as the Shapiro-Wilk test or the Anderson-Darling test.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Logarithmic</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Square root</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false">Inverse</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false">Box-Cox</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log10 transformation</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>log_As<span class="ot">&lt;-</span><span class="fu">log10</span>(df<span class="sc">$</span>As)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>log_As,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Log Soil As"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Log Soil As"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="384"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>log_As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$log_As
+W = 0.9882, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Square root transformation</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>sqrt_As<span class="ot">&lt;-</span><span class="fu">sqrt</span>(df<span class="sc">$</span>As)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>sqrt_As,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Square root Soil As"</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Sqrt. Soil As"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="384"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>sqrt_As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$sqrt_As
+W = 0.9093, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inverse transformation</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>inv_As<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">/</span>df<span class="sc">$</span>As)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>inv_As,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Inverse of Soil As"</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Inverse of Soil As"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="384"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>inv_As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$inv_As
+W = 0.75046, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
+<p>First we have to calculate appropriate transformation parameters using <strong>powerTransform()</strong> function of <strong>car</strong> package and then use this parameter to transform the data using <strong>bcPower()</strong> function.</p>
+<blockquote class="blockquote">
+<p>install.package(“car”)</p>
+</blockquote>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Get appropriate power - lambda</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>power<span class="ot">&lt;-</span>car<span class="sc">::</span><span class="fu">powerTransform</span>(df<span class="sc">$</span>As)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>power<span class="sc">$</span>lambda</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     df$As 
+0.06868598 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># power transformation</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>bc_As<span class="ot">&lt;-</span>car<span class="sc">::</span><span class="fu">bcPower</span>(df<span class="sc">$</span>As, power<span class="sc">$</span>lambda)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>bc_As,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of BoxCox Soil As"</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"BoxCox of Soil As"</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="384"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>bc_As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  df$bc_As
+W = 0.989, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="identify-outliers" class="level3">
+<h3 class="anchored" data-anchor-id="identify-outliers">Identify outliers</h3>
+<p>Outliers are data points that deviate significantly from other data points in a dataset. Measurement errors, experimental errors, or genuine extreme values (for example soil contamination) can cause them. It’s important to note that outlier detection is not an exact science, and different methods may identify different outliers. It’s important to understand the nature of your data and use your judgement to determine which method is most appropriate for your dataset.</p>
+<p>In this exercise we will discuss some common methods of detecting outleirs, but we will not removing them. Here are some common methods for identifying outliers:</p>
+</section>
+<section id="visual-inspection-with-boxplot" class="level3">
+<h3 class="anchored" data-anchor-id="visual-inspection-with-boxplot">Visual inspection with Boxplot</h3>
+<p>Plotting the data and visually inspecting it can often reveal outliers. Box plot, also known as a box-and-whisker plot is useful visualizations for this purpose. It is a graphical representation of a dataset that displays its median, quartiles, and any potential outliers. Here’s how to read a boxplot: Boxplots help identifies a dataset’s distribution, spread, and potential outliers. They are often used in exploratory data analysis to gain insights into the characteristics of the data.</p>
+<p>• The box represents the interquartile range (IQR), which is the range between the 25th and 75th percentiles of the data. The length of the box represents the range of the middle 50% of the data.</p>
+<p>• The line inside the box represents the median of the data, which is the middle value when the data is sorted.</p>
+<p>• The whiskers extend from the box and represent the range of the data outside the IQR. They can be calculated in different ways depending on the method used to draw the boxplot. Some common methods include:</p>
+<ul>
+<li><p>Tukey’s method: The whiskers extend to the most extreme data point within 1.5 times the IQR of the box.</p></li>
+<li><p>Min/max whiskers: The whiskers extend to the minimum and maximum values in the data that are not considered outliers.</p></li>
+<li><p>5-number summary: The whiskers extend to the minimum and maximum values in the data, excluding outliers.</p></li>
+</ul>
+<p>• Outliers are data points that fall outside the whiskers of the boxplot. They are represented as individual points on the plot.</p>
+<p><img src="Image/boxplot.png" class="img-fluid" width="484"></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R-base function boxplot()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">ggplot2 geom_boxplot()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(df<span class="sc">$</span>As, </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># plot title</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Boxplot of Soil As"</span>,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>     <span class="co">#xlab= "Soil As (mg/kg)",</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Soil As (mg/kg)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+<p>Now check how many observation considered as outlier:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">boxplot.stats</span>(df<span class="sc">$</span>As)<span class="sc">$</span>out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 162</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As))<span class="sc">+</span>   <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X-axis title</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Soil As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ylab("Soil As (mg/kg)")+</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Boxplot of Soil As"</span>) <span class="sc">+</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># center the plot title</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize axis ticks </span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>,</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">angle =</span> <span class="dv">90</span>,</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>                             <span class="at">vjust =</span> <span class="fl">0.5</span>, </span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hjust=</span><span class="fl">0.5</span>, <span class="at">colour=</span><span class="st">'black'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data-exploration-basic_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="tukeys-method" class="level3">
+<h3 class="anchored" data-anchor-id="tukeys-method">Tukey’s method</h3>
+<p>Another common method for identifying outliers is Tukey’s method, which is based on the concept of the IQR. Divide the data set into Quartiles:</p>
+<ul>
+<li><p>Q1 (the 1st quartile): 25% of the data are less than or equal to this value</p></li>
+<li><p>Q3 (the 3rd quartile): 25% of the data are greater than or equal to this value</p></li>
+<li><p>IQR (the interquartile range): the distance between Q3 – Q1, it contains the middle 50% of the data.</p></li>
+<li><p>Then outliers are then defined as any values that fall outside of:</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>Lower Range = Q1 – (1.5 * IQR)</p>
+</blockquote>
+<p>and</p>
+<blockquote class="blockquote">
+<p>Upper Range = Q3 + (1.5 * IQR)</p>
+</blockquote>
+<p>Below <a href="https://www.linkedin.com/pulse/outlier-treatment-tukeys-method-r-swanand-marathe/">detect_outliers</a> function</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>detect_outliers <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check if data is numeric in nature</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span>(<span class="fu">class</span>(x) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>,<span class="st">"integer"</span>)))</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Data provided must be of integer</span><span class="sc">\n</span><span class="st">umeric type"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate lower limit</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  lower.limit <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">quantile</span>(x)[<span class="dv">2</span>] <span class="sc">-</span> <span class="fu">IQR</span>(x)<span class="sc">*</span><span class="fl">1.5</span>)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate upper limit</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  upper.limit <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">quantile</span>(x)[<span class="dv">4</span>] <span class="sc">+</span> <span class="fu">IQR</span>(x)<span class="sc">*</span><span class="fl">1.5</span>)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Retrieve index of elements which are outliers</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  lower.index <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">&lt;</span> lower.limit)</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  upper.index <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">&gt;</span> upper.limit)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## print results</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">" Lower Limit "</span>,lower.limit ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"Upper Limit"</span>, upper.limit ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="st">"Lower range outliers  "</span>,x[lower.index] ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"Upper range outlers"</span>, x[upper.index])</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">detect_outliers</span>(df<span class="sc">$</span>As)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> Lower Limit  -3.7 
+ Upper Limit 14.7 
+ Lower range outliers    
+ Upper range outlers 103 94.5 84.2 77.3 66.7 63.8 62.8 62.3 59.9 56.1 51.5 48.5 46.1 45.3 44.5 43.6 43.1 41.7 41.1 40.4 39.9 39.4 38.2 36 35.7 35.6 35.6 35.5 33.9 33.7 32.4 31.1 31 30.8 29.7 29.4 28.5 28.2 28.1 28.1 28.1 28.1 26.2 25.1 25.1 24.9 24.6 24.5 24.5 24.3 24.2 23.9 23.9 23.4 23.3 23.3 23.3 23.1 22.9 22.8 22.5 22.2 22 21.8 21.6 21.3 20.7 20.7 20.6 20.6 20.4 20.3 20.3 20.2 20.1 20.1 20.1 20.1 20 19.6 19.5 19.5 19.4 19.2 19.1 19.1 18.8 18.8 18.7 18.6 18.4 18.4 18.3 18 18 17.9 17.9 17.8 17.8 17.8 17.6 17.6 17.6 17.6 17.5 17.5 17.5 17.5 17.2 17 17 16.9 16.8 16.8 16.8 16.7 16.6 16.6 16.6 16.5 16.5 16.4 16.4 16.3 16.3 16.3 16.3 16.2 16.2 16.2 16.2 16.1 16 16 15.9 15.9 15.9 15.9 15.8 15.8 15.8 15.7 15.7 15.7 15.7 15.6 15.6 15.5 15.5 15.4 15.3 15.3 15.3 15.2 15.1 15.1 15.1 15.1 15 14.9 14.9 14.8</code></pre>
+</div>
+</div>
+</section>
+<section id="z-score-method" class="level3">
+<h3 class="anchored" data-anchor-id="z-score-method">Z-score method</h3>
+<p>The Z-score method is another common statistical method for identifying outliers. It finds value with largest difference between it and sample mean, which can be considered as an outlier. In R, the outliers() function from the outliers package can be used to identify outliers using the Z-score method.</p>
+<blockquote class="blockquote">
+<p>install.packages(“outliers”)</p>
+</blockquote>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(outliers)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify outliers using the Z-score method</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">outlier</span>(df<span class="sc">$</span>As, <span class="at">opposite=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 103</code></pre>
+</div>
+</div>
+</section>
+<section id="box-jitter-plot" class="level3">
+<h3 class="anchored" data-anchor-id="box-jitter-plot">Box-Jitter plot</h3>
+<p>A box-jitter plot is a type of data visualization that combines elements of both a boxplot and a jitter plot. It is useful for displaying both the distribution and the individual data points of a dataset.</p>
+<p>The jitter component of the plot is used to display the individual data points. Jittering refers to adding a small amount of random noise to the position of each data point along the x-axis, to prevent overlapping and to give a better sense of the density of the data.</p>
+<p>Overall, the box-jitter plot provides a useful summary of the distribution of a dataset, while also allowing viewers to see the individual data points and any potential outliers. It is particularly useful for displaying data with a large number of observations or for comparing multiple distributions side by side.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb50" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction to Data Exploration {.unnumbered}</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>Data Exploration or Exploratory Data Analysis (EDA) is an approach to analyzing data in which you investigate and summarize the data's main characteristics, aiming to understand the underlying patterns and relationships between variables. EDA helps you identify potential data problems, discover outliers, and generate ideas for further analysis.</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>Here are below basic steps for data exploration in R:</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Import data: The first step in data exploration is to import your data into R. You can import data from various sources such as Excel, CSV, or databases.</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Check the structure of data: Use the str() function to check the structure of your data. This function will give you information about the dimensions of your data and the types of variables in your data.</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>check data distribution and visualize the data distribution using histograms, density plot and qqplots. Perform normality test to determine whether a given data sample is derived from a normally distributed population.</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Check for missing values: Use the is.na() function to check for missing values in your data. If you have missing values, you can use the na.omit() function to remove the missing values from your data.</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Summarize or descriptive statisics of the data: Start by summarizing the main characteristics of the data, such as the mean, median, standard deviation, and range of each variable.</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>box plot to identify outliers, which are observations significantly different from the rest of the data.</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Perform statistical tests: Use the t.test() function to perform statistical tests on your data. You can use this function to test whether the means of two groups are significantly different.</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Explore and visualize the relationships between two variables using scatter plot and correlation analysis.</span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Look for patterns and trends: Search for patterns and trends in the data that can help you to generate new hypotheses or insights. You can use clustering and principal component analysis (PCA) techniques in R.</span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>Overall, EDA is an important first step in any data analysis project, as it helps you to understand the data and generate hypotheses that can guide further analysis. R provides many powerful tools for EDA, making it a popular language for data scientists and analysts.</span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>We will some basic R functions to explore soil heavy metal data of the USA (usa_soil_heavy_metal.csv). This data could be found <span class="co">[</span><span class="ot">here</span><span class="co">](https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0)</span></span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a><span class="fu">### Load Package</span></span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Load data</span></span>
+<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>In this exercise we will use <span class="co">[</span><span class="ot">US soil heavy metal data</span><span class="co">](https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0)</span>from USA-Geological Survey. </span>
+<span id="cb50-44"><a href="#cb50-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-47"><a href="#cb50-47" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-48"><a href="#cb50-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-49"><a href="#cb50-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-50"><a href="#cb50-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-51"><a href="#cb50-51" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb50-52"><a href="#cb50-52" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/USA/"</span></span>
+<span id="cb50-53"><a href="#cb50-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb50-54"><a href="#cb50-54" aria-hidden="true" tabindex="-1"></a>mf<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder, <span class="st">"usa_soil_heavy_metal.csv"</span>), <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb50-55"><a href="#cb50-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-56"><a href="#cb50-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-57"><a href="#cb50-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Check data Structure</span></span>
+<span id="cb50-58"><a href="#cb50-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-59"><a href="#cb50-59" aria-hidden="true" tabindex="-1"></a>In R, the str() function is a useful tool for examining the structure of an object. It provides a compact and informative description of the object's internal structure, including its type, length, dimensions, and contents.</span>
+<span id="cb50-60"><a href="#cb50-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-63"><a href="#cb50-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-64"><a href="#cb50-64" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-65"><a href="#cb50-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-66"><a href="#cb50-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-67"><a href="#cb50-67" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(mf)</span>
+<span id="cb50-68"><a href="#cb50-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-69"><a href="#cb50-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-70"><a href="#cb50-70" aria-hidden="true" tabindex="-1"></a><span class="fu">### Check missing values</span></span>
+<span id="cb50-71"><a href="#cb50-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-72"><a href="#cb50-72" aria-hidden="true" tabindex="-1"></a>In R, the is.na() function is used to test for missing values (NA) in an object. It returns a logical vector indicating which elements of the object are missing.</span>
+<span id="cb50-73"><a href="#cb50-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-76"><a href="#cb50-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-77"><a href="#cb50-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-78"><a href="#cb50-78" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-79"><a href="#cb50-79" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(mf))</span>
+<span id="cb50-80"><a href="#cb50-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-81"><a href="#cb50-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-82"><a href="#cb50-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dealing with missing values </span></span>
+<span id="cb50-83"><a href="#cb50-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-84"><a href="#cb50-84" aria-hidden="true" tabindex="-1"></a>Dealing with missing values is an important task in data analysis. There are way we can deal with missing values in data. The choice of method depends on the specific dataset and the analysis goals. It's important to carefully consider each approach's implications and select the most appropriate method for the data at hand</span>
+<span id="cb50-85"><a href="#cb50-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-86"><a href="#cb50-86" aria-hidden="true" tabindex="-1"></a>Here are some common strategies for handling missing data:</span>
+<span id="cb50-87"><a href="#cb50-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-88"><a href="#cb50-88" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Delete the rows or columns with missing data: This is the simplest approach, but it can result in the loss of valuable information if there are many missing values.</span>
+<span id="cb50-89"><a href="#cb50-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-90"><a href="#cb50-90" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Imputation: Imputation involves filling in the missing values with estimated values based on other data points. Standard imputation techniques include mean imputation, median imputation, and regression imputation.</span>
+<span id="cb50-91"><a href="#cb50-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-92"><a href="#cb50-92" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Multiple imputations: This involves creating several imputed datasets and analyzing each separately, then combining the results to obtain a final estimate.</span>
+<span id="cb50-93"><a href="#cb50-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-94"><a href="#cb50-94" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Modeling: This involves building a predictive model that can estimate the missing values based on other variables in the dataset.</span>
+<span id="cb50-95"><a href="#cb50-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-96"><a href="#cb50-96" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Domain-specific knowledge: Sometimes, domain-specific knowledge can help to fill in missing values. For example, if a person's age is missing but their date of birth is available, their age can be calculated based on the current date.</span>
+<span id="cb50-97"><a href="#cb50-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-98"><a href="#cb50-98" aria-hidden="true" tabindex="-1"></a>In this exercise, we only show to remove missing values in data-frame. Later we will show you how to impute these missing values with machine learning. </span>
+<span id="cb50-99"><a href="#cb50-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-100"><a href="#cb50-100" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Remove missing values</span></span>
+<span id="cb50-101"><a href="#cb50-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-102"><a href="#cb50-102" aria-hidden="true" tabindex="-1"></a>We can remove missing values from a data frame using the **na.omit()** function. This function removes any rows that contain missing values (NA values) in any column. </span>
+<span id="cb50-103"><a href="#cb50-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-104"><a href="#cb50-104" aria-hidden="true" tabindex="-1"></a>Here's an example to remove missing values:</span>
+<span id="cb50-105"><a href="#cb50-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-108"><a href="#cb50-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-109"><a href="#cb50-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-110"><a href="#cb50-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-111"><a href="#cb50-111" aria-hidden="true" tabindex="-1"></a>df<span class="ot">&lt;-</span><span class="fu">na.omit</span>(mf)</span>
+<span id="cb50-112"><a href="#cb50-112" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(df))</span>
+<span id="cb50-113"><a href="#cb50-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-114"><a href="#cb50-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-115"><a href="#cb50-115" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descriptive statistics</span></span>
+<span id="cb50-116"><a href="#cb50-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-117"><a href="#cb50-117" aria-hidden="true" tabindex="-1"></a>Descriptive statistics are used to summarize and describe the main features of a dataset. Some common descriptive statistics include measures of central tendency (such as mean, median, and mode), measures of variability (such as variance, standard deviation, and range), and measures of shape (such as skewness and kurtosis).</span>
+<span id="cb50-118"><a href="#cb50-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-119"><a href="#cb50-119" aria-hidden="true" tabindex="-1"></a>The **summarize(**) function in R is used to create summary statistics of a data frame or a grouped data frame. This function can be used to calculate a variety of summary statistics, including mean, median, minimum, maximum, standard deviation, and percentiles.</span>
+<span id="cb50-120"><a href="#cb50-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-121"><a href="#cb50-121" aria-hidden="true" tabindex="-1"></a>The basic syntax for using the summarize function is as follows:</span>
+<span id="cb50-122"><a href="#cb50-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-125"><a href="#cb50-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-126"><a href="#cb50-126" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-127"><a href="#cb50-127" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-128"><a href="#cb50-128" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span>
+<span id="cb50-129"><a href="#cb50-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-130"><a href="#cb50-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-131"><a href="#cb50-131" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Distribution</span></span>
+<span id="cb50-132"><a href="#cb50-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-133"><a href="#cb50-133" aria-hidden="true" tabindex="-1"></a>In statistics, a data distribution refers to the pattern of how data points are spread out over a range of values. Understanding the data distribution is important in statistical analysis, as it can help select appropriate statistical tests, detect outliers, and identify patterns and trends. It is often represented graphically using histograms, density, or qq-plots or probability plots.</span>
+<span id="cb50-134"><a href="#cb50-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-135"><a href="#cb50-135" aria-hidden="true" tabindex="-1"></a>There are several types of data distributions, including:</span>
+<span id="cb50-136"><a href="#cb50-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-137"><a href="#cb50-137" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Normal distribution**: Also known as Gaussian distribution, it is a bell-shaped curve that is symmetric around the mean. It is used to model data that is distributed evenly around the mean, with a few data points on the tails of the distribution.</span>
+<span id="cb50-138"><a href="#cb50-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-139"><a href="#cb50-139" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Skewed distribution**: A skewed distribution is one in which the data points are not evenly distributed around the mean. There are two types skewed distributions: positively skewed (skewed to the right) and negatively skewed (skewed to the left). In a positively skewed distribution, the tail of the distribution is longer on the right side, while in a negatively skewed distribution, the tail is longer on the left side.</span>
+<span id="cb50-140"><a href="#cb50-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-141"><a href="#cb50-141" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Bimodal distribution**: A bimodal distribution has two peaks or modes, indicating that the data can be divided into two groups with different characteristics.</span>
+<span id="cb50-142"><a href="#cb50-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-143"><a href="#cb50-143" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Uniform distribution: A uniform distribution is one in which all the data points are equally likely to occur. This type of distribution is often used in simulations and random number generation.</span>
+<span id="cb50-144"><a href="#cb50-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-145"><a href="#cb50-145" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Exponential distribution**: An exponential distribution describes the time between two events occurring in a Poisson process. It is used to model data with a constant occurrence rate over time.</span>
+<span id="cb50-146"><a href="#cb50-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-147"><a href="#cb50-147" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visual Inspection of Data Distribution</span></span>
+<span id="cb50-148"><a href="#cb50-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-149"><a href="#cb50-149" aria-hidden="true" tabindex="-1"></a>Here, we'll describe how to check the normality of the data by visual inspection by:</span>
+<span id="cb50-150"><a href="#cb50-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-151"><a href="#cb50-151" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Histogram</span>
+<span id="cb50-152"><a href="#cb50-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-153"><a href="#cb50-153" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Kernel density Plots</span>
+<span id="cb50-154"><a href="#cb50-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-155"><a href="#cb50-155" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Quantile-Quantile Plots (qq-plot)</span>
+<span id="cb50-156"><a href="#cb50-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-157"><a href="#cb50-157" aria-hidden="true" tabindex="-1"></a><span class="fu">### Histograms</span></span>
+<span id="cb50-158"><a href="#cb50-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-159"><a href="#cb50-159" aria-hidden="true" tabindex="-1"></a>A histogram is a graphical representation of the distribution of numerical data. They are commonly used in statistics to show the frequency distribution of a data set for identifying patterns, outliers, and skewness in the data. Histograms are also helpful in visualizing the shape of a distribution, such as whether it is symmetric or skewed, and whether it has one or more peaks.</span>
+<span id="cb50-160"><a href="#cb50-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-161"><a href="#cb50-161" aria-hidden="true" tabindex="-1"></a>In R, hist() function is used to create histograms of numerical data. It takes one or more numeric vectors as input and displays a graphical representation of the distribution of the data in the form of a histogram.</span>
+<span id="cb50-162"><a href="#cb50-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-163"><a href="#cb50-163" aria-hidden="true" tabindex="-1"></a>We can also create histograms using the <span class="co">[</span><span class="ot">**ggplot2**</span><span class="co">](https://ggplot2.tidyverse.org/)</span> package, which is a powerful data visualization tool based on The Grammar of Graphics.</span>
+<span id="cb50-164"><a href="#cb50-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-165"><a href="#cb50-165" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/ggplot_logo.png)</span>{width="286"}</span>
+<span id="cb50-166"><a href="#cb50-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-167"><a href="#cb50-167" aria-hidden="true" tabindex="-1"></a>The ggplot2 allows you to create complex and customizable graphics using a layered approach, which involves building a plot by adding different layers of visual elements. It comes with "tidyverse" package.</span>
+<span id="cb50-168"><a href="#cb50-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-169"><a href="#cb50-169" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-170"><a href="#cb50-170" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function hist()</span></span>
+<span id="cb50-171"><a href="#cb50-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-174"><a href="#cb50-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-175"><a href="#cb50-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-176"><a href="#cb50-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-177"><a href="#cb50-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-178"><a href="#cb50-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-179"><a href="#cb50-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-180"><a href="#cb50-180" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>As, </span>
+<span id="cb50-181"><a href="#cb50-181" aria-hidden="true" tabindex="-1"></a>     <span class="co"># plot title</span></span>
+<span id="cb50-182"><a href="#cb50-182" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Soil As"</span>,</span>
+<span id="cb50-183"><a href="#cb50-183" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-184"><a href="#cb50-184" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Soil As (mg/kg)"</span>,</span>
+<span id="cb50-185"><a href="#cb50-185" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-186"><a href="#cb50-186" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb50-187"><a href="#cb50-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-188"><a href="#cb50-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-189"><a href="#cb50-189" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ggplot2 geom_histogram()</span></span>
+<span id="cb50-190"><a href="#cb50-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-193"><a href="#cb50-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-194"><a href="#cb50-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-195"><a href="#cb50-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-196"><a href="#cb50-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-197"><a href="#cb50-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-198"><a href="#cb50-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-199"><a href="#cb50-199" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As)) <span class="sc">+</span></span>
+<span id="cb50-200"><a href="#cb50-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()<span class="sc">+</span></span>
+<span id="cb50-201"><a href="#cb50-201" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X-axis title</span></span>
+<span id="cb50-202"><a href="#cb50-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb50-203"><a href="#cb50-203" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb50-204"><a href="#cb50-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Frequency"</span>)<span class="sc">+</span></span>
+<span id="cb50-205"><a href="#cb50-205" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb50-206"><a href="#cb50-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Histogram of Soil As"</span>)</span>
+<span id="cb50-207"><a href="#cb50-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-208"><a href="#cb50-208" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-209"><a href="#cb50-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-210"><a href="#cb50-210" aria-hidden="true" tabindex="-1"></a><span class="fu">### Kernel Density Plots</span></span>
+<span id="cb50-211"><a href="#cb50-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-212"><a href="#cb50-212" aria-hidden="true" tabindex="-1"></a>A kernel density plot (or kernel density estimation plot) is a non-parametric way of visualizing the probability density function of a variable. It represents a smoothed histogram version, where the density estimate is obtained by convolving the data with a kernel function. The kernel density plot is a helpful tool for exploring data distribution, identifying outliers, and comparing distributions.</span>
+<span id="cb50-213"><a href="#cb50-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-214"><a href="#cb50-214" aria-hidden="true" tabindex="-1"></a>In practice, kernel density estimation involves selecting a smoothing parameter (known as the bandwidth) that determines the width of the kernel function. The choice of bandwidth can significantly impact the resulting density estimate, and various methods have been developed to select the optimal bandwidth for a given dataset.</span>
+<span id="cb50-215"><a href="#cb50-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-216"><a href="#cb50-216" aria-hidden="true" tabindex="-1"></a>To create a density plot in R, you can use the density() function to estimate the density of a variable, and then plot it using the plot() function. If you want to use ggplot2, you can create a density plot with the geom_density() function, like this:</span>
+<span id="cb50-217"><a href="#cb50-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-218"><a href="#cb50-218" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-219"><a href="#cb50-219" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function density()</span></span>
+<span id="cb50-220"><a href="#cb50-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-223"><a href="#cb50-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-224"><a href="#cb50-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-225"><a href="#cb50-225" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-226"><a href="#cb50-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-227"><a href="#cb50-227" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-228"><a href="#cb50-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-229"><a href="#cb50-229" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate the density</span></span>
+<span id="cb50-230"><a href="#cb50-230" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">density</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-231"><a href="#cb50-231" aria-hidden="true" tabindex="-1"></a><span class="co"># plot density</span></span>
+<span id="cb50-232"><a href="#cb50-232" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p, </span>
+<span id="cb50-233"><a href="#cb50-233" aria-hidden="true" tabindex="-1"></a>    <span class="co"># plot title</span></span>
+<span id="cb50-234"><a href="#cb50-234" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Kernel Density of Soil As"</span>,</span>
+<span id="cb50-235"><a href="#cb50-235" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis tittle</span></span>
+<span id="cb50-236"><a href="#cb50-236" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Soil As (mg/kg)"</span>,</span>
+<span id="cb50-237"><a href="#cb50-237" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-238"><a href="#cb50-238" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Density"</span>)</span>
+<span id="cb50-239"><a href="#cb50-239" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb50-240"><a href="#cb50-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-241"><a href="#cb50-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-242"><a href="#cb50-242" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ggplot2 geom_density()</span></span>
+<span id="cb50-243"><a href="#cb50-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-246"><a href="#cb50-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-247"><a href="#cb50-247" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-248"><a href="#cb50-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-249"><a href="#cb50-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-250"><a href="#cb50-250" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-251"><a href="#cb50-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-252"><a href="#cb50-252" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As)) <span class="sc">+</span></span>
+<span id="cb50-253"><a href="#cb50-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()<span class="sc">+</span></span>
+<span id="cb50-254"><a href="#cb50-254" aria-hidden="true" tabindex="-1"></a>  <span class="co"># x-axis title</span></span>
+<span id="cb50-255"><a href="#cb50-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb50-256"><a href="#cb50-256" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb50-257"><a href="#cb50-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Density"</span>)<span class="sc">+</span></span>
+<span id="cb50-258"><a href="#cb50-258" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb50-259"><a href="#cb50-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Kernel Density of Soil As"</span>)<span class="sc">+</span></span>
+<span id="cb50-260"><a href="#cb50-260" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb50-261"><a href="#cb50-261" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Center the plot title</span></span>
+<span id="cb50-262"><a href="#cb50-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb50-263"><a href="#cb50-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-264"><a href="#cb50-264" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-265"><a href="#cb50-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-266"><a href="#cb50-266" aria-hidden="true" tabindex="-1"></a><span class="fu">### QQ-Plot</span></span>
+<span id="cb50-267"><a href="#cb50-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-268"><a href="#cb50-268" aria-hidden="true" tabindex="-1"></a>A Q-Q plot (quantile-quantile plot) is a graphical method used to compare two probability distributions by plotting their quantiles against each other. The two distributions being compared are first sorted in ascending order to create a Q-Q plot. Then, the corresponding quantile in the other distribution is calculated for each data point in one distribution. The resulting pairs of quantiles are plotted on a scatter plot, with one distribution's quantiles on the x-axis and the other on the y-axis. If the two distributions being compared are identical, the points will fall along a straight line.</span>
+<span id="cb50-269"><a href="#cb50-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-270"><a href="#cb50-270" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb50-271"><a href="#cb50-271" aria-hidden="true" tabindex="-1"></a>**Probability distribution** is a function that describes the likelihood of obtaining different outcomes in a random event. It gives a list of all possible outcomes and their corresponding probabilities. The probabilities assigned to each outcome must add up to 1, as one of the possible outcomes will always occur.</span>
+<span id="cb50-272"><a href="#cb50-272" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-273"><a href="#cb50-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-274"><a href="#cb50-274" aria-hidden="true" tabindex="-1"></a>In R, you can create a Q-Q plot using the two functions:</span>
+<span id="cb50-275"><a href="#cb50-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-276"><a href="#cb50-276" aria-hidden="true" tabindex="-1"></a>**qqnorm()** is a generic function the default method of which produces a normal QQ plot of the values in y.</span>
+<span id="cb50-277"><a href="#cb50-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-278"><a href="#cb50-278" aria-hidden="true" tabindex="-1"></a>**qqline()** adds a line to a "theoretical", by default normal, quantile-quantile plot which passes through the probs quantiles, by default the first and third quartiles.</span>
+<span id="cb50-279"><a href="#cb50-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-280"><a href="#cb50-280" aria-hidden="true" tabindex="-1"></a>We can create a QQ plot using the ggplot() and stat_qq() functions and then use stat_qq_line() function to add a line indicating the expected values under the assumption of a normal distribution.</span>
+<span id="cb50-281"><a href="#cb50-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-282"><a href="#cb50-282" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-283"><a href="#cb50-283" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function: QQ-plot</span></span>
+<span id="cb50-284"><a href="#cb50-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-287"><a href="#cb50-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-288"><a href="#cb50-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-289"><a href="#cb50-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-290"><a href="#cb50-290" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-291"><a href="#cb50-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-292"><a href="#cb50-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-293"><a href="#cb50-293" aria-hidden="true" tabindex="-1"></a><span class="co"># draw normal QQ plot</span></span>
+<span id="cb50-294"><a href="#cb50-294" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-295"><a href="#cb50-295" aria-hidden="true" tabindex="-1"></a><span class="co"># Add reference or theoretical line</span></span>
+<span id="cb50-296"><a href="#cb50-296" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(df<span class="sc">$</span>As,</span>
+<span id="cb50-297"><a href="#cb50-297" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Q-Q plot of Soil As from a Normal Distribution"</span>,</span>
+<span id="cb50-298"><a href="#cb50-298" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis tittle</span></span>
+<span id="cb50-299"><a href="#cb50-299" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Theoretical Quantiles"</span>,</span>
+<span id="cb50-300"><a href="#cb50-300" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-301"><a href="#cb50-301" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Sample Quantiles"</span>)</span>
+<span id="cb50-302"><a href="#cb50-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-303"><a href="#cb50-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-304"><a href="#cb50-304" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ggplot2 QQ-Plot</span></span>
+<span id="cb50-305"><a href="#cb50-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-308"><a href="#cb50-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-309"><a href="#cb50-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-310"><a href="#cb50-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-311"><a href="#cb50-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-312"><a href="#cb50-312" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-313"><a href="#cb50-313" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb50-314"><a href="#cb50-314" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> As)) <span class="sc">+</span></span>
+<span id="cb50-315"><a href="#cb50-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span> </span>
+<span id="cb50-316"><a href="#cb50-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb50-317"><a href="#cb50-317" aria-hidden="true" tabindex="-1"></a>  <span class="co"># x-axis title</span></span>
+<span id="cb50-318"><a href="#cb50-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Theoretical Quantiles)"</span>) <span class="sc">+</span> </span>
+<span id="cb50-319"><a href="#cb50-319" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb50-320"><a href="#cb50-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sample Quantiles"</span>)<span class="sc">+</span></span>
+<span id="cb50-321"><a href="#cb50-321" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb50-322"><a href="#cb50-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Q-Q plot of Soil As from a Normal Distribution"</span>)<span class="sc">+</span></span>
+<span id="cb50-323"><a href="#cb50-323" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb50-324"><a href="#cb50-324" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Center the plot title</span></span>
+<span id="cb50-325"><a href="#cb50-325" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb50-326"><a href="#cb50-326" aria-hidden="true" tabindex="-1"></a>    <span class="co"># x-axis title font size</span></span>
+<span id="cb50-327"><a href="#cb50-327" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb50-328"><a href="#cb50-328" aria-hidden="true" tabindex="-1"></a>    <span class="co"># y-axis title font size</span></span>
+<span id="cb50-329"><a href="#cb50-329" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),)</span>
+<span id="cb50-330"><a href="#cb50-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-331"><a href="#cb50-331" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-332"><a href="#cb50-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-333"><a href="#cb50-333" aria-hidden="true" tabindex="-1"></a><span class="fu">### Normality Test</span></span>
+<span id="cb50-334"><a href="#cb50-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-335"><a href="#cb50-335" aria-hidden="true" tabindex="-1"></a>Normality test is used to determine whether a given data sample is derived from a normally distributed population. It is important to note that a normality test does not prove normality but rather provides evidence for or against it. Additionally, even if a dataset passes a normality test, it is still important to visually inspect the data and consider the context of the data before assuming normality.</span>
+<span id="cb50-336"><a href="#cb50-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-337"><a href="#cb50-337" aria-hidden="true" tabindex="-1"></a>Statistical tests for normality include:</span>
+<span id="cb50-338"><a href="#cb50-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-339"><a href="#cb50-339" aria-hidden="true" tabindex="-1"></a>**Shapiro-Wilk test**: The Shapiro-Wilk test is a commonly used test to check for normality. The test calculates a W statistic. If the p-value associated with the test is greater than a chosen significance level (usually 0.05), it suggests that the data is normally distributed.</span>
+<span id="cb50-340"><a href="#cb50-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-341"><a href="#cb50-341" aria-hidden="true" tabindex="-1"></a>**Anderson-Darling test**: The Anderson-Darling test is another test that can be used to check for normality. The test calculates an A2 statistic, and if the p-value associated with the test is greater than a chosen significance level, it suggests that the data is normally distributed</span>
+<span id="cb50-342"><a href="#cb50-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-343"><a href="#cb50-343" aria-hidden="true" tabindex="-1"></a>**Kolmogorov-Smirnov test**:The Kolmogorov-Smirnov (KS) test is a statistical test used to determine if two datasets have the same distribution. The test compares the empirical cumulative distribution function (ECDF) of the two datasets and calculates the maximum vertical distance between the two ECDFs. The KS test statistic is the maximum distance and the p-value is calculated based on the distribution of the test statistic.</span>
+<span id="cb50-344"><a href="#cb50-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-345"><a href="#cb50-345" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-346"><a href="#cb50-346" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Shapiro-Wilk test</span></span>
+<span id="cb50-347"><a href="#cb50-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-348"><a href="#cb50-348" aria-hidden="true" tabindex="-1"></a>The **shapiro.test()** function can be used to perform the Shapiro-Wilk test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value.</span>
+<span id="cb50-349"><a href="#cb50-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-352"><a href="#cb50-352" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-353"><a href="#cb50-353" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-354"><a href="#cb50-354" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-355"><a href="#cb50-355" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-356"><a href="#cb50-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-357"><a href="#cb50-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-358"><a href="#cb50-358" aria-hidden="true" tabindex="-1"></a>Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.</span>
+<span id="cb50-359"><a href="#cb50-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-360"><a href="#cb50-360" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Anderson-Darling test</span></span>
+<span id="cb50-361"><a href="#cb50-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-362"><a href="#cb50-362" aria-hidden="true" tabindex="-1"></a>The **ad.test()** function from the **nortest** package can be used to perform the Anderson-Darling test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. It is important to note that the Anderson-Darling test is also sensitive to sample size, and may not be accurate for small sample sizes. Additionally, the test may not be appropriate for non-normal distributions with heavy tails or skewness. Therefore, it is recommended to use the test in conjunction with visual inspection of the data to determine if it follows a normal distribution.</span>
+<span id="cb50-363"><a href="#cb50-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-364"><a href="#cb50-364" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.package(nortest)</span></span>
+<span id="cb50-365"><a href="#cb50-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-368"><a href="#cb50-368" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-369"><a href="#cb50-369" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-370"><a href="#cb50-370" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-371"><a href="#cb50-371" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nortest)</span>
+<span id="cb50-372"><a href="#cb50-372" aria-hidden="true" tabindex="-1"></a>nortest<span class="sc">::</span><span class="fu">ad.test</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-373"><a href="#cb50-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-374"><a href="#cb50-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-375"><a href="#cb50-375" aria-hidden="true" tabindex="-1"></a>Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.</span>
+<span id="cb50-376"><a href="#cb50-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-377"><a href="#cb50-377" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Kolmogorov-Smirnov test</span></span>
+<span id="cb50-378"><a href="#cb50-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-379"><a href="#cb50-379" aria-hidden="true" tabindex="-1"></a>**The ks.test()** function can be used to perform the Kolmogorov-Smirnov test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. **pnorm** specifies the cumulative distribution function to use as the reference distribution for the test. I</span>
+<span id="cb50-380"><a href="#cb50-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-383"><a href="#cb50-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-384"><a href="#cb50-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-385"><a href="#cb50-385" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-386"><a href="#cb50-386" aria-hidden="true" tabindex="-1"></a><span class="fu">ks.test</span>(df<span class="sc">$</span>As, <span class="st">"pnorm"</span>)</span>
+<span id="cb50-387"><a href="#cb50-387" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-388"><a href="#cb50-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-389"><a href="#cb50-389" aria-hidden="true" tabindex="-1"></a>The test result shows that the maximum distance between the two ECDFs is 0.88 and the p-value is very small, which means that we can reject the null hypothesis that the two samples are from the same distribution.</span>
+<span id="cb50-390"><a href="#cb50-390" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-391"><a href="#cb50-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-392"><a href="#cb50-392" aria-hidden="true" tabindex="-1"></a><span class="fu">### Measures of Skewness and Kurtosis</span></span>
+<span id="cb50-393"><a href="#cb50-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-394"><a href="#cb50-394" aria-hidden="true" tabindex="-1"></a>**Skewness** is a measure of the asymmetry of a probability distribution. In other words, it measures how much a distribution deviates from symmetry or normal distribution. A **positive** skewness indicates that the distribution has a longer right tail, while a **negative** skewness indicates that the distribution has a longer left tail. A skewness of **zero** indicates a perfectly symmetric distribution.</span>
+<span id="cb50-395"><a href="#cb50-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-396"><a href="#cb50-396" aria-hidden="true" tabindex="-1"></a>**Kurtosis** measures how much a distribution deviates from a normal distribution in terms of the concentration of scores around the mean. A **positive** kurtosis indicates a more peaked distribution than a normal distribution, while a **negative** kurtosis indicates a flatter distribution than a normal distribution. A kurtosis of **zero** indicates a normal distribution.</span>
+<span id="cb50-397"><a href="#cb50-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-398"><a href="#cb50-398" aria-hidden="true" tabindex="-1"></a>we will use **skewness()** and **kurtosis()** functions from the **moments** library in R:</span>
+<span id="cb50-399"><a href="#cb50-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-400"><a href="#cb50-400" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.package("moments")</span></span>
+<span id="cb50-401"><a href="#cb50-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-402"><a href="#cb50-402" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-403"><a href="#cb50-403" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Skewness</span></span>
+<span id="cb50-404"><a href="#cb50-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-407"><a href="#cb50-407" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-408"><a href="#cb50-408" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-409"><a href="#cb50-409" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-410"><a href="#cb50-410" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb50-411"><a href="#cb50-411" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">skewness</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-412"><a href="#cb50-412" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-413"><a href="#cb50-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-414"><a href="#cb50-414" aria-hidden="true" tabindex="-1"></a>High positive value indicates that the distribution is highly skewed at right-hand sight, which means that in some sites soil are highly contaminated with As.</span>
+<span id="cb50-415"><a href="#cb50-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-416"><a href="#cb50-416" aria-hidden="true" tabindex="-1"></a><span class="fu">#### kurtosis</span></span>
+<span id="cb50-417"><a href="#cb50-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-420"><a href="#cb50-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-421"><a href="#cb50-421" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-422"><a href="#cb50-422" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-423"><a href="#cb50-423" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb50-424"><a href="#cb50-424" aria-hidden="true" tabindex="-1"></a>moments<span class="sc">::</span><span class="fu">kurtosis</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-425"><a href="#cb50-425" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-426"><a href="#cb50-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-427"><a href="#cb50-427" aria-hidden="true" tabindex="-1"></a>Again, high positive kurtosis value indicates that Soil As is not normal distributed</span>
+<span id="cb50-428"><a href="#cb50-428" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-429"><a href="#cb50-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-430"><a href="#cb50-430" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Transformation for Normality</span></span>
+<span id="cb50-431"><a href="#cb50-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-432"><a href="#cb50-432" aria-hidden="true" tabindex="-1"></a>Data transformation is a technique used to modify the scale or shape of a distribution. Transforming data can help make the data distribution more normal, which is often desirable for statistical analyses. Here are some common data transformations used to achieve normality:</span>
+<span id="cb50-433"><a href="#cb50-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-434"><a href="#cb50-434" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Logarithmic transformation**: If the data are skewed to the right, taking the data's logarithm can help reduce the skewness and make the distribution more normal.</span>
+<span id="cb50-435"><a href="#cb50-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-436"><a href="#cb50-436" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>log10(x) for positively skewed data,</span>
+<span id="cb50-437"><a href="#cb50-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-438"><a href="#cb50-438" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>log10(max(x+1) - x) for negatively skewed data</span>
+<span id="cb50-439"><a href="#cb50-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-440"><a href="#cb50-440" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Square root transformation**: Similar to logarithmic transformation, taking the square root of the data can help reduce the distribution's skewness.</span>
+<span id="cb50-441"><a href="#cb50-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-442"><a href="#cb50-442" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>sqrt(x) for positively skewed data,</span>
+<span id="cb50-443"><a href="#cb50-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-444"><a href="#cb50-444" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>sqrt(max(x+1) - x) for negatively skewed data</span>
+<span id="cb50-445"><a href="#cb50-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-446"><a href="#cb50-446" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Inverse transformation**: If the data are skewed to the left, taking the inverse of the data (1/x) can help to reduce the skewness and make the distribution more normal.</span>
+<span id="cb50-447"><a href="#cb50-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-448"><a href="#cb50-448" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Box-Cox transformation**: The Box-Cox transformation is a method of data transformation that is used to stabilize the variance of a dataset and make it more normally distributed. The Box-Cox transformation involves applying a power transformation to the data, which is determined by a parameter λ. The general formula for the Box-Cox transformation is:</span>
+<span id="cb50-449"><a href="#cb50-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-450"><a href="#cb50-450" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/boxcox.png)</span>{width="283"}</span>
+<span id="cb50-451"><a href="#cb50-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-452"><a href="#cb50-452" aria-hidden="true" tabindex="-1"></a>where y(λ) is the transformed data, x is the original data, and λ is the Box-Cox parameter. When λ=0, the formula becomes y=log(x), which is the logarithmic transformation. When λ=1, the formula becomes y=x, which is no transformation at all.</span>
+<span id="cb50-453"><a href="#cb50-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-454"><a href="#cb50-454" aria-hidden="true" tabindex="-1"></a>When choosing a data transformation method, it is important to consider the type of data, the purpose of the analysis, and the assumptions of the statistical method being used. It is also important to check the normality of the transformed data using visual inspection (histogram) and statistical tests, such as the Shapiro-Wilk test or the Anderson-Darling test.</span>
+<span id="cb50-455"><a href="#cb50-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-456"><a href="#cb50-456" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-457"><a href="#cb50-457" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Logarithmic</span></span>
+<span id="cb50-458"><a href="#cb50-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-461"><a href="#cb50-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-462"><a href="#cb50-462" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-463"><a href="#cb50-463" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-464"><a href="#cb50-464" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-465"><a href="#cb50-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-466"><a href="#cb50-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-467"><a href="#cb50-467" aria-hidden="true" tabindex="-1"></a><span class="co"># Log10 transformation</span></span>
+<span id="cb50-468"><a href="#cb50-468" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>log_As<span class="ot">&lt;-</span><span class="fu">log10</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-469"><a href="#cb50-469" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
+<span id="cb50-470"><a href="#cb50-470" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>log_As,</span>
+<span id="cb50-471"><a href="#cb50-471" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb50-472"><a href="#cb50-472" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Log Soil As"</span>,</span>
+<span id="cb50-473"><a href="#cb50-473" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-474"><a href="#cb50-474" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Log Soil As"</span>,</span>
+<span id="cb50-475"><a href="#cb50-475" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-476"><a href="#cb50-476" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb50-477"><a href="#cb50-477" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb50-478"><a href="#cb50-478" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>log_As)</span>
+<span id="cb50-479"><a href="#cb50-479" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-480"><a href="#cb50-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-481"><a href="#cb50-481" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Square root</span></span>
+<span id="cb50-482"><a href="#cb50-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-485"><a href="#cb50-485" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-486"><a href="#cb50-486" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-487"><a href="#cb50-487" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-488"><a href="#cb50-488" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-489"><a href="#cb50-489" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-490"><a href="#cb50-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-491"><a href="#cb50-491" aria-hidden="true" tabindex="-1"></a><span class="co"># Square root transformation</span></span>
+<span id="cb50-492"><a href="#cb50-492" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>sqrt_As<span class="ot">&lt;-</span><span class="fu">sqrt</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-493"><a href="#cb50-493" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb50-494"><a href="#cb50-494" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>sqrt_As,</span>
+<span id="cb50-495"><a href="#cb50-495" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb50-496"><a href="#cb50-496" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Square root Soil As"</span>,</span>
+<span id="cb50-497"><a href="#cb50-497" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-498"><a href="#cb50-498" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Sqrt. Soil As"</span>,</span>
+<span id="cb50-499"><a href="#cb50-499" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-500"><a href="#cb50-500" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb50-501"><a href="#cb50-501" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb50-502"><a href="#cb50-502" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>sqrt_As)</span>
+<span id="cb50-503"><a href="#cb50-503" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-504"><a href="#cb50-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-505"><a href="#cb50-505" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Inverse</span></span>
+<span id="cb50-506"><a href="#cb50-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-509"><a href="#cb50-509" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-510"><a href="#cb50-510" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-511"><a href="#cb50-511" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-512"><a href="#cb50-512" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-513"><a href="#cb50-513" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-514"><a href="#cb50-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-515"><a href="#cb50-515" aria-hidden="true" tabindex="-1"></a><span class="co"># Inverse transformation</span></span>
+<span id="cb50-516"><a href="#cb50-516" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>inv_As<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">/</span>df<span class="sc">$</span>As)</span>
+<span id="cb50-517"><a href="#cb50-517" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb50-518"><a href="#cb50-518" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>inv_As,</span>
+<span id="cb50-519"><a href="#cb50-519" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb50-520"><a href="#cb50-520" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of Inverse of Soil As"</span>,</span>
+<span id="cb50-521"><a href="#cb50-521" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-522"><a href="#cb50-522" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"Inverse of Soil As"</span>,</span>
+<span id="cb50-523"><a href="#cb50-523" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-524"><a href="#cb50-524" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb50-525"><a href="#cb50-525" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb50-526"><a href="#cb50-526" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>inv_As)</span>
+<span id="cb50-527"><a href="#cb50-527" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-528"><a href="#cb50-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-529"><a href="#cb50-529" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Box-Cox</span></span>
+<span id="cb50-530"><a href="#cb50-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-531"><a href="#cb50-531" aria-hidden="true" tabindex="-1"></a>First we have to calculate appropriate transformation parameters using **powerTransform()** function of **car** package and then use this parameter to transform the data using **bcPower()** function.</span>
+<span id="cb50-532"><a href="#cb50-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-533"><a href="#cb50-533" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.package("car")</span></span>
+<span id="cb50-534"><a href="#cb50-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-537"><a href="#cb50-537" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-538"><a href="#cb50-538" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-539"><a href="#cb50-539" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-540"><a href="#cb50-540" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-541"><a href="#cb50-541" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-542"><a href="#cb50-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-543"><a href="#cb50-543" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb50-544"><a href="#cb50-544" aria-hidden="true" tabindex="-1"></a><span class="co"># Get appropriate power - lambda</span></span>
+<span id="cb50-545"><a href="#cb50-545" aria-hidden="true" tabindex="-1"></a>power<span class="ot">&lt;-</span>car<span class="sc">::</span><span class="fu">powerTransform</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-546"><a href="#cb50-546" aria-hidden="true" tabindex="-1"></a>power<span class="sc">$</span>lambda</span>
+<span id="cb50-547"><a href="#cb50-547" aria-hidden="true" tabindex="-1"></a><span class="co"># power transformation</span></span>
+<span id="cb50-548"><a href="#cb50-548" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>bc_As<span class="ot">&lt;-</span>car<span class="sc">::</span><span class="fu">bcPower</span>(df<span class="sc">$</span>As, power<span class="sc">$</span>lambda)</span>
+<span id="cb50-549"><a href="#cb50-549" aria-hidden="true" tabindex="-1"></a><span class="co"># histogram</span></span>
+<span id="cb50-550"><a href="#cb50-550" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>bc_As,</span>
+<span id="cb50-551"><a href="#cb50-551" aria-hidden="true" tabindex="-1"></a>          <span class="co"># plot title</span></span>
+<span id="cb50-552"><a href="#cb50-552" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of BoxCox Soil As"</span>,</span>
+<span id="cb50-553"><a href="#cb50-553" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-554"><a href="#cb50-554" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span> <span class="st">"BoxCox of Soil As"</span>,</span>
+<span id="cb50-555"><a href="#cb50-555" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-556"><a href="#cb50-556" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb50-557"><a href="#cb50-557" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro-Wilk test</span></span>
+<span id="cb50-558"><a href="#cb50-558" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(df<span class="sc">$</span>bc_As)</span>
+<span id="cb50-559"><a href="#cb50-559" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-560"><a href="#cb50-560" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-561"><a href="#cb50-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-562"><a href="#cb50-562" aria-hidden="true" tabindex="-1"></a><span class="fu">### Identify outliers</span></span>
+<span id="cb50-563"><a href="#cb50-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-564"><a href="#cb50-564" aria-hidden="true" tabindex="-1"></a>Outliers are data points that deviate significantly from other data points in a dataset. Measurement errors, experimental errors, or genuine extreme values (for example soil contamination) can cause them. It's important to note that outlier detection is not an exact science, and different methods may identify different outliers. It's important to understand the nature of your data and use your judgement to determine which method is most appropriate for your dataset. </span>
+<span id="cb50-565"><a href="#cb50-565" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-566"><a href="#cb50-566" aria-hidden="true" tabindex="-1"></a>In this exercise we will discuss some common methods of detecting outleirs, but we will not removing them. Here are some common methods for identifying outliers:</span>
+<span id="cb50-567"><a href="#cb50-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-568"><a href="#cb50-568" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visual inspection with Boxplot</span></span>
+<span id="cb50-569"><a href="#cb50-569" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-570"><a href="#cb50-570" aria-hidden="true" tabindex="-1"></a>Plotting the data and visually inspecting it can often reveal outliers. Box plot, also known as a box-and-whisker plot is useful visualizations for this purpose. It is a graphical representation of a dataset that displays its median, quartiles, and any potential outliers. Here's how to read a boxplot: Boxplots help identifies a dataset's distribution, spread, and potential outliers. They are often used in exploratory data analysis to gain insights into the characteristics of the data.</span>
+<span id="cb50-571"><a href="#cb50-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-572"><a href="#cb50-572" aria-hidden="true" tabindex="-1"></a>• The box represents the interquartile range (IQR), which is the range between the 25th and 75th percentiles of the data. The length of the box represents the range of the middle 50% of the data.</span>
+<span id="cb50-573"><a href="#cb50-573" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-574"><a href="#cb50-574" aria-hidden="true" tabindex="-1"></a>• The line inside the box represents the median of the data, which is the middle value when the data is sorted.</span>
+<span id="cb50-575"><a href="#cb50-575" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-576"><a href="#cb50-576" aria-hidden="true" tabindex="-1"></a>• The whiskers extend from the box and represent the range of the data outside the IQR. They can be calculated in different ways depending on the method used to draw the boxplot. Some common methods include:</span>
+<span id="cb50-577"><a href="#cb50-577" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-578"><a href="#cb50-578" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Tukey's method: The whiskers extend to the most extreme data point within 1.5 times the IQR of the box.</span>
+<span id="cb50-579"><a href="#cb50-579" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-580"><a href="#cb50-580" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Min/max whiskers: The whiskers extend to the minimum and maximum values in the data that are not considered outliers.</span>
+<span id="cb50-581"><a href="#cb50-581" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-582"><a href="#cb50-582" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>5-number summary: The whiskers extend to the minimum and maximum values in the data, excluding outliers.</span>
+<span id="cb50-583"><a href="#cb50-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-584"><a href="#cb50-584" aria-hidden="true" tabindex="-1"></a>• Outliers are data points that fall outside the whiskers of the boxplot. They are represented as individual points on the plot.</span>
+<span id="cb50-585"><a href="#cb50-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-586"><a href="#cb50-586" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/boxplot.png)</span>{width="484"}</span>
+<span id="cb50-587"><a href="#cb50-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-588"><a href="#cb50-588" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb50-589"><a href="#cb50-589" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function boxplot()</span></span>
+<span id="cb50-590"><a href="#cb50-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-593"><a href="#cb50-593" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-594"><a href="#cb50-594" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-595"><a href="#cb50-595" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-596"><a href="#cb50-596" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-597"><a href="#cb50-597" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-598"><a href="#cb50-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-599"><a href="#cb50-599" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(df<span class="sc">$</span>As, </span>
+<span id="cb50-600"><a href="#cb50-600" aria-hidden="true" tabindex="-1"></a>     <span class="co"># plot title</span></span>
+<span id="cb50-601"><a href="#cb50-601" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Boxplot of Soil As"</span>,</span>
+<span id="cb50-602"><a href="#cb50-602" aria-hidden="true" tabindex="-1"></a>     <span class="co"># x-axis title</span></span>
+<span id="cb50-603"><a href="#cb50-603" aria-hidden="true" tabindex="-1"></a>     <span class="co">#xlab= "Soil As (mg/kg)",</span></span>
+<span id="cb50-604"><a href="#cb50-604" aria-hidden="true" tabindex="-1"></a>     <span class="co"># y-axis title</span></span>
+<span id="cb50-605"><a href="#cb50-605" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"Soil As (mg/kg)"</span>)</span>
+<span id="cb50-606"><a href="#cb50-606" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-607"><a href="#cb50-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-608"><a href="#cb50-608" aria-hidden="true" tabindex="-1"></a>Now check how many observation considered as outlier:</span>
+<span id="cb50-609"><a href="#cb50-609" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-612"><a href="#cb50-612" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-613"><a href="#cb50-613" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">boxplot.stats</span>(df<span class="sc">$</span>As)<span class="sc">$</span>out)</span>
+<span id="cb50-614"><a href="#cb50-614" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-615"><a href="#cb50-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-616"><a href="#cb50-616" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ggplot2 geom_boxplot()</span></span>
+<span id="cb50-617"><a href="#cb50-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-620"><a href="#cb50-620" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-621"><a href="#cb50-621" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-622"><a href="#cb50-622" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-623"><a href="#cb50-623" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 4</span></span>
+<span id="cb50-624"><a href="#cb50-624" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 3.5</span></span>
+<span id="cb50-625"><a href="#cb50-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-626"><a href="#cb50-626" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(As))<span class="sc">+</span>   <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb50-627"><a href="#cb50-627" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
+<span id="cb50-628"><a href="#cb50-628" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X-axis title</span></span>
+<span id="cb50-629"><a href="#cb50-629" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Soil As (mg/kg)"</span>) <span class="sc">+</span> </span>
+<span id="cb50-630"><a href="#cb50-630" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y-axis title</span></span>
+<span id="cb50-631"><a href="#cb50-631" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ylab("Soil As (mg/kg)")+</span></span>
+<span id="cb50-632"><a href="#cb50-632" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot title</span></span>
+<span id="cb50-633"><a href="#cb50-633" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Boxplot of Soil As"</span>) <span class="sc">+</span></span>
+<span id="cb50-634"><a href="#cb50-634" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb50-635"><a href="#cb50-635" aria-hidden="true" tabindex="-1"></a>    <span class="co"># center the plot title</span></span>
+<span id="cb50-636"><a href="#cb50-636" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb50-637"><a href="#cb50-637" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize axis ticks </span></span>
+<span id="cb50-638"><a href="#cb50-638" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>,</span>
+<span id="cb50-639"><a href="#cb50-639" aria-hidden="true" tabindex="-1"></a>                             <span class="at">angle =</span> <span class="dv">90</span>,</span>
+<span id="cb50-640"><a href="#cb50-640" aria-hidden="true" tabindex="-1"></a>                             <span class="at">vjust =</span> <span class="fl">0.5</span>, </span>
+<span id="cb50-641"><a href="#cb50-641" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hjust=</span><span class="fl">0.5</span>, <span class="at">colour=</span><span class="st">'black'</span>))</span>
+<span id="cb50-642"><a href="#cb50-642" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-643"><a href="#cb50-643" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb50-644"><a href="#cb50-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-645"><a href="#cb50-645" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tukey's method</span></span>
+<span id="cb50-646"><a href="#cb50-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-647"><a href="#cb50-647" aria-hidden="true" tabindex="-1"></a>Another common method for identifying outliers is Tukey's method, which is based on the concept of the IQR. Divide the data set into Quartiles:</span>
+<span id="cb50-648"><a href="#cb50-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-649"><a href="#cb50-649" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Q1 (the 1st quartile): 25% of the data are less than or equal to this value</span>
+<span id="cb50-650"><a href="#cb50-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-651"><a href="#cb50-651" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Q3 (the 3rd quartile): 25% of the data are greater than or equal to this value</span>
+<span id="cb50-652"><a href="#cb50-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-653"><a href="#cb50-653" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>IQR (the interquartile range): the distance between Q3 – Q1, it contains the middle 50% of the data.</span>
+<span id="cb50-654"><a href="#cb50-654" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-655"><a href="#cb50-655" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Then outliers are then defined as any values that fall outside of:</span>
+<span id="cb50-656"><a href="#cb50-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-657"><a href="#cb50-657" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Lower Range = Q1 – (1.5 * IQR)</span></span>
+<span id="cb50-658"><a href="#cb50-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-659"><a href="#cb50-659" aria-hidden="true" tabindex="-1"></a>and </span>
+<span id="cb50-660"><a href="#cb50-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-661"><a href="#cb50-661" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Upper Range = Q3 + (1.5 * IQR)</span></span>
+<span id="cb50-662"><a href="#cb50-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-663"><a href="#cb50-663" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-664"><a href="#cb50-664" aria-hidden="true" tabindex="-1"></a>Below <span class="co">[</span><span class="ot">detect_outliers</span><span class="co">](https://www.linkedin.com/pulse/outlier-treatment-tukeys-method-r-swanand-marathe/)</span> function</span>
+<span id="cb50-665"><a href="#cb50-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-668"><a href="#cb50-668" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-669"><a href="#cb50-669" aria-hidden="true" tabindex="-1"></a>detect_outliers <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb50-670"><a href="#cb50-670" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb50-671"><a href="#cb50-671" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check if data is numeric in nature</span></span>
+<span id="cb50-672"><a href="#cb50-672" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span>(<span class="fu">class</span>(x) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>,<span class="st">"integer"</span>)))</span>
+<span id="cb50-673"><a href="#cb50-673" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb50-674"><a href="#cb50-674" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Data provided must be of integer</span><span class="sc">\n</span><span class="st">umeric type"</span>)</span>
+<span id="cb50-675"><a href="#cb50-675" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb50-676"><a href="#cb50-676" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate lower limit</span></span>
+<span id="cb50-677"><a href="#cb50-677" aria-hidden="true" tabindex="-1"></a>  lower.limit <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">quantile</span>(x)[<span class="dv">2</span>] <span class="sc">-</span> <span class="fu">IQR</span>(x)<span class="sc">*</span><span class="fl">1.5</span>)</span>
+<span id="cb50-678"><a href="#cb50-678" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate upper limit</span></span>
+<span id="cb50-679"><a href="#cb50-679" aria-hidden="true" tabindex="-1"></a>  upper.limit <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">quantile</span>(x)[<span class="dv">4</span>] <span class="sc">+</span> <span class="fu">IQR</span>(x)<span class="sc">*</span><span class="fl">1.5</span>)</span>
+<span id="cb50-680"><a href="#cb50-680" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Retrieve index of elements which are outliers</span></span>
+<span id="cb50-681"><a href="#cb50-681" aria-hidden="true" tabindex="-1"></a>  lower.index <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">&lt;</span> lower.limit)</span>
+<span id="cb50-682"><a href="#cb50-682" aria-hidden="true" tabindex="-1"></a>  upper.index <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">&gt;</span> upper.limit)</span>
+<span id="cb50-683"><a href="#cb50-683" aria-hidden="true" tabindex="-1"></a>  <span class="do">## print results</span></span>
+<span id="cb50-684"><a href="#cb50-684" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">" Lower Limit "</span>,lower.limit ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"Upper Limit"</span>, upper.limit ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb50-685"><a href="#cb50-685" aria-hidden="true" tabindex="-1"></a><span class="st">"Lower range outliers  "</span>,x[lower.index] ,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"Upper range outlers"</span>, x[upper.index])</span>
+<span id="cb50-686"><a href="#cb50-686" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-687"><a href="#cb50-687" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-688"><a href="#cb50-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-691"><a href="#cb50-691" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-692"><a href="#cb50-692" aria-hidden="true" tabindex="-1"></a><span class="fu">detect_outliers</span>(df<span class="sc">$</span>As)</span>
+<span id="cb50-693"><a href="#cb50-693" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-694"><a href="#cb50-694" aria-hidden="true" tabindex="-1"></a><span class="fu">### Z-score method</span></span>
+<span id="cb50-695"><a href="#cb50-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-696"><a href="#cb50-696" aria-hidden="true" tabindex="-1"></a>The Z-score method is another common statistical method for identifying outliers. It finds value with largest difference between it and sample mean, which can be considered as an outlier. In R, the outliers() function from the outliers package can be used to identify outliers using the Z-score method.</span>
+<span id="cb50-697"><a href="#cb50-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-698"><a href="#cb50-698" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("outliers")</span></span>
+<span id="cb50-699"><a href="#cb50-699" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-702"><a href="#cb50-702" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb50-703"><a href="#cb50-703" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb50-704"><a href="#cb50-704" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb50-705"><a href="#cb50-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-706"><a href="#cb50-706" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(outliers)</span>
+<span id="cb50-707"><a href="#cb50-707" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify outliers using the Z-score method</span></span>
+<span id="cb50-708"><a href="#cb50-708" aria-hidden="true" tabindex="-1"></a><span class="fu">outlier</span>(df<span class="sc">$</span>As, <span class="at">opposite=</span>F)</span>
+<span id="cb50-709"><a href="#cb50-709" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb50-710"><a href="#cb50-710" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-711"><a href="#cb50-711" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-712"><a href="#cb50-712" aria-hidden="true" tabindex="-1"></a><span class="fu">### Box-Jitter plot</span></span>
+<span id="cb50-713"><a href="#cb50-713" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-714"><a href="#cb50-714" aria-hidden="true" tabindex="-1"></a>A box-jitter plot is a type of data visualization that combines elements of both a boxplot and a jitter plot. It is useful for displaying both the distribution and the individual data points of a dataset.</span>
+<span id="cb50-715"><a href="#cb50-715" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-716"><a href="#cb50-716" aria-hidden="true" tabindex="-1"></a>The jitter component of the plot is used to display the individual data points. Jittering refers to adding a small amount of random noise to the position of each data point along the x-axis, to prevent overlapping and to give a better sense of the density of the data.</span>
+<span id="cb50-717"><a href="#cb50-717" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-718"><a href="#cb50-718" aria-hidden="true" tabindex="-1"></a>Overall, the box-jitter plot provides a useful summary of the distribution of a dataset, while also allowing viewers to see the individual data points and any potential outliers. It is particularly useful for displaying data with a large number of observations or for comparing multiple distributions side by side.</span>
+<span id="cb50-719"><a href="#cb50-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-720"><a href="#cb50-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-721"><a href="#cb50-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-722"><a href="#cb50-722" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© CC-By Zia Ahmed, Unversity at Buffalo 2023</div>   
+    <div class="nav-footer-right">This page is built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

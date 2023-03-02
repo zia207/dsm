@@ -2,15 +2,17 @@
 title: ""
 ---
 
-## Preface
+## ![](Image/banner.png)
 
 **Digital soil mapping (DSM)** is a technique that uses advanced technologies such as remote sensing, geographic information systems (GIS), and statistical modeling to create high-resolution maps of soil properties and characteristics. These maps can be used to support a variety of applications, including land use planning, precision agriculture, natural resource management, and environmental modeling.
 
+![](Image/flow_dsm.png){width="444"}
+
 DSM typically involves the collection of soil data from a variety of sources, including soil surveys, soil samples, and remote sensing data such as satellite imagery. This data is then combined and analyzed using a range of statistical and machine learning algorithms to develop predictive models of soil properties, such as soil texture, organic matter content, and nutrient availability.
 
-![](images/paste-DCFB6973.png){width="4.7in"}
-
 The resulting soil maps are highly detailed and can provide valuable information about soil characteristics at the landscape level, such as soil types, soil health, and soil fertility. This information can be used to optimize crop management practices, evaluate the environmental impacts of land use changes, and support conservation efforts.
+
+![](Image/DSM.png){width="444"}
 
 Overall, digital soil mapping is an important tool for understanding the complex interactions between soil, land use, and the environment, and can help support more sustainable and effective land management practices.
 
@@ -28,36 +30,60 @@ In Bangladesh, DSM has been identified as a priority area for agricultural devel
 
 DSM in Bangladesh has several benefits, including:
 
-Improved land use planning: DSM can provide accurate and detailed information on soil properties, which can be used for land use planning and management.
+1.  Improved land use planning: DSM can provide accurate and detailed information on soil properties, which can be used for land use planning and management.
 
-Improved crop productivity: DSM can provide information on soil fertility, soil moisture, and other factors that can affect crop productivity, helping farmers to make informed decisions about crop selection and management practices.
+2.  Improved crop productivity: DSM can provide information on soil fertility, soil moisture, and other factors that can affect crop productivity, helping farmers to make informed decisions about crop selection and management practices.
 
-Conservation of soil resources: DSM can help in identifying areas with soil erosion and degradation issues, leading to the development of conservation strategies.
+3.  Conservation of soil resources: DSM can help in identifying areas with soil erosion and degradation issues, leading to the development of conservation strategies.
 
-Improved agricultural research: DSM can provide valuable information for agricultural research and development.
+4.  Improved agricultural research: DSM can provide valuable information for agricultural research and development.
 
 Overall, DSM in Bangladesh has the potential to improve agricultural productivity, promote sustainable land use practices, and support soil conservation efforts.
-
-## Digital Soil Mapping with R
-
-[R](https://www.r-project.org/) is an open-source statistical computing and visualization environment. It is based on the S language developed at Bell Laboratories in the 1980s. Now it is one of the most robust, programmable, portable, and open computing environments for data analysis and visualization without any restrictions on access or use.
 
 Although several books and online tutorials are available related to DSM in R, this training-workshop targets national scientists in Bangladesh who have working experience soil science, GIS, and statistics.
 
 This training-workshop will covered following lessons:
 
-1.  Getting Started with R
-2.  Data Import-Export
+1.  [Getting Started Digital Soil Mapping with R](getting-started-r.html)
+
+2.  Basic R
+
+    2.1. [Download and Install R and R-Studio](download-install-r.html)
+
+    2.2. [Introduction to use R](intoduction-to-r.html)
+
+    2.3. [Data Import-Export into/from R](data-export-import.html)
+
 3.  Data Wrangling with R
-4.  Basic Statistics
-5.  Multivariate Statistic
-6.  Machine Learning
-7.  Spatial Data Processing
-8.  Digital Terrain Modeling
-9.  Remote Sensing
-10. Spatial Interpolation
+
+    3.1.[Introduction to Data Wragling](data-wragling-basic.html)
+
+    3.2.[Data Wrangling with dplyr and tidyr](data-wrgaling-dplyr.html)
+
+    3.3.[Data Wrangling with janitor](data-wrgaling-janitor.html)
+
+4.  Data Exploration with R
+
+    4.1.[Introduction to Data Exploration](data-exploration-basic.html)
+
+
+5.  Regression Analysis
+
+6.  Multivariate Statistic
+
+7.  Machine Learning
+
+8.  Spatial Data Processing
+
+9.  Digital Terrain Modeling
+
+10. Remote Sensing
+
+11. Spatial Interpolation
 
 After finishing these lessons all participant will work on soil data and will produce digital soil maps of Bangladesh.
+
+![](Image/zia.png){width="243"}
 
 **Zia U Ahmed, PhD**
 

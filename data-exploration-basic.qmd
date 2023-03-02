@@ -1,0 +1,669 @@
+# Introduction to Data Exploration {.unnumbered}
+
+Data Exploration or Exploratory Data Analysis (EDA) is an approach to analyzing data in which you investigate and summarize the data's main characteristics, aiming to understand the underlying patterns and relationships between variables. EDA helps you identify potential data problems, discover outliers, and generate ideas for further analysis.
+
+Here are below basic steps for data exploration in R:
+
+-   Import data: The first step in data exploration is to import your data into R. You can import data from various sources such as Excel, CSV, or databases.
+
+-   Check the structure of data: Use the str() function to check the structure of your data. This function will give you information about the dimensions of your data and the types of variables in your data.
+
+-   check data distribution and visualize the data distribution using histograms, density plot and qqplots. Perform normality test to determine whether a given data sample is derived from a normally distributed population.
+
+-   Check for missing values: Use the is.na() function to check for missing values in your data. If you have missing values, you can use the na.omit() function to remove the missing values from your data.
+
+-   
+
+    -   Summarize or descriptive statisics of the data: Start by summarizing the main characteristics of the data, such as the mean, median, standard deviation, and range of each variable.
+
+-   box plot to identify outliers, which are observations significantly different from the rest of the data.
+
+-   Perform statistical tests: Use the t.test() function to perform statistical tests on your data. You can use this function to test whether the means of two groups are significantly different.
+
+-   Explore and visualize the relationships between two variables using scatter plot and correlation analysis.
+
+-   Look for patterns and trends: Search for patterns and trends in the data that can help you to generate new hypotheses or insights. You can use clustering and principal component analysis (PCA) techniques in R.
+
+Overall, EDA is an important first step in any data analysis project, as it helps you to understand the data and generate hypotheses that can guide further analysis. R provides many powerful tools for EDA, making it a popular language for data scientists and analysts.
+
+We will some basic R functions to explore soil heavy metal data of the USA (usa_soil_heavy_metal.csv). This data could be found [here](https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0)
+
+### Load Package
+
+```{r}
+#| warning: false
+#| error: false
+library(tidyverse)
+```
+
+### Load data
+
+In this exercise we will use [US soil heavy metal data](https://www.dropbox.com/s/lqfowponvfxn2i7/usa_soil_heavy_metal.csv?dl=0)from USA-Geological Survey. 
+
+```{r}
+#| warning: false
+#| error: false
+
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/USA/"
+# Load data
+mf<-read.csv(paste0(dataFolder, "usa_soil_heavy_metal.csv"), header=TRUE)
+```
+
+### Check data Structure
+
+In R, the str() function is a useful tool for examining the structure of an object. It provides a compact and informative description of the object's internal structure, including its type, length, dimensions, and contents.
+
+```{r}
+#| warning: false
+#| error: false
+
+str(mf)
+```
+
+### Check missing values
+
+In R, the is.na() function is used to test for missing values (NA) in an object. It returns a logical vector indicating which elements of the object are missing.
+
+```{r}
+#| warning: false
+#| error: false
+sum(is.na(mf))
+```
+
+### Dealing with missing values 
+
+Dealing with missing values is an important task in data analysis. There are way we can deal with missing values in data. The choice of method depends on the specific dataset and the analysis goals. It's important to carefully consider each approach's implications and select the most appropriate method for the data at hand
+
+Here are some common strategies for handling missing data:
+
+1.	Delete the rows or columns with missing data: This is the simplest approach, but it can result in the loss of valuable information if there are many missing values.
+
+2.	Imputation: Imputation involves filling in the missing values with estimated values based on other data points. Standard imputation techniques include mean imputation, median imputation, and regression imputation.
+
+3.	Multiple imputations: This involves creating several imputed datasets and analyzing each separately, then combining the results to obtain a final estimate.
+
+4.	Modeling: This involves building a predictive model that can estimate the missing values based on other variables in the dataset.
+
+5.	Domain-specific knowledge: Sometimes, domain-specific knowledge can help to fill in missing values. For example, if a person's age is missing but their date of birth is available, their age can be calculated based on the current date.
+
+In this exercise, we only show to remove missing values in data-frame. Later we will show you how to impute these missing values with machine learning. 
+
+#### Remove missing values
+
+We can remove missing values from a data frame using the **na.omit()** function. This function removes any rows that contain missing values (NA values) in any column. 
+
+Here's an example to remove missing values:
+
+```{r}
+#| warning: false
+#| error: false
+df<-na.omit(mf)
+sum(is.na(df))
+```
+
+### Descriptive statistics
+
+Descriptive statistics are used to summarize and describe the main features of a dataset. Some common descriptive statistics include measures of central tendency (such as mean, median, and mode), measures of variability (such as variance, standard deviation, and range), and measures of shape (such as skewness and kurtosis).
+
+The **summarize(**) function in R is used to create summary statistics of a data frame or a grouped data frame. This function can be used to calculate a variety of summary statistics, including mean, median, minimum, maximum, standard deviation, and percentiles.
+
+The basic syntax for using the summarize function is as follows:
+
+```{r}
+#| warning: false
+#| error: false
+summary(df)
+```
+
+### Data Distribution
+
+In statistics, a data distribution refers to the pattern of how data points are spread out over a range of values. Understanding the data distribution is important in statistical analysis, as it can help select appropriate statistical tests, detect outliers, and identify patterns and trends. It is often represented graphically using histograms, density, or qq-plots or probability plots.
+
+There are several types of data distributions, including:
+
+1.  **Normal distribution**: Also known as Gaussian distribution, it is a bell-shaped curve that is symmetric around the mean. It is used to model data that is distributed evenly around the mean, with a few data points on the tails of the distribution.
+
+2.  **Skewed distribution**: A skewed distribution is one in which the data points are not evenly distributed around the mean. There are two types skewed distributions: positively skewed (skewed to the right) and negatively skewed (skewed to the left). In a positively skewed distribution, the tail of the distribution is longer on the right side, while in a negatively skewed distribution, the tail is longer on the left side.
+
+3.  **Bimodal distribution**: A bimodal distribution has two peaks or modes, indicating that the data can be divided into two groups with different characteristics.
+
+4.  Uniform distribution: A uniform distribution is one in which all the data points are equally likely to occur. This type of distribution is often used in simulations and random number generation.
+
+5.  **Exponential distribution**: An exponential distribution describes the time between two events occurring in a Poisson process. It is used to model data with a constant occurrence rate over time.
+
+### Visual Inspection of Data Distribution
+
+Here, we'll describe how to check the normality of the data by visual inspection by:
+
+-   Histogram
+
+-   Kernel density Plots
+
+-   Quantile-Quantile Plots (qq-plot)
+
+### Histograms
+
+A histogram is a graphical representation of the distribution of numerical data. They are commonly used in statistics to show the frequency distribution of a data set for identifying patterns, outliers, and skewness in the data. Histograms are also helpful in visualizing the shape of a distribution, such as whether it is symmetric or skewed, and whether it has one or more peaks.
+
+In R, hist() function is used to create histograms of numerical data. It takes one or more numeric vectors as input and displays a graphical representation of the distribution of the data in the form of a histogram.
+
+We can also create histograms using the [**ggplot2**](https://ggplot2.tidyverse.org/) package, which is a powerful data visualization tool based on The Grammar of Graphics.
+
+![](Image/ggplot_logo.png){width="286"}
+
+The ggplot2 allows you to create complex and customizable graphics using a layered approach, which involves building a plot by adding different layers of visual elements. It comes with "tidyverse" package.
+
+::: panel-tabset
+#### R-base function hist()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+hist(df$As, 
+     # plot title
+     main = "Histogram of Soil As",
+     # x-axis title
+     xlab= "Soil As (mg/kg)",
+     # y-axis title
+     ylab= "Frequency")
+```
+
+#### ggplot2 geom_histogram()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+ggplot(df, aes(As)) +
+  geom_histogram()+
+  # X-axis title
+  xlab("As (mg/kg)") + 
+  # y-axis title
+  ylab("Frequency")+
+  # plot title
+  ggtitle("Histogram of Soil As")
+```
+:::
+
+### Kernel Density Plots
+
+A kernel density plot (or kernel density estimation plot) is a non-parametric way of visualizing the probability density function of a variable. It represents a smoothed histogram version, where the density estimate is obtained by convolving the data with a kernel function. The kernel density plot is a helpful tool for exploring data distribution, identifying outliers, and comparing distributions.
+
+In practice, kernel density estimation involves selecting a smoothing parameter (known as the bandwidth) that determines the width of the kernel function. The choice of bandwidth can significantly impact the resulting density estimate, and various methods have been developed to select the optimal bandwidth for a given dataset.
+
+To create a density plot in R, you can use the density() function to estimate the density of a variable, and then plot it using the plot() function. If you want to use ggplot2, you can create a density plot with the geom_density() function, like this:
+
+::: panel-tabset
+#### R-base function density()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+# estimate the density
+p<-density(df$As)
+# plot density
+plot(p, 
+    # plot title
+     main = "Kernel Density of Soil As",
+     # x-axis tittle
+     xlab= "Soil As (mg/kg)",
+     # y-axis title
+     ylab= "Density")
+            
+```
+
+#### ggplot2 geom_density()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+ggplot(df, aes(As)) +
+  geom_density()+
+  # x-axis title
+  xlab("As (mg/kg)") + 
+  # y-axis title
+  ylab("Density")+
+  # plot title
+  ggtitle("Kernel Density of Soil As")+
+    theme(
+    # Center the plot title
+    plot.title = element_text(hjust = 0.5))
+```
+:::
+
+### QQ-Plot
+
+A Q-Q plot (quantile-quantile plot) is a graphical method used to compare two probability distributions by plotting their quantiles against each other. The two distributions being compared are first sorted in ascending order to create a Q-Q plot. Then, the corresponding quantile in the other distribution is calculated for each data point in one distribution. The resulting pairs of quantiles are plotted on a scatter plot, with one distribution's quantiles on the x-axis and the other on the y-axis. If the two distributions being compared are identical, the points will fall along a straight line.
+
+::: callout-note
+**Probability distribution** is a function that describes the likelihood of obtaining different outcomes in a random event. It gives a list of all possible outcomes and their corresponding probabilities. The probabilities assigned to each outcome must add up to 1, as one of the possible outcomes will always occur.
+:::
+
+In R, you can create a Q-Q plot using the two functions:
+
+**qqnorm()** is a generic function the default method of which produces a normal QQ plot of the values in y.
+
+**qqline()** adds a line to a "theoretical", by default normal, quantile-quantile plot which passes through the probs quantiles, by default the first and third quartiles.
+
+We can create a QQ plot using the ggplot() and stat_qq() functions and then use stat_qq_line() function to add a line indicating the expected values under the assumption of a normal distribution.
+
+::: panel-tabset
+#### R-base function: QQ-plot
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+# draw normal QQ plot
+qqnorm(df$As)
+# Add reference or theoretical line
+qqline(df$As,
+      main = "Q-Q plot of Soil As from a Normal Distribution",
+     # x-axis tittle
+     xlab= "Theoretical Quantiles",
+     # y-axis title
+     ylab= "Sample Quantiles")
+```
+
+#### ggplot2 QQ-Plot
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+ 
+ggplot(df, aes(sample = As)) +
+  stat_qq() + 
+  stat_qq_line() +
+  # x-axis title
+  xlab("Theoretical Quantiles)") + 
+  # y-axis title
+  ylab("Sample Quantiles")+
+  # plot title
+  ggtitle("Q-Q plot of Soil As from a Normal Distribution")+
+    theme(
+    # Center the plot title
+    plot.title = element_text(hjust = 0.5),
+    # x-axis title font size
+    axis.title.x = element_text(size = 14),
+    # y-axis title font size
+    axis.title.y = element_text(size = 14),)
+```
+:::
+
+### Normality Test
+
+Normality test is used to determine whether a given data sample is derived from a normally distributed population. It is important to note that a normality test does not prove normality but rather provides evidence for or against it. Additionally, even if a dataset passes a normality test, it is still important to visually inspect the data and consider the context of the data before assuming normality.
+
+Statistical tests for normality include:
+
+**Shapiro-Wilk test**: The Shapiro-Wilk test is a commonly used test to check for normality. The test calculates a W statistic. If the p-value associated with the test is greater than a chosen significance level (usually 0.05), it suggests that the data is normally distributed.
+
+**Anderson-Darling test**: The Anderson-Darling test is another test that can be used to check for normality. The test calculates an A2 statistic, and if the p-value associated with the test is greater than a chosen significance level, it suggests that the data is normally distributed
+
+**Kolmogorov-Smirnov test**:The Kolmogorov-Smirnov (KS) test is a statistical test used to determine if two datasets have the same distribution. The test compares the empirical cumulative distribution function (ECDF) of the two datasets and calculates the maximum vertical distance between the two ECDFs. The KS test statistic is the maximum distance and the p-value is calculated based on the distribution of the test statistic.
+
+::: panel-tabset
+#### Shapiro-Wilk test
+
+The **shapiro.test()** function can be used to perform the Shapiro-Wilk test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value.
+
+```{r}
+#| warning: false
+#| error: false
+shapiro.test(df$As)
+```
+
+Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.
+
+#### Anderson-Darling test
+
+The **ad.test()** function from the **nortest** package can be used to perform the Anderson-Darling test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. It is important to note that the Anderson-Darling test is also sensitive to sample size, and may not be accurate for small sample sizes. Additionally, the test may not be appropriate for non-normal distributions with heavy tails or skewness. Therefore, it is recommended to use the test in conjunction with visual inspection of the data to determine if it follows a normal distribution.
+
+> install.package(nortest)
+
+```{r}
+#| warning: false
+#| error: false
+library(nortest)
+nortest::ad.test(df$As)
+```
+
+Since the p-value is lower than 0.05, we can conclude that the data is not normally distributed.
+
+#### Kolmogorov-Smirnov test
+
+**The ks.test()** function can be used to perform the Kolmogorov-Smirnov test for normality. The function takes a numeric vector as input and returns a list containing the test statistic and p-value. **pnorm** specifies the cumulative distribution function to use as the reference distribution for the test. I
+
+```{r}
+#| warning: false
+#| error: false
+ks.test(df$As, "pnorm")
+```
+
+The test result shows that the maximum distance between the two ECDFs is 0.88 and the p-value is very small, which means that we can reject the null hypothesis that the two samples are from the same distribution.
+:::
+
+### Measures of Skewness and Kurtosis
+
+**Skewness** is a measure of the asymmetry of a probability distribution. In other words, it measures how much a distribution deviates from symmetry or normal distribution. A **positive** skewness indicates that the distribution has a longer right tail, while a **negative** skewness indicates that the distribution has a longer left tail. A skewness of **zero** indicates a perfectly symmetric distribution.
+
+**Kurtosis** measures how much a distribution deviates from a normal distribution in terms of the concentration of scores around the mean. A **positive** kurtosis indicates a more peaked distribution than a normal distribution, while a **negative** kurtosis indicates a flatter distribution than a normal distribution. A kurtosis of **zero** indicates a normal distribution.
+
+we will use **skewness()** and **kurtosis()** functions from the **moments** library in R:
+
+> install.package("moments")
+
+::: panel-tabset
+#### Skewness
+
+```{r}
+#| warning: false
+#| error: false
+library(moments)
+moments::skewness(df$As)
+```
+
+High positive value indicates that the distribution is highly skewed at right-hand sight, which means that in some sites soil are highly contaminated with As.
+
+#### kurtosis
+
+```{r}
+#| warning: false
+#| error: false
+library(moments)
+moments::kurtosis(df$As)
+```
+
+Again, high positive kurtosis value indicates that Soil As is not normal distributed
+:::
+
+### Data Transformation for Normality
+
+Data transformation is a technique used to modify the scale or shape of a distribution. Transforming data can help make the data distribution more normal, which is often desirable for statistical analyses. Here are some common data transformations used to achieve normality:
+
+1.  **Logarithmic transformation**: If the data are skewed to the right, taking the data's logarithm can help reduce the skewness and make the distribution more normal.
+
+-   log10(x) for positively skewed data,
+
+-   log10(max(x+1) - x) for negatively skewed data
+
+2.  **Square root transformation**: Similar to logarithmic transformation, taking the square root of the data can help reduce the distribution's skewness.
+
+-   sqrt(x) for positively skewed data,
+
+-   sqrt(max(x+1) - x) for negatively skewed data
+
+3.  **Inverse transformation**: If the data are skewed to the left, taking the inverse of the data (1/x) can help to reduce the skewness and make the distribution more normal.
+
+4.  **Box-Cox transformation**: The Box-Cox transformation is a method of data transformation that is used to stabilize the variance of a dataset and make it more normally distributed. The Box-Cox transformation involves applying a power transformation to the data, which is determined by a parameter λ. The general formula for the Box-Cox transformation is:
+
+![](Image/boxcox.png){width="283"}
+
+where y(λ) is the transformed data, x is the original data, and λ is the Box-Cox parameter. When λ=0, the formula becomes y=log(x), which is the logarithmic transformation. When λ=1, the formula becomes y=x, which is no transformation at all.
+
+When choosing a data transformation method, it is important to consider the type of data, the purpose of the analysis, and the assumptions of the statistical method being used. It is also important to check the normality of the transformed data using visual inspection (histogram) and statistical tests, such as the Shapiro-Wilk test or the Anderson-Darling test.
+
+::: panel-tabset
+#### Logarithmic
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+# Log10 transformation
+df$log_As<-log10(df$As)
+# Histogram
+hist(df$log_As,
+          # plot title
+     main = "Histogram of Log Soil As",
+     # x-axis title
+     xlab= "Log Soil As",
+     # y-axis title
+     ylab= "Frequency")
+# Shapiro-Wilk test
+shapiro.test(df$log_As)
+```
+
+#### Square root
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+# Square root transformation
+df$sqrt_As<-sqrt(df$As)
+# histogram
+hist(df$sqrt_As,
+          # plot title
+     main = "Histogram of Square root Soil As",
+     # x-axis title
+     xlab= "Sqrt. Soil As",
+     # y-axis title
+     ylab= "Frequency")
+# Shapiro-Wilk test
+shapiro.test(df$sqrt_As)
+```
+
+#### Inverse
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+# Inverse transformation
+df$inv_As<-(1/df$As)
+# histogram
+hist(df$inv_As,
+          # plot title
+     main = "Histogram of Inverse of Soil As",
+     # x-axis title
+     xlab= "Inverse of Soil As",
+     # y-axis title
+     ylab= "Frequency")
+# Shapiro-Wilk test
+shapiro.test(df$inv_As)
+```
+
+#### Box-Cox
+
+First we have to calculate appropriate transformation parameters using **powerTransform()** function of **car** package and then use this parameter to transform the data using **bcPower()** function.
+
+> install.package("car")
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+library(car)
+# Get appropriate power - lambda
+power<-car::powerTransform(df$As)
+power$lambda
+# power transformation
+df$bc_As<-car::bcPower(df$As, power$lambda)
+# histogram
+hist(df$bc_As,
+          # plot title
+     main = "Histogram of BoxCox Soil As",
+     # x-axis title
+     xlab= "BoxCox of Soil As",
+     # y-axis title
+     ylab= "Frequency")
+# Shapiro-Wilk test
+shapiro.test(df$bc_As)
+```
+:::
+
+### Identify outliers
+
+Outliers are data points that deviate significantly from other data points in a dataset. Measurement errors, experimental errors, or genuine extreme values (for example soil contamination) can cause them. It's important to note that outlier detection is not an exact science, and different methods may identify different outliers. It's important to understand the nature of your data and use your judgement to determine which method is most appropriate for your dataset. 
+
+In this exercise we will discuss some common methods of detecting outleirs, but we will not removing them. Here are some common methods for identifying outliers:
+
+### Visual inspection with Boxplot
+
+Plotting the data and visually inspecting it can often reveal outliers. Box plot, also known as a box-and-whisker plot is useful visualizations for this purpose. It is a graphical representation of a dataset that displays its median, quartiles, and any potential outliers. Here's how to read a boxplot: Boxplots help identifies a dataset's distribution, spread, and potential outliers. They are often used in exploratory data analysis to gain insights into the characteristics of the data.
+
+• The box represents the interquartile range (IQR), which is the range between the 25th and 75th percentiles of the data. The length of the box represents the range of the middle 50% of the data.
+
+• The line inside the box represents the median of the data, which is the middle value when the data is sorted.
+
+• The whiskers extend from the box and represent the range of the data outside the IQR. They can be calculated in different ways depending on the method used to draw the boxplot. Some common methods include:
+
+-   Tukey's method: The whiskers extend to the most extreme data point within 1.5 times the IQR of the box.
+
+-   Min/max whiskers: The whiskers extend to the minimum and maximum values in the data that are not considered outliers.
+
+-   5-number summary: The whiskers extend to the minimum and maximum values in the data, excluding outliers.
+
+• Outliers are data points that fall outside the whiskers of the boxplot. They are represented as individual points on the plot.
+
+![](Image/boxplot.png){width="484"}
+
+::: panel-tabset
+#### R-base function boxplot()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+boxplot(df$As, 
+     # plot title
+     main = "Boxplot of Soil As",
+     # x-axis title
+     #xlab= "Soil As (mg/kg)",
+     # y-axis title
+     ylab= "Soil As (mg/kg)")
+```
+
+Now check how many observation considered as outlier:
+
+```{r}
+length(boxplot.stats(df$As)$out)
+```
+
+#### ggplot2 geom_boxplot()
+
+```{r}
+#| warning: false
+#| error: false
+#| fig.width: 4
+#| fig.height: 3.5
+
+ggplot(df, aes(As))+   geom_boxplot()+
+  coord_flip()+
+  # X-axis title
+  xlab("Soil As (mg/kg)") + 
+  # y-axis title
+  # ylab("Soil As (mg/kg)")+
+  # plot title
+  ggtitle("Boxplot of Soil As") +
+    theme(
+    # center the plot title
+    plot.title = element_text(hjust = 0.5),
+    # customize axis ticks 
+    axis.text.y=element_text(size=10,
+                             angle = 90,
+                             vjust = 0.5, 
+                             hjust=0.5, colour='black'))
+```
+:::
+
+### Tukey's method
+
+Another common method for identifying outliers is Tukey's method, which is based on the concept of the IQR. Divide the data set into Quartiles:
+
+* Q1 (the 1st quartile): 25% of the data are less than or equal to this value
+
+* Q3 (the 3rd quartile): 25% of the data are greater than or equal to this value
+
+* IQR (the interquartile range): the distance between Q3 – Q1, it contains the middle 50% of the data.
+
+* Then outliers are then defined as any values that fall outside of:
+
+> Lower Range = Q1 – (1.5 * IQR)
+
+and 
+
+> Upper Range = Q3 + (1.5 * IQR)
+
+
+Below [detect_outliers](https://www.linkedin.com/pulse/outlier-treatment-tukeys-method-r-swanand-marathe/) function
+
+```{r}
+detect_outliers <- function(x)
+{
+  ## Check if data is numeric in nature
+  if(!(class(x) %in% c("numeric","integer")))
+  {
+    stop("Data provided must be of integer\numeric type")
+  }
+  ## Calculate lower limit
+  lower.limit <- as.numeric(quantile(x)[2] - IQR(x)*1.5)
+  ## Calculate upper limit
+  upper.limit <- as.numeric(quantile(x)[4] + IQR(x)*1.5)
+  ## Retrieve index of elements which are outliers
+  lower.index <- which(x < lower.limit)
+  upper.index <- which(x > upper.limit)
+  ## print results
+  cat(" Lower Limit ",lower.limit ,"\n", "Upper Limit", upper.limit ,"\n",
+"Lower range outliers  ",x[lower.index] ,"\n", "Upper range outlers", x[upper.index])
+}
+```
+
+```{r}
+detect_outliers(df$As)
+```
+### Z-score method
+
+The Z-score method is another common statistical method for identifying outliers. It finds value with largest difference between it and sample mean, which can be considered as an outlier. In R, the outliers() function from the outliers package can be used to identify outliers using the Z-score method.
+
+> install.packages("outliers")
+
+```{r}
+#| warning: false
+#| error: false
+
+library(outliers)
+# Identify outliers using the Z-score method
+outlier(df$As, opposite=F)
+```
+
+
+### Box-Jitter plot
+
+A box-jitter plot is a type of data visualization that combines elements of both a boxplot and a jitter plot. It is useful for displaying both the distribution and the individual data points of a dataset.
+
+The jitter component of the plot is used to display the individual data points. Jittering refers to adding a small amount of random noise to the position of each data point along the x-axis, to prevent overlapping and to give a better sense of the density of the data.
+
+Overall, the box-jitter plot provides a useful summary of the distribution of a dataset, while also allowing viewers to see the individual data points and any potential outliers. It is particularly useful for displaying data with a large number of observations or for comparing multiple distributions side by side.
+
+
+
+
+

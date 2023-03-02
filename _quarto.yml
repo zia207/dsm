@@ -4,23 +4,61 @@ project:
   
 
 website:
-  title: "Digital Soil Mapping"
+  title: "Digital Soil Mapping with R"
+  
+  page-footer:
+    right: "This page is built with [Quarto](https://quarto.org/)."
+    left: "&copy; CC-By Zia Ahmed, Unversity at Buffalo 2023"
   navbar:
+    background: primary
+    search: true
     left:
       - href: index.qmd
         text: Home
+    right: 
+      - icon: github
+        href: https://github.com/zia207/dsm
+      - icon: linkedin
+        href: https://github.com/zia207
+  sidebar:
+    contents:
+      - href: index.qmd
+        text: Home
       - href: getting-started-r.qmd
-        text: Getting Started R
-        menu:
-        - href: download-install-r.qmd
-          text: Download and Installation R
-        - href: introduction-to-r
-          text: Introduction to R
+        text: Getting Started DSM with R 
+      - section: "Basic R"
+        contents:
+          - href: download-install-r.qmd
+            text: Download and Installation R
+          - href: introduction-to-r.qmd
+            text: Introduction to use R
+          - href: data-export-import.qmd
+            text: Data export/import to/from R
+      - section: "Data Wragling with R"
+        contents:
+          - href: data-wrgaling-basic.qmd
+            text: Introduction to Data Wragling
+          - href: data-wrgaling-dplyr.qmd
+            text: Data Wrangling  with dplyr and tidyr
+          - href: data-wrgaling-janitor.qmd
+            text: Data Wrangling with janitor
+      - section: "Data Exploration with R"
+        contents:
+          - href: data-exploration-basic.qmd
+            text: Introduction to Data Exploration
+
+fig-cap-location: top
+tbl-cap-location: top
+title-block-banner: true
+
 format:
   html:
-    theme: sandstone
-    css: styles.css
+    theme: cosmo
+    fontsize: 1.2em
+    linestretch: 1.7
+    code-fold: true
+    code-tools: true
     toc: true
-
-
-
+    toc-depth: 4
+    toc-title: Contents
+  

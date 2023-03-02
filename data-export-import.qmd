@@ -1,0 +1,713 @@
+# Data Import-Export into/from R {.unnumbered}
+
+
+Reading data for analysis and exporting the results to another system for report writing can be done efficiently with R. There are multiple ways to import and export data to/from R. In this tutorial, you will learn some most common ways to read and write data with R.
+
+All data set use in this exercise can be downloaded from my [dropbox folder](https://www.dropbox.com/sh/5au9x4jabyeelah/AAD4cqe97kuxGpkahKGqyenka?dl=0).
+
+## Working directory
+
+It would be best if you created a working directory in R to read and write files locally. The following example shows how to create the working directory in R.
+
+Before creating a working directory, you may check the directory of your current R session; the function **getwd()** will print the current working directory path as a string.
+
+```{r}
+getwd()
+```
+
+If you want to change the working directory in R you just need to call the **setwd()** function, specifying as argument the path of the new working directory folder.
+
+> setwd("F:\\R-Project") setwd("F:/R-Project"
+
+Remember that you must use the forward slash **/** or double backslash **\\** in R! The Windows format of single backslash will not work.
+
+The files under in a directory can check using **dir()** function
+
+> dir()
+
+## Read/Import Data into R
+
+### Importing data using R-Studio IDE
+
+Importing data into R becomes time intensive. The easiest way to import data into R is by using RStudio IDE. This feature can be accessed from the **Environment pane** or from the \*\*tools menu\*. The importers are grouped into three categories: Text data, Excel data, and statistical data. The detail could be found [here](https://support.posit.co/hc/en-us/articles/218611977-Importing-Data-with-the-RStudio-IDE).
+
+To access this feature, use the "Import Dataset" dropdown from the "Environment" pane:
+
+![Data Import RStudio Environment Pane](Image/import_srtudio_env.png){#fig-filemenu}
+
+Or through the "File" menu, followed by the "Import Dataset" submenu:
+
+![Data Import RStudio File Menu](Image/import_srtudio_fiel.png){#fig-envpan}
+
+### Text File (.txt)
+
+The easiest form of data to import into R is a simple text file. The primary function to import from a text file is **read.table()**.
+
+> read.table(file, header = FALSE, sep = "", quote =""'",.....)
+
+```{r}
+#| title: "read.table()" 
+#| warning: false
+#| error: false
+
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .txt file
+df.txt<-read.table(paste0(dataFolder,"test_data.txt"), header= TRUE) 
+#data.txt<-read.table("test_data.txt", header= TRUE) 
+head(df.txt)
+names(df.txt)
+```
+
+However, **scan()** function could be used to scan and read data. It is usually used to read data into vector or list or from file in R Language.
+
+> sacn(scan(file = "", what = double(), nmax = -1, n = -1, sep ="",..)
+
+```{r}
+#| title: "scan()" 
+#| warning: false
+#| error: false
+
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# Scan data 
+df.scan<-scan(paste0(dataFolder,"test_data.txt"),  what = list("", "", ""))   
+```
+
+### Comma-Separated File (.csv)
+
+A comma delimited or comma-separated file (CSV) is one where each value in the file is separated by a comma, although other characters can be used. Reading data from a CSV file is made easy by the **read.csv()**, an extension of **read.table()**. It facilitates the direct import of data from CSV files.
+
+> read.csv(file, header = TRUE, sep = ",", quote = """,...)
+
+```{r}
+#| title: "read.csv()" 
+#| warning: false
+#| error: false
+
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .csv file
+df.csv<-read.csv(paste0(dataFolder,"test_data.csv"), header= TRUE) 
+#head(data.csv)
+```
+
+### Excel Files (.xlsx)
+
+One of the best ways to read an Excel file is to export it to a comma-delimited file and import it using the method above. Alternatively, we can use the **xlsx** package to access Excel files. The first row should contain variable/column names.
+
+> install.packages("xlsx") \# Install "xlsx" package
+
+```{r}
+#| title: "read.xlsx()" 
+#| warning: false
+#| error: false
+
+# Load xlsx package
+library(xlsx)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# Import Sheet 1, from a excel file
+data.xlsx <-xlsx::read.xlsx(paste0(dataFolder,"test_data.xlsx"), 1) 
+#data.xlsx <-read.xlsx("test_data.xlsx", 1)  
+names(data.xlsx)
+```
+
+### JSON Files (.json)
+
+JSON is an open standard file and lightweight data-interchange format that stands for *J*ava*S*cript *O*bject *N*otation. The JSON file is a text file that is language independent, self-describing, and easy to understand.
+
+The JSON file is read by R as a **list** using the function **fromJSON()** of **rjson** package.
+
+> install.packages("rjson")
+
+> fromJSON(json_str, file, method = "C", unexpected.escape = "error", sim..)
+
+```{r}
+#| title: "fromJSON()" 
+#| warning: false
+#| error: false
+
+# Load rjson package
+library(rjson)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .json file
+df.json <- rjson::fromJSON(file= paste0(dataFolder, "test_data.json"),  simplify=TRUE)
+#print(df.json)
+```
+
+We can convert to data frame
+
+```{r}
+#| title: "Convert JSON file to DF" 
+#| warning: false
+#| error: false
+
+df.json <- as.data.frame(df.json)
+head(df.json)
+```
+##  Import Data from Other Stattistcal Software
+
+**foreign**  packages is mostly used to read data stored by **Minitab**, **S**, **SAS**, **SPSS**, **Stata**, **Systat**, **dBase**, and so forth. 
+
+> install.packages("foreign")
+
+**Haven** enables R to read and write various data formats used by other statistical packages by wrapping with [ReadStat](https://github.com/WizardMac/ReadStat) C library.  written b Haven is part of the tidyverse. Current it support **SAS**, **SPSS** and **Stata** files
+
+read.dta() function from **foreign** package can reads a file in Stata version 5-12 binary format (.dta) into a data frame.
+
+### STATA File (.dta)
+
+::: panel-tabset
+
+#### Foreign - read.dta()
+
+```{r}
+#| warning: false
+#| error: false
+
+# Load foreign package
+library(foreign)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .dta file
+df.dta_01 <- foreign::read.dta(paste0(dataFolder,"test_data.dta")) 
+```
+
+#### Haven read_dta()
+
+```{r}
+#| warning: false
+#| error: false
+# Load foreign package
+library(haven)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .dta file
+df.dta_02 <- haven::read_dta(paste0(dataFolder,"test_data.dta")) 
+```
+:::
+
+### SPSS File (.sav)
+
+::: panel-tabset
+
+#### Foreign - read.spss()
+
+```{r}
+#| warning: false
+#| error: false
+
+# Load foreign package
+library(foreign)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .sav file
+df.sav_01 <- foreign::read.spss(paste0(dataFolder,"test_data.sav")) 
+```
+
+#### Haven read_sav()
+
+```{r}
+#| warning: false
+#| error: false
+#| 
+
+# Load haven package
+library(haven)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .sav file
+df.sav_02 <- haven::read_sav(paste0(dataFolder,"test_data.sav")) 
+#head(df.sav)
+```
+:::
+
+### SAS File (.sas7bdat)
+
+**read_sas()** function  from haven package can read sas (.sas7bdat) file easily. 
+
+```{r}
+#| title: "read_sas()" 
+#| warning: false
+#| error: false
+
+# Load haven package
+library(haven)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read .sas7bdat file
+df.sas <- haven::read_sas(paste0(dataFolder,"test_data.sas7bdat")) 
+#head(df.sas)
+```
+
+
+## Export files from R
+
+To export data and save to your local drive, you need the file path and an extension. First of all, the path is the location where the data will be stored.
+
+Before we start, we need to specify the working directory in which we can export the data.
+
+### CSV File
+
+First of all, let create a data frame that we will going to export as a text/CSV file.
+
+```{r}
+#| title: "Create data-frame" 
+#| warning: false
+#| error: false
+
+Variety =c("BR1","BR3", "BR16", "BR17", "BR18", "BR19","BR26",
+	      "BR27","BR28","BR29","BR35","BR36") # create a text vector
+Yield = c(5.2,6.0,6.6,5.6,4.7,5.2,5.7,
+	            5.9,5.3,6.8,6.2,5.8) # create numerical vector
+rice.data= data.frame(Variety, Yield)
+```
+
+
+The popular R base functions for writing data are **write.table()**, **write.csv()**, **write.csv2()** and **write.delim()** functions.
+
+Before start, you need to specify the working or destination directory in where you will save the data.
+
+
+```{r}
+#| title: "write.csv()" 
+#| warning: false
+#| error: false
+
+# Define destination folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+write.csv(rice.data, paste0(dataFolder, "rice_data.csv"), row.names = F) # no row names
+# write.csv(rice.data, "rice_data.csv", row.names = F) # no row names
+```
+
+### Excel File
+
+Exporting data from R to Excel can be achieved with several packages. The most known package to export data frames or tables as Excel is xlsx, that provides the **write.xlsx** and **write.xlsx2** functions.
+
+```{r}
+#| title: "write.xlsx()" 
+#| warning: false
+#| error: false
+
+# load xlsx
+library(xlsx)
+# Define destination folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# write as xlsx file
+xlsx::write.xlsx(rice.data, paste0(dataFolder, "rice_data.xlsx"))
+```
+
+### JSON Objects
+
+To write JSON Object to file, the **toJSON()** function from the **rjson** library can be used to prepare a JSON object and then use the **write()** function for writing the JSON object to a local file.
+
+```{r}
+#| title: "toJSON()" 
+#| warning: false
+#| error: false
+
+# Load rjson package
+library(rjson)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# create a JSON object
+jsonData <-rjson::toJSON(rice.data)
+# write JSON objects
+write(jsonData, file= paste0(dataFolder,"rice_data.json"))
+```
+
+### R Data File
+
+If you want to share the data from R as Objects and share those with your colleagues through different systems so that they can use it right away into their R-workspace. These objects are of two types **.rda/.RData** which can be used to store some or all objects, functions from R global environment.
+
+The **save()** function allows us to save multiple objects into our global environment:
+
+```{r}
+#| title: "save()" 
+#| warning: false
+#| error: false
+#| echo: false
+
+# Define destination folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+save(rice.data, Variety, Yield,  file= paste0(dataFolder,"rice_data.RData"))
+#save(rice.data, Variety, Yield,  file="rice_data.RData")
+```
+
+::: callout-note
+If you specify **save.image(file = "R_objects.RData")** Export all objects (the workspace image).
+:::
+
+To save only one object it is more recommended saving it as RDS with the **saveRDS()** function:
+
+```{r}
+#| title: "saveRDS()" 
+#| warning: false
+#| error: false
+
+# write .RDS file
+saveRDS(rice.data, "D:/Dropbox/GitHub/Data/rice_data.rds")
+```
+
+::: callout-note
+If you specify **compress = TRUE** as argument of the above functions the file will be compressed by default as gzip.
+:::
+
+
+## Export to Other Statistcal Software
+
+#### STATA File
+
+If you want export data from R to STATA, you will need to use the **write.dta()** function of the **foreign** package. This package provides functions for r
+
+```{r}
+#| title: "write.dta()" 
+#| warning: false
+#| error: false
+
+# Load foreign package
+library(foreign)
+# define data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# write dta file
+foreign::write.dta(rice.data, file= paste0(dataFolder,"rice_data.dta"))
+```
+
+#### SPSS File
+
+Haven enables R to read and write various data formats used by other statistical packages by wrapping with [ReadStat](https://github.com/WizardMac/ReadStat) C library.  written b Haven is part of the tidyverse. Current it support **SAS**, **SPSS** and **Stata** files
+
+
+The **write_sav()** function of **haven** package can be used to export R-object to SPSS
+
+```{r}
+#| title: "write_sva()" 
+#| warning: false
+#| error: false
+
+# Load haven package
+library(haven)
+# write .sav file
+haven::write_sav(rice.data, "D:/Dropbox/GitHub/Data/rice_data.sav")
+```
+
+#### SAS File
+
+The **write_sas()** function of **haven** package can be used to export R-object to SAS (.sas7bdat)
+
+```{r}
+#| title: "write_sva()" 
+#| warning: false
+#| error: false
+
+# Load haven package
+library(haven)
+# write .sav file
+haven::write_sas(rice.data, "D:/Dropbox/GitHub/Data/rice_data.sas7bdat")
+```
+
+
+## data.table: Extension of 'data.frame'
+
+The R-package [data.tabel](https://rdatatable.gitlab.io/data.table/) a improved version of data.frame, the a R-base function. It has following advantages:
+
+• concise syntax: fast to type, fast to read • fast speed • memory efficient
+
+> install.packages("data.table")
+
+We will use two important functions of data.table to read and write CSV files in R.
+
+### Reaing CSV file with **fread**
+
+**fread**: This function is capable of reading CSV files quickly and conveniently.
+
+> fread(input, file,....)
+
+```{r}
+#| title: "fread()" 
+#| warning: false
+#| error: false
+
+# Load library
+library(data.table)
+# define data location
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read with fread()
+DT<-data.table::fread(paste0(dataFolder,"LBC_data.csv"), header= TRUE) 
+str(DT)
+#DT<-fread("usa_geochemical.csv", header= TRUE) 
+```
+
+You cam compare data reading time of **fread()** and **read.csv()** functions:
+
+::: panel-tabset
+
+#### R-base function read.csv
+
+```{r}
+#| warning: false
+#| error: false
+
+system.time(read.csv(paste0(dataFolder,"LBC_data.csv"), header= TRUE)) 
+```
+
+#### data.table fread
+
+```{r}
+#| warning: false
+#| error: false
+system.time(data.table::fread(paste0(dataFolder,"LBC_data.csv"), header= TRUE))
+```
+:::
+
+### Writing CSV file with **fwrite**
+
+**fwrite()**: This capable to write CSV field very fast!
+
+> fwrite(x, file = "", append = FALSE, quote ="auto", .....)
+
+```{r}
+#| title: "fwrite()" 
+#| warning: false
+#| error: false
+
+# define data location
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# read with fread()
+data.table::fwrite(DT,  paste0(dataFolder, "DT.csv"), row.names=F, quote=TRUE)
+```
+
+Now we compare writing time of **frwite** functions with write.csv functions.
+
+::: panel-tabset
+#### R-base function write.csv
+
+```{r}
+#| warning: false
+#| error: false
+#| output: asis
+
+system.time(write.csv(DT,  paste0(dataFolder, "DT.csv"), row.names=F))
+```
+
+#### data.table fwrite
+
+```{r}
+#| warning: false
+#| error: false
+system.time(data.table::fwrite(DT,  paste0(dataFolder, "DT.csv"), row.names=F, quote=TRUE))
+```
+:::
+
+## Feather: A Fast On-Disk Format for Data Frames
+
+Feather is a fast, lightweight, and easy-to-use binary file format for storing data frames. It has a few specific design goals:
+
+-   Lightweight, minimal API: make pushing data frames in and out of memory as simple as possible
+
+-   Language agnostic: Feather files are the same whether written by Python or R code. Other languages can read and write Feather files, too.
+
+Feather is extremely fast. Since Feather does not currently use any compression internally, it works best when used with solid-state drives as come with most of today's laptop computers. For this first release, we prioritized a simple implementation and are thus writing unmodified Arrow memory to disk [source](https://www.rstudio.com/blog/feather/).
+
+> install.packages("feather")
+
+```{r message=FALSE, warning=FALSE}
+#install.packages("feather")
+library(feather)
+```
+
+First we have to create feather data using **write_feather()** function
+
+> write_feather(x, path)
+
+```{r}
+#| title: "write_feather()" 
+#| warning: false
+#| error: false
+
+# define data location
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+# Load feather
+library(feather)
+# write_feather()
+feather::write_feather(DT, paste0(dataFolder, "LBC_data.feather"))
+```
+
+We can read this feather data with lighting speed using read_feather function()
+
+```{r}
+DT_feather <- feather::read_feather(paste0(dataFolder, "LBC_data.feather"))
+str(DT_feather)
+```
+
+Compare to and **write.csv()** as well as **frwite()**, **write_feather()** is very fast:
+
+::: panel-tabset
+#### R-base write.csv
+
+```{r}
+system.time(write.csv(DT, paste0(dataFolder, "LBC_data.csv")))
+```
+
+#### data.table fwrite
+
+```{r}
+# CSV file with fwrite
+system.time(data.table::fwrite(DT, paste0(dataFolder, "LBC_data.csv")))
+```
+
+#### Feather write_feather
+
+```{r}
+# feather file with 
+system.time(feather::write_feather(DT, paste0(dataFolder, "LBC_data.feather")))
+```
+:::
+
+## Tidyverse Package: Data Import and Export
+
+The tidyverse is an collection of several R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures [(Source)](https://www.tidyverse.org/).
+
+The core tidyverse includes the packages that you're likely to use in everyday data analyses. As of tidyverse 1.3.0, the following packages are included in the core tidyverse:
+
+![Core R-Packages](Image/tidyverse.png){#fig-rpkages}
+
+### Installation and use
+
+-   Install all the packages in the tidyverse by running install.packages("tidyverse").
+
+-   Run library(tidyverse) to load the core tidyverse with and make it available in your current R session.
+
+> install.packages("tidyverse")
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+As well as **readr**, for reading flat files, the tidyverse package installs a number of other packages for reading data:
+
+-   **DBI** for relational databases. You'll need to pair DBI with a database specific backends like *RSQLite*, *RMariaDB*, *RPostgres*, or *odbc*. Learn more at https://db.rstudio.com.
+
+-   **haven** for SPSS, Stata, and SAS data.
+
+-   **httr** for web APIs.
+
+-   **readxl** for .xls and .xlsx sheets.
+
+-   **googlesheets4** for Google Sheets via the Sheets API v4.
+
+-   **googledrive** for Google Drive files.
+
+-   **rvest** for web scraping.
+
+-   **jsonlite** for JSON. (Maintained by Jeroen Ooms.)
+
+-   **xml2** for XML
+
+### Read CSV files with readr
+
+A **tibble**, or **tbl_df**, is the latest method for reimagining of modern data-frame and It keeps all the crucial features regarding the data frame. Since R is an old language, and some things that were useful 10 or 20 years ago now get in your way. It's difficult to change base R without breaking existing code, so most innovation occurs in **tibble()** data-frame with tibble package.
+
+*Key features of Tibble*
+
+-   A Tibble never alters the input type.
+
+-   With Tibble, there is no need for us to be bothered about the automatic changing of characters to strings.
+
+-   Tibbles can also contain columns that are the lists.
+
+-   We can also use non-standard variable names in Tibble.
+
+-   We can start the name of a Tibble with a number, or we can also contain space.
+
+-   To utilize these names, we must mention them in backticks.
+
+-   Tibble only recycles the vectors with a length of 1.
+
+-   Tibble can never generate the names of rows.
+
+source: https://www.educative.io/answers/what-is-tibble-versus-data-frame-in-r
+
+We can use following functions **readr** package to import tabular data into R as tibble:
+
+![read() Functions](Image/read_readr_function.png){#fig-read}
+
+**read_csv()** and **read_tsv()** are special cases of the more general **read_delim()**. They're useful for reading the most common types of flat file data, comma separated values and tab separated values, respectively. **read_csv2()** uses ⁠;⁠ for the field separator and ⁠,⁠ for the decimal point. This format is common in some European countries.
+
+For example, we will use **read_csv()** to import CSV file and see use **glimpse()** functions of **dplyr** package to explore the file structure.
+
+::: panel-tabset
+#### read_csv()
+
+```{r}
+#| title: "read_csv()" 
+#| warning: false
+#| error: false
+#| output: asis
+
+# define data location
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+df.chem_01<-readr::read_csv(paste0(dataFolder,"PAHdata.csv"))
+dplyr::glimpse(df.chem_01)
+```
+
+#### read.csv()
+
+```{r}
+#| title: "read.csv()" 
+#| warning: false
+#| error: false
+
+# define data location
+dataFolder<-"D:/Dropbox/GitHub/Data/"
+df.chem_02<-read.csv(paste0(dataFolder,"PAHdata.csv"))
+dplyr::glimpse(df.chem_02)
+```
+:::
+
+::: callout-note
+glimps() of dplyr is a improved function of r-base str().
+:::
+
+### Write CSV files with readr
+
+The **write()**⁠ family functions of are an improvement to analogous function such as write.csv() because they are approximately twice as fast. Unlike write.csv(), these functions do not include row names as a column in the written file. A generic function, output_column(), is applied to each variable to coerce columns to suitable output.
+
+We can use following functions **readr** package to extort tabular data from R:
+
+![write() Functions](Image\write_readr_function.png){#fig-write}
+
+```{r}
+readr::write_csv(df.chem_02, "df.chem_02")
+```
+
+We can also use **as_tibble()** function of **tibble** package
+
+```{r}
+df.chem_03<-tibble::as_tibble(read.csv(paste0(dataFolder,"PAHdata.csv"), check.names = FALSE))
+str(df.chem_03)
+```
+
+## Further Reading
+
+1. [How do I read data into R?](https://www.datafiles.samhsa.gov/get-help/format-specific-issues/how-do-i-read-data-r)
+
+2. [R Coder](https://r-coder.com/export-data-r/)
+
+2. [Introduction to bioinformatics](https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html)
+
+4. [Many Ways of Reading Data Into R — 1](https://medium.com/analytics-vidhya/many-ways-of-reading-data-into-r-1-52b02825cb27)
+
+5. [readr](https://readr.tidyverse.org/) 
+
+6. [feather](https://posit.co/blog/feather/)
+
+7. [data.tabler](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)
+
+8. [foreign](https://www.oreilly.com/library/view/r-in-a/9781449377502/apas06.html)
+
+9. [haven](https://haven.tidyverse.org/)
+
+

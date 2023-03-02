@@ -1,0 +1,53 @@
+# Introduction to Data Wrangling  {.unnumbered}
+
+
+**Data Wrangling**, also known as **data munging**, is the process of cleaning, transforming, and mapping data from one format to another to make it suitable for analysis and visualization. It involves resolving issues such as missing or duplicate values, inconsistent formatting, and dealing with outliers. Data wrangling is a crucial step in the data science process as it ensures that the data is reliable and trustworthy for further analysis and modeling. Data Wrangling of environmental data  is the very important steps for building  geospatial and machine Learning models. 
+
+
+###  Steps of Data Wrangling 
+
+Here below [6 steps of data wrangling ](https://favtutor.com/blogs/data-wrangling):
+
+1.	**Discovering**:  systematic wrangling based on some criteria which could restrict and divide the data accordingly. 
+
+2. **Structuring**:   the raw data should be restructured to suit the analytically method. Feature engineering can be  done in this stage,
+
+3. **Cleaning**: outliers and missing values identification, transformation and imputation
+
+4.  **Enriching**  upscale, downsample, or perform data augmentation. 
+
+5. **Validating**: validation data after processing. 
+
+6. **Publishing**: process for further use
+
+
+
+![Six steps of Data Wrangling](Image/data_wragling steps.png){#fig-datawragling}
+
+
+### Important R Packages for Data Wrangling 
+
+
+* [dplyr](https://dplyr.tidyverse.org/index.html) 
+
+* [purr](https://purrr.tidyverse.org/)
+
+* [tidyr](https://tidyr.tidyverse.org/)
+
+* [lubridate](https://lubridate.tidyverse.org/)
+
+* [magrittr](https://magrittr.tidyverse.org/)
+
+* [plyr](http://plyr.had.co.nz/)
+
+* [purrrlyr](https://cran.r-project.org/web/packages/purrrlyr/index.html)
+
+* [data.table](https://rdatatable.gitlab.io/data.table/)
+
+* [sqldf](https://cran.r-project.org/web/packages/sqldf/index.html)
+
+* [dtplyr](https://www.tidyverse.org/blog/2019/11/dtplyr-1-0-0/)
+
+* [DT](https://rstudio.github.io/DT/)
+
+* [janitor](https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html)

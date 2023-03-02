@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Digital Soil Mapping -</title>
+<title>Digital Soil Mapping with R -</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -60,10 +123,9 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -71,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Digital Soil Mapping</span>
+    <span class="navbar-title">Digital Soil Mapping with R</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -83,43 +145,140 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page">
  <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./getting-started-r.html">
- <span class="menu-text">Getting Started R</span></a>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207/dsm"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started-r.html" class="sidebar-item-text sidebar-link">Getting Started DSM with R</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basic R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-install-r.html" class="sidebar-item-text sidebar-link">Download and Installation R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction-to-r.html" class="sidebar-item-text sidebar-link">Introduction to use R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-export-import.html" class="sidebar-item-text sidebar-link">Data export/import to/from R</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Data Wragling with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-basic.html" class="sidebar-item-text sidebar-link">Introduction to Data Wragling</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-dplyr.html" class="sidebar-item-text sidebar-link">Data Wrangling with dplyr and tidyr</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-janitor.html" class="sidebar-item-text sidebar-link">Data Wrangling with janitor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Data Exploration with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-exploration-basic.html" class="sidebar-item-text sidebar-link">Introduction to Data Exploration</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"><img src="Image/banner.png" class="img-fluid"></a></li>
   <li><a href="#components-of-dsm" id="toc-components-of-dsm" class="nav-link" data-scroll-target="#components-of-dsm">Components of DSM</a></li>
   <li><a href="#digital-soil-mapping-in-bangladesh" id="toc-digital-soil-mapping-in-bangladesh" class="nav-link" data-scroll-target="#digital-soil-mapping-in-bangladesh">Digital Soil Mapping in Bangladesh</a></li>
-  <li><a href="#digital-soil-mapping-with-r" id="toc-digital-soil-mapping-with-r" class="nav-link" data-scroll-target="#digital-soil-mapping-with-r">Digital Soil Mapping with R</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<section id="preface" class="level2">
-<h2 class="anchored" data-anchor-id="preface">Preface</h2>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"><img src="Image/banner.png" class="img-fluid"></h2>
 <p><strong>Digital soil mapping (DSM)</strong> is a technique that uses advanced technologies such as remote sensing, geographic information systems (GIS), and statistical modeling to create high-resolution maps of soil properties and characteristics. These maps can be used to support a variety of applications, including land use planning, precision agriculture, natural resource management, and environmental modeling.</p>
+<p><img src="Image/flow_dsm.png" class="img-fluid" width="444"></p>
 <p>DSM typically involves the collection of soil data from a variety of sources, including soil surveys, soil samples, and remote sensing data such as satellite imagery. This data is then combined and analyzed using a range of statistical and machine learning algorithms to develop predictive models of soil properties, such as soil texture, organic matter content, and nutrient availability.</p>
-<p><img src="images/paste-DCFB6973.png" class="img-fluid" style="width:4.7in"></p>
 <p>The resulting soil maps are highly detailed and can provide valuable information about soil characteristics at the landscape level, such as soil types, soil health, and soil fertility. This information can be used to optimize crop management practices, evaluate the environmental impacts of land use changes, and support conservation efforts.</p>
+<p><img src="Image/DSM.png" class="img-fluid" width="444"></p>
 <p>Overall, digital soil mapping is an important tool for understanding the complex interactions between soil, land use, and the environment, and can help support more sustainable and effective land management practices.</p>
 </section>
 <section id="components-of-dsm" class="level2">
@@ -132,35 +291,44 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="digital-soil-mapping-in-bangladesh">Digital Soil Mapping in Bangladesh</h2>
 <p>In Bangladesh, DSM has been identified as a priority area for agricultural development and soil resource management.The country has a diverse range of soils, including alluvial, deltaic, and coastal soils, which are highly variable in terms of their physical, chemical, and biological properties. DSM in Bangladesh involves the collection of various soil data, including soil types, soil texture, soil organic matter content, soil pH, soil fertility, and soil moisture. These data are then integrated with digital data on topography, climate, vegetation, and land use to create soil maps and databases.</p>
 <p>DSM in Bangladesh has several benefits, including:</p>
-<p>Improved land use planning: DSM can provide accurate and detailed information on soil properties, which can be used for land use planning and management.</p>
-<p>Improved crop productivity: DSM can provide information on soil fertility, soil moisture, and other factors that can affect crop productivity, helping farmers to make informed decisions about crop selection and management practices.</p>
-<p>Conservation of soil resources: DSM can help in identifying areas with soil erosion and degradation issues, leading to the development of conservation strategies.</p>
-<p>Improved agricultural research: DSM can provide valuable information for agricultural research and development.</p>
+<ol type="1">
+<li><p>Improved land use planning: DSM can provide accurate and detailed information on soil properties, which can be used for land use planning and management.</p></li>
+<li><p>Improved crop productivity: DSM can provide information on soil fertility, soil moisture, and other factors that can affect crop productivity, helping farmers to make informed decisions about crop selection and management practices.</p></li>
+<li><p>Conservation of soil resources: DSM can help in identifying areas with soil erosion and degradation issues, leading to the development of conservation strategies.</p></li>
+<li><p>Improved agricultural research: DSM can provide valuable information for agricultural research and development.</p></li>
+</ol>
 <p>Overall, DSM in Bangladesh has the potential to improve agricultural productivity, promote sustainable land use practices, and support soil conservation efforts.</p>
-</section>
-<section id="digital-soil-mapping-with-r" class="level2">
-<h2 class="anchored" data-anchor-id="digital-soil-mapping-with-r">Digital Soil Mapping with R</h2>
-<p><a href="https://www.r-project.org/">R</a> is an open-source statistical computing and visualization environment. It is based on the S language developed at Bell Laboratories in the 1980s. Now it is one of the most robust, programmable, portable, and open computing environments for data analysis and visualization without any restrictions on access or use.</p>
 <p>Although several books and online tutorials are available related to DSM in R, this training-workshop targets national scientists in Bangladesh who have working experience soil science, GIS, and statistics.</p>
 <p>This training-workshop will covered following lessons:</p>
 <ol type="1">
-<li>Getting Started with R</li>
-<li>Data Import-Export</li>
-<li>Data Wrangling with R</li>
-<li>Basic Statistics</li>
-<li>Multivariate Statistic</li>
-<li>Machine Learning</li>
-<li>Spatial Data Processing</li>
-<li>Digital Terrain Modeling</li>
-<li>Remote Sensing</li>
-<li>Spatial Interpolation</li>
+<li><p><a href="getting-started-r.html">Getting Started Digital Soil Mapping with R</a></p></li>
+<li><p>Basic R</p>
+<p>2.1. <a href="download-install-r.html">Download and Install R and R-Studio</a></p>
+<p>2.2. <a href="intoduction-to-r.html">Introduction to use R</a></p>
+<p>2.3. <a href="data-export-import.html">Data Import-Export into/from R</a></p></li>
+<li><p>Data Wrangling with R</p>
+<p>3.1.<a href="data-wragling-basic.html">Introduction to Data Wragling</a></p>
+<p>3.2.<a href="data-wrgaling-dplyr.html">Data Wrangling with dplyr and tidyr</a></p>
+<p>3.3.<a href="data-wrgaling-janitor.html">Data Wrangling with janitor</a></p></li>
+<li><p>Data Exploration with R</p>
+<p>4.1.<a href="data-exploration-basic.html">Introduction to Data Exploration</a></p></li>
+<li><p>Regression Analysis</p></li>
+<li><p>Multivariate Statistic</p></li>
+<li><p>Machine Learning</p></li>
+<li><p>Spatial Data Processing</p></li>
+<li><p>Digital Terrain Modeling</p></li>
+<li><p>Remote Sensing</p></li>
+<li><p>Spatial Interpolation</p></li>
 </ol>
 <p>After finishing these lessons all participant will work on soil data and will produce digital soil maps of Bangladesh.</p>
+<p><img src="Image/zia.png" class="img-fluid" width="243"></p>
 <p><strong>Zia U Ahmed, PhD</strong></p>
 <p>Research Associate Professor (Data &amp; Visualization)</p>
 <p><a href="http://www.buffalo.edu/renew.html">RENEW (Research and Education in eNergy, Environment and Water) Institute</a></p>
 <p><a href="http://www.buffalo.edu/">University at Buffalo</a></p>
 
+
+<!-- -->
 
 </section>
 
@@ -230,6 +398,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -297,8 +516,109 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> ""</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## ![](Image/banner.png)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>**Digital soil mapping (DSM)** is a technique that uses advanced technologies such as remote sensing, geographic information systems (GIS), and statistical modeling to create high-resolution maps of soil properties and characteristics. These maps can be used to support a variety of applications, including land use planning, precision agriculture, natural resource management, and environmental modeling.</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/flow_dsm.png)</span>{width="444"}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>DSM typically involves the collection of soil data from a variety of sources, including soil surveys, soil samples, and remote sensing data such as satellite imagery. This data is then combined and analyzed using a range of statistical and machine learning algorithms to develop predictive models of soil properties, such as soil texture, organic matter content, and nutrient availability.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>The resulting soil maps are highly detailed and can provide valuable information about soil characteristics at the landscape level, such as soil types, soil health, and soil fertility. This information can be used to optimize crop management practices, evaluate the environmental impacts of land use changes, and support conservation efforts.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/DSM.png)</span>{width="444"}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Overall, digital soil mapping is an important tool for understanding the complex interactions between soil, land use, and the environment, and can help support more sustainable and effective land management practices.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Components of DSM</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>**INPUT**: field and laboratory observations, environmental covariates</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>**PROCESS**: mathematical or statistical models (spatial and non-spatial)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>**OUTPUT**: The output includes raster of prediction maps with the uncertainty of prediction. This output can be readily updated as new information becomes available</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Digital Soil Mapping in Bangladesh</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>In Bangladesh, DSM has been identified as a priority area for agricultural development and soil resource management.The country has a diverse range of soils, including alluvial, deltaic, and coastal soils, which are highly variable in terms of their physical, chemical, and biological properties. DSM in Bangladesh involves the collection of various soil data, including soil types, soil texture, soil organic matter content, soil pH, soil fertility, and soil moisture. These data are then integrated with digital data on topography, climate, vegetation, and land use to create soil maps and databases.</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>DSM in Bangladesh has several benefits, including:</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Improved land use planning: DSM can provide accurate and detailed information on soil properties, which can be used for land use planning and management.</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Improved crop productivity: DSM can provide information on soil fertility, soil moisture, and other factors that can affect crop productivity, helping farmers to make informed decisions about crop selection and management practices.</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Conservation of soil resources: DSM can help in identifying areas with soil erosion and degradation issues, leading to the development of conservation strategies.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Improved agricultural research: DSM can provide valuable information for agricultural research and development.</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>Overall, DSM in Bangladesh has the potential to improve agricultural productivity, promote sustainable land use practices, and support soil conservation efforts.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Although several books and online tutorials are available related to DSM in R, this training-workshop targets national scientists in Bangladesh who have working experience soil science, GIS, and statistics.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>This training-workshop will covered following lessons:</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span><span class="co">[</span><span class="ot">Getting Started Digital Soil Mapping with R</span><span class="co">](getting-started-r.html)</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Basic R</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    2.1. <span class="co">[</span><span class="ot">Download and Install R and R-Studio</span><span class="co">](download-install-r.html)</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    2.2. <span class="co">[</span><span class="ot">Introduction to use R</span><span class="co">](intoduction-to-r.html)</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    2.3. <span class="co">[</span><span class="ot">Data Import-Export into/from R</span><span class="co">](data-export-import.html)</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Data Wrangling with R</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    3.1.<span class="co">[</span><span class="ot">Introduction to Data Wragling</span><span class="co">](data-wragling-basic.html)</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    3.2.<span class="co">[</span><span class="ot">Data Wrangling with dplyr and tidyr</span><span class="co">](data-wrgaling-dplyr.html)</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    3.3.<span class="co">[</span><span class="ot">Data Wrangling with janitor</span><span class="co">](data-wrgaling-janitor.html)</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Data Exploration with R</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    4.1.<span class="co">[</span><span class="ot">Introduction to Data Exploration</span><span class="co">](data-exploration-basic.html)</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Regression Analysis</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>Multivariate Statistic</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>Machine Learning</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="ss">8.  </span>Spatial Data Processing</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="ss">9.  </span>Digital Terrain Modeling</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Remote Sensing</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="ss">11. </span>Spatial Interpolation</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>After finishing these lessons all participant will work on soil data and will produce digital soil maps of Bangladesh.</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="al">![](Image/zia.png)</span>{width="243"}</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>**Zia U Ahmed, PhD**</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>Research Associate Professor (Data &amp; Visualization)</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">RENEW (Research and Education in eNergy, Environment and Water) Institute</span><span class="co">](http://www.buffalo.edu/renew.html)</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">University at Buffalo</span><span class="co">](http://www.buffalo.edu/)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© CC-By Zia Ahmed, Unversity at Buffalo 2023</div>   
+    <div class="nav-footer-right">This page is built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
 
 
 

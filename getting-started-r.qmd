@@ -1,10 +1,50 @@
-# Getting Started with R {.unnumbered}
+# Getting Started Digital Soil Mapping with R {.unnumbered}
 
-The goal of this section is to give you a rapid overview of [R](https://www.r-project.org/) and [R-Studio](https://posit.co/download/rstudio-desktop/) installation, and some basic concepts of R and data import/export to/from R.
+Digital Soil Mapping (DSM) is the process of creating maps of soil properties or classes using statistical, geostatistical, or machine learning techniques based on field observations, laboratory measurements, and environmental covariates.  
 
-This section consists of three main Chapters:
+[R](https://www.r-project.org/)is a popular open-source programming language for statistical computing and graphics that can be used for DSM.  It was developed in 1980 based on the [S-language](https://en.wikipedia.org/wiki/S_(programming_language)), and an open-source community regularly updates the software for a robust, programmable, portable, and open-source computing environment. We can use it to solve complex and sophisticated problems and "routine" analysis without restrictions on access or use.
 
-1.  [Download and Installation R](download-install-r.html)
 
-2.  [Introduction to Using R](introduction-to-r.html)
+Here are some steps to get started with DSM in R:
+
+1. Data collection and pre-processing: Collect soil samples and environmental covariates such as topography, climate, geology, and vegetation. Clean and transform the data into a format suitable for analysis in R.
+
+2. Exploratory data analysis: Explore the data using summary statistics, histograms, boxplots, scatterplots, and correlation matrices. Identify outliers, missing values, and spatial autocorrelation.
+
+3. Spatial data analysis: Use R packages such as raster, sp, and sf to handle spatial data. Create maps of the study area and overlay the soil and environmental data. Compute spatial statistics such as variograms, semivariograms, and covariance functions to quantify the spatial dependence of the data.
+
+4. Statistical modeling: Fit statistical models to predict soil properties or classes based on environmental covariates. Use packages such as h20, gstat, randomForest, caret, and mlr to fit models such as linear regression, kriging, geographically weighted regression, random forests, support vector machines, and neural networks.
+
+5. Model assessment and validation: Use cross-validation, bootstrapping, or independent validation data to assess the accuracy and reliability of the models. Compare the performance of different models and choose the best one.
+
+6. Map production: Use R packages such as ggplot2, raster, spplot, and leaflet to create maps of the predicted soil properties or classes. Customize the maps by adding legends, titles, labels, and basemaps.
+
+DSM with R requires some knowledge of statistics, spatial analysis, and programming. There are many resources available online, such as tutorials, books, and forums, to help you get started and improve your skills.
+
+[R](https://www.r-project.org/) is a programming language and software environment for statistical computing and graphics. It is widely used for data analysis and statistical modeling, and it has a large and active community of users and developers. If you are interested in learning R, here are some steps to get started:
+
+### Learn the basics of R
+
+There are many resources available to help you learn the basics of R. Some popular options include:
+
+R for Data Science (https://r4ds.had.co.nz/): This free online book provides a comprehensive introduction to R for data analysis and visualization.
+
+DataCamp (https://www.datacamp.com/courses/free-introduction-to-r): DataCamp offers a variety of interactive courses on R, including a free Introduction to R course.
+
+Coursera (https://www.coursera.org/courses?query=r%20programming): Coursera has several free and paid courses on R programming, including the popular Data Science Specialization from Johns Hopkins University.
+
+YouTube: There are many R tutorials available on YouTube, including channels like R Programming for Data Science and Data Analysis Dojo.
+
+Practice with real data: Once you have learned the basics of R, it is important to practice with real data. You can find datasets to work with in many places, including:
+Kaggle (https://www.kaggle.com/datasets): Kaggle is a platform for data science competitions and also provides many datasets for practice.
+
+UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/index.php): The UCI Machine Learning Repository provides many datasets for machine learning research.
+
+R datasets: R comes with several built-in datasets that you can use for practice. You can see a list of these datasets by typing data() in the R console.
+
+Join the R community: R has a large and active community of users and developers who are willing to help newcomers. You can join the community by participating in online forums, attending local R user groups, or contributing to open source R packages.
+
+Learning R can be a challenging but rewarding experience. By following these steps and practicing regularly, you can become proficient in R and use it for your data analysis and statistical modeling needs.
+
+
 

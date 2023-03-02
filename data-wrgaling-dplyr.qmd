@@ -1,0 +1,790 @@
+# Data Wrangling with dplyr and tidyr {.unnumbered}
+
+In section you will learn you to wrangle data with two popular R-packages **tidyr** and **dplyr** and both are come with [tidyverse](https://www.tidyverse.org/), an collection of several R packages designed for data science.
+
+### **tidyr - Package**
+
+![](Image/tidyR.png){width="174"}
+
+[tidyr](https://tidyr.tidyverse.org/) helps to create tidy data that enables you to work with [tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) formats which are easy to manipulate, model and visualize, and have a specific structure. It follows a set of rules for organizing variables, values, and observations into tables, with each column representing a variable and each row representing an observation. Tidy data makes it easier to perform data analysis and visualization and is the preferred format for many data analysis tools and techniques.
+
+**tidyr** functions fall into five main categories:
+
+-   **Pivotting** which converts between long(**pivot_longer()**) and wide forms (**pivot_wider()**), replacing
+
+-   **Rectangling**, which turns deeply nested lists (as from JSON) into tidy tibbles.
+
+-   **Nesting** converts grouped data to a form where each group becomes a single row containing a nested data frame
+
+-   **Splitting and combining character columns**. Use **separate()** and **extract()** to pull a single character column into multiple columns;
+
+-   Make implicit missing values explicit with **complete()**; make explicit missing values implicit with **drop_na()**; replace missing values with next/previous value with **fill()**, or a known value with **replace_na()**.
+
+### **dplyr - Package**
+
+![](Image/dplyR.png){width="192"}
+
+[dplyr](https://dplyr.tidyverse.org/) is part of a larger \[tidyverse\]( https://www.tidyverse.org/. It provides a grammar for data manipulation and a set of functions to clean, process, and aggregate data efficiently. Some of the key features of dplyr include:
+
+A **tibble** data structure, which is similar to a data frame but is designed to be more efficient and easier to work with. A set of verbs for data manipulation, including **filter()** for subsetting rows, **arrange()** for sorting rows, **select()** for selecting columns, **mutate()** for adding new columns, and **summarize()** for aggregating data. A chainable syntax with **pipe (%\>%)** that makes it easy to perform multiple operations in a single line of code.Support for working with remote data sources, including databases and big data systems. Overall, dplyr is a popular and widely used package for data manipulation in R and is known for its simplicity and ease of use.
+
+In addition to data frames/tibbles, dplyr makes working with following packages:
+
+[**dtplyr**](https://dtplyr.tidyverse.org/): for large, in-memory datasets. Translates your dplyr code to high performance data.table code.
+
+[**dbplyr**](https://dbplyr.tidyverse.org/): for data stored in a relational database. Translates your dplyr code to SQL.
+
+[**sparklyr**](https://spark.rstudio.com/): for very large datasets stored in Apache Spark.
+
+#### Cheat-sheet
+
+Here below data Wrangling with [dplyr and tidyr Cheat Sheets](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf):
+
+![Data Wragling with dplyrand tidyr Cheat sheet-2](Image/data_wragling%20cheat_sheet_01.png){#fig-dplyr_tidyr_01}
+
+![Data Wragling with dplyrand tidyr Cheat sheet-1](Image/data_wragling%20cheat_sheet_02.png){fig-dplyr_tidyr_02}
+
+In addition to tidyr, and dplyr, there are five packages (including stringr and forcats) which are designed to work with specific types of data:
+
+-   **lubridate** for dates and date-times.
+
+-   **hms** for time-of-day values.
+
+-   **blob** for storing blob (binary) data
+
+### Install tidyverse
+
+You can install the tidyverse with a following line of code:
+
+> install.packages("tidyverse")
+
+### Load Package
+
+```{r}
+#| title: "Load tidyverse" 
+#| warning: false
+#| error: false
+library(tidyverse)
+```
+
+### Data
+
+In this exercise we will use following CSV files:
+
+1. [usa_division.csv](https://www.dropbox.com/s/w3it6xg8cji18x6/usa_division.csv?dl=0): USA division names with IDs
+
+2.  [usa_state.csv](https://www.dropbox.com/s/s2xdkji4eyknmoz/usa_state.csv?dl=0): USA State names with ID and division ID.  
+
+3.  [usa_corn_production.csv](https://www.dropbox.com/s/9al1v7faxy8w092/usa_corn_production.csv?dl=0) USA grain crop production by state from 2012-2022
+
+4.  [gp_soil_data.csv](https://www.dropbox.com/s/9ikm5yct36oflei/gp_soil_data.csv?dl=0): Soil carbon with co-variate from four states in the Greatplain region in the USA
+
+5.  [usa_geochemical_raw.csv](https://www.dropbox.com/s/db4lxfvb40rx4sx/usa_geochemical_raw.csv?dl=0): Soil geochemical data for the USA, but cleaned
+
+We will use **read_csv()** function of **readr** package to import data as a **Tidy** data.
+
+```{r}
+#| title: "Load Data" 
+#| warning: false
+#| error: false
+ 
+# Create a data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/USA/"
+# Load data
+div<-read_csv(paste0(dataFolder, "usa_division.csv"))
+state<-read_csv(paste0(dataFolder, "usa_state.csv"))
+corn<-read_csv(paste0(dataFolder, "usa_corn_production.csv"))
+soil<-read_csv(paste0(dataFolder, "gp_soil_data.csv"))
+```
+
+### Pipe Operator
+
+Before starting this tutorial, I like to brief you about the **Pipe Operator**. This is the most important operator for data wrangling in R. The pipe operator, written as **%\>%**, has been a longstanding feature of the **magrittr** package for R. It takes the output of one function and passes it into another function as an argument. This allows us to link a sequence of analysis steps. In this tutorial, you can see exactly how this works in a real example. (Source:https://towardsdatascience.com/an-introduction-to-the-pipe-in-r-823090760d64)
+
+### Join
+
+In R we use **base::merge()** function to merge two dataframes. This function is present inside **join()** function of dplyr package. The most important condition for joining two dataframes is that the column type should be the same of "key" variable by the merging happens. Types of **base::merge()** and several **join()** function of dplyr available in R are:
+
+![Join function of dplyr](Image/join_functions.png){fig-dplyr_join}
+
+**inner_join()** is a function in the **dplyr** library that performs an inner join on two data frames. An inner join returns only the rows that have matching values in both data frames. If there is no match in one of the data frames for a row in the other data frame, the result will not contain that row.
+
+> inner_join(x, y, .....)
+
+We will join state, division and USA corn production data one by one e using *inner_join*()\* function;
+
+```{r}
+#| title: "inner_join-1" 
+#| warning: false
+#| error: false
+
+corn_state = dplyr::inner_join(corn, state) 
+```
+
+```{r}
+#| title: "inner_join-2" 
+#| warning: false
+#| error: false
+
+corn_state_div = dplyr::inner_join(corn_state, div)  
+```
+
+We can run multiple **inner_join()** functions in a series with pipe **%\>%** function:
+
+```{r}
+#| title: "inner_join with pipe" 
+#| warning: false
+#| error: false
+
+mf.usa = dplyr::inner_join(corn, state) %>% 
+     dplyr::inner_join(div) %>%
+  glimpse()
+```
+
+### Relocate
+
+Now we will will organize DIVISION_FIPS, DIVISION_NAME, STATE_FIPS, STATE_NAME, DIVISION_NAME, YEAR, MT will use **relocate()** function:
+
+> relocate(.data, ..., .before = NULL, .after = NULL)
+
+
+```{r}
+#| title: "relocate()" 
+#| warning: false
+#| error: false
+
+mf.usa<-dplyr::relocate(mf.usa, DIVISION_ID, DIVISION_NAME, STATE_ID,   STATE_NAME, YEAR, MT,  
+                    .after =  DIVISION_ID) 
+head(mf.usa)
+```
+
+Now explore regions names with **levels()**
+
+```{r}
+levels(as.factor(mf.usa$DIVISION_NAME))
+```
+
+### Rename
+
+The **rename()** function can be used to rename variables. We will rename STAT_ID to SATE_FIPS.
+
+> rename_with(.data, ... .cols = ...)
+
+
+```{r}
+#| title: "rename()" 
+#| warning: false
+#| error: false
+ 
+df.usa <- mf.usa %>% 
+        dplyr::rename("STATE_FIPS" = "STATE_ID")
+names(df.usa)
+```
+
+### Pipe Join, Relocate and Rename functions
+
+We can also all together inner_join(), relocate(), and rename() in a single line with pipe:
+
+```{r}
+#| title: "inner_join, relocate, rename()" 
+#| warning: false
+#| error: false
+#| 
+df.corn = dplyr::inner_join(corn, state) %>% 
+          dplyr::inner_join(div) %>%
+          dplyr::relocate(DIVISION_ID, DIVISION_NAME, STATE_ID,   STATE_NAME, YEAR, MT,  
+                    .after =  DIVISION_ID) %>%
+          dplyr::rename("STATE_FIPS" = "STATE_ID") %>%
+        glimpse()
+```
+
+### Select
+
+**dplyr::select()** is used to extract a subset of columns from a data frame. It selects specific columns by name or by position. It is part of the dplyr package, which provides a set of functions that perform common data manipulation tasks efficiently and effectively.
+
+> select(.data, ...)
+
+Now we will use select() to create a dataframe with state names, year and production
+
+```{r}
+#| warning: false
+#| error: false
+
+df.state <- df.corn %>% 
+           dplyr::select(STATE_NAME, YEAR,  MT,) %>%
+           glimpse()
+```
+
+### Filter
+
+The **filter()** function in **dplyr** is used to subset a data frame based on some condition(s) specified in the filter argument. The syntax for using filter is:
+
+> filter(df, condition1, condition2, ...)
+
+We will use **filter()** to extract data only for northeast regions (single criteria) from us.df. This code will return a filtered data frame containing only the rows where the DIVISION_NAME column is equal to "East North Central".
+
+```{r}
+#| warning: false
+#| error: false
+
+df.01<-df.corn %>% 
+              dplyr::filter(DIVISION_NAME == "East North Central")
+levels(as.factor(df.01$STATE_NAME))
+```
+
+Filtering by multiple criteria within a single logical expression - select data from East North Central, South Central and Middle Atlantic Division
+
+```{r}
+#| warning: false
+#| error: false
+
+df.02<- df.corn %>% 
+            dplyr::filter(DIVISION_NAME %in%c("East North Central","East South Central", "Middle Atlantic")) 
+levels(as.factor(df.02$STATE_NAME))
+```
+
+or we can use **\|** which represents **OR** in the logical condition, any of the two conditions.
+
+```{r}
+#| warning: false
+#| error: false
+
+df.03<- df.usa %>% 
+                    dplyr::filter(DIVISION_NAME == "East North Central" | DIVISION_NAME == "Middle Atlantic")
+levels(as.factor(df.03$STATE_NAME))
+```
+
+Following filter create a files for the Middle Atlantic Division only with New York state.
+
+```{r}
+#| warning: false
+#| error: false
+
+df.ny<-df.corn %>% 
+         dplyr::filter(DIVISION_NAME == "Middle Atlantic" & STATE_NAME == "New York")
+head(df.ny)
+```
+
+Following filters will select State where corn production (MT) is greater than the global average of production
+
+```{r}
+#| warning: false
+#| error: false
+
+mean.prod <- df.corn %>% 
+              dplyr::filter(MT > mean(MT, na.rm = TRUE))
+levels(as.factor(mean.prod$STATE_NAME))
+```
+
+We use will **&** in the following filters to select states or rows where `MT` is greater than the global average of for the year 2017
+
+```{r}
+#| warning: false
+#| error: false
+
+mean.prod.2017 <- df.corn %>% 
+              dplyr::filter(MT > mean(MT, na.rm = TRUE) & YEAR ==2017)
+levels(as.factor(mean.prod.2017$STATE_NAME))
+```
+
+Following command will select counties starting with "A". filter() with **grepl()** is used to search for pattern matching.
+
+```{r}
+#| warning: false
+#| error: false
+
+state.a <- df.corn %>% 
+          dplyr::filter(grepl("^A", STATE_NAME))
+levels(as.factor(state.a $STATE_NAME))
+```
+
+### Summarize
+
+**Summarize** is a function in the dplyr used to collapse multiple values in a data frame into a single summary value. The function takes a data frame as input and returns a smaller data frame with summary statistics, such as mean, sum, count, etc. It can be used with other dplyr functions to manipulate and analyze data.
+
+> summarise(.data, ..., .groups = NULL)
+
+
+-   **Center**: mean(), median()
+
+-   **Spread**: sd(), IQR(), mad()
+
+-   **Range**: min(), max(), quantile()
+
+-   **Position**: first(), last(), nth(),
+
+-   **Count**: n(), n_distinct()
+
+-   **Logical**: any(), all()
+
+**summarise()** and **summarize()** are synonyms.
+
+```{r}
+#| warning: false
+#| error: false
+# mean
+summarize(df.corn, Mean=mean(MT))
+# median
+summarise(df.corn, Median=median(MT))
+```
+
+The scoped variants (_if, _at, _all) of summarise() make it easy to apply the same transformation to multiple variables. There are three variants.
+
+-   summarise_at() affects variables selected with a character vector or vars()
+
+-   summarise_all() affects every variable
+
+-   summarise_if() affects variables selected with a predicate function
+
+Following **summarise_at()** function mean of SOC from USA soil data (soil).
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>%
+    dplyr::summarise_at("SOC", mean, na.rm = TRUE)
+
+```
+
+For multiple variables:
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>%
+    dplyr::summarise_at(c("SOC", "NDVI"), mean, na.rm = TRUE)
+
+```
+
+The **summarise_if()** variants apply a predicate function (a function that returns TRUE or FALSE) to determine the relevant subset of columns.
+
+Here we apply mean() to the numeric columns:
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>%
+    dplyr::summarise_if(is.numeric, mean, na.rm = TRUE)
+```
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>%
+   dplyr::summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+
+```
+
+It is better to select first our target numerical columns and then apply **summarise_all()**:
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>%
+    # First select  numerical columns
+    dplyr::select(SOC, ELEV, NDVI, MAP, MAT) %>%
+    # get mean of all these variables
+    dplyr::summarise_all(mean, na.rm = TRUE)
+
+```
+
+### Mutate
+
+***mutate()** adds new columns to a data frame based on existing columns or variables. The new columns are specified by expressions that use the values from one or more existing columns. The function returns a new data frame with the added columns and the same number of rows as the original data frame.
+
+> mutate(.data, ..., .dots = NULL)
+
+In this exercise we will create a new column (MT_1000) in df.corn dataframe dividing MT column by 1000
+
+```{r}
+#| warning: false
+#| error: false
+
+df.corn %>%
+    # get mean of all these variables
+    dplyr::mutate(MT_1000 = MT / 10000) %>%
+    glimpse()
+
+```
+
+### Group by
+
+**group_by()** allows you to group a data frame by one or multiple variables. After grouping, you can perform operations on the grouped data, such as aggregating with **summarize()**, transforming with **mutate()**, or filtering with **filter()**. The result of grouping is a grouped tibble, which is a data structure that retains the grouping structure and allows you to perform further operations on the grouped data.
+
+> group_by(.data, ..., )
+
+We can calculate global mean of USA corn production by division:
+
+```{r}
+#| warning: false
+#| error: false
+
+df.corn %>% 
+          dplyr::group_by(DIVISION_NAME) %>%
+          dplyr::summarize(Prod_MT = mean(MT)) 
+```
+
+We can also apply the **group_by()**, **summarize()** and **mutate()** functions with pipe to calculate mean of corn production in 1000 MT by division for the year 2022
+
+```{r}
+#| warning: false
+#| error: false
+
+df.corn %>% 
+          dplyr::filter(YEAR==2020) %>%
+          dplyr::group_by(DIVISION_NAME) %>%
+          dplyr::summarize(Prod_MT = mean(MT)) %>%
+          dplyr::mutate(Prod_1000_MT = Prod_MT / 1000) 
+
+```
+
+We can also apply the group_by() and summarize() functions to calculate statistic of multiple variable:
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>% 
+  group_by(STATE) %>%
+  summarize(SOC = mean(SOC),
+            NDVI = mean(NDVI),
+            MAP = mean(MAP),
+            MAT = mean(MAT))
+```
+
+Following code will idenfify State where corn production data has not reported for the all years.
+
+```{r}
+#| warning: false
+#| error: false
+
+df.corn %>% 
+  dplyr::group_by(STATE_NAME) %>% 
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n < 11) 
+# Get the state names
+
+```
+
+### Pivoting Data-frame
+
+Pivoting a data frame in R involves transforming columns into rows and vice versa. In R, there are multiple ways to pivot a data frame, but the most common methods are:
+
+**tidyr::pivot_wider**: The pivot_wider() function is used to reshape a data frame from a long format to a wide format, in which each row becomes a variable, and each column is an observation.
+
+**tidyr::pivot_longer**: This is a relatively new function in the tidyr library that makes it easy to pivot a data frame from wide to long format. It is used to reshape a data frame from a wide format to a long format, in which each column becomes a variable, and each row is an observation.
+
+**tidyr::spread()**: This function is also used to pivot data from long to wide format. It creates new columns from the values of one column, based on the values of another column.
+
+**tidy::gather()** : This function is used to pivot data from wide to long format. It collects values of multiple columns into a single column, based on the values of another column.
+
+#### pivot_wider
+
+pivot_wider() convert a dataset wider by increasing the number of columns and decreasing the number of rows.
+
+```{r}
+#| title: "pivot_wider" 
+#| warning: false
+#| error: false
+
+corn.wider = df.corn  %>% 
+           dplyr::select (STATE_FIPS,STATE_NAME, YEAR, MT) %>%
+           # Drop state where reporting years less than 11 
+           dplyr::filter(STATE_NAME!= 'Connecticut', 
+                        STATE_NAME!= 'Maine',                        
+                        STATE_NAME!= 'Massachusetts', 
+                        STATE_NAME!= 'Nevada',
+                        STATE_NAME!= 'New Hampshire', 
+                        STATE_NAME!= 'Rhode Island', 
+                        STATE_NAME!= 'Vermont') %>%
+           tidyr::pivot_wider(names_from = YEAR, values_from = MT) %>%
+           glimpse()
+```
+
+#### pivot_longer
+
+The pivot_longer() function can be used to pivot a data frame from a wide format to a long format.
+
+```{r}
+names(corn.wider)
+```
+
+```{r}
+#| warning: false
+#| error: false
+
+corn.longer<- corn.wider %>% 
+               tidyr::pivot_longer(cols= c("2012", "2013", "2014", "2015", "2016", "2017",                                              "2018", "2019", "2020", "2021",  "2022"),
+                          names_to = "YEAR", # column need to be wider
+                          values_to = "MT") # data
+head(corn.longer)
+```
+
+Following command combined select(), rename(), summarize() and pivot_longer() the data:
+
+```{r}
+#| warning: false
+#| error: false
+
+soil %>% 
+  # First select  numerical columns
+  dplyr::select(SOC, ELEV, NDVI, MAP, MAT) %>%
+  # rename ELEV to DEM
+  dplyr::rename("DEM"= ELEV) %>%
+  # get summary statistics
+  dplyr::summarise_all(funs(min = min, 
+                      q25 = quantile(., 0.25), 
+                      median = median, 
+                      q75 = quantile(., 0.75), 
+                      max = max,
+                      mean = mean, 
+                      sd = sd)) %>% 
+  # create a nice looking table
+   tidyr::pivot_longer(everything(), names_sep = "_", names_to = c( "variable", ".value")) 
+ 
+```
+
+#### Spread
+
+**dplyr::spread()** is equivalent to **tidyr::pivot_wider()**:
+
+```{r}
+#| warning: false
+#| error: false
+
+df.corn %>% 
+  dplyr::select (STATE_FIPS, YEAR, STATE_NAME, MT) %>%
+  tidyr::spread(YEAR, MT) 
+```
+
+#### Gather
+
+**tidyr::gather("key", "value", x, y, z)** is equivalent to **tidyr::pivot_longer()**
+
+```{r}
+#| warning: false
+#| error: false
+
+corr.gathered<-corn.wider %>%
+        tidyr::gather(key = YEAR, value = MT, -STATE_FIPS, -STATE_NAME) %>%
+        glimpse()
+```
+
+## Cleaning a messy data
+
+In this exercise you will learn how a clean data and make it ready for analysis, such as dealing with missing values, data with below detection limit and cleaning spatial characters. We will clean **usa_geochemical_raw.csv** data for further analysis. The data could be found [here](https://www.dropbox.com/sh/n1bxn0rmrabtcjn/AADvgwWvMFpNfwSPu0gbb17ja?dl=0)
+
+```{r message=FALSE, warning=FALSE}
+## Create a data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/USA/"
+df.geo<-read_csv(paste0(dataFolder,"usa_geochemical_raw.csv"))
+meta.geo<-read_csv(paste0(dataFolder,"usa_geochemical_meta_data.csv"))
+```
+
+```{r}
+glimpse(df.geo)
+```
+
+```{r}
+glimpse(meta.geo)
+```
+
+We first create a file with limited number of variables using **select** functions and rename them:
+
+```{r}
+mf.geo <- df.geo %>%
+      select(A_LabID, StateID,  LandCover1, A_Depth, A_C_Tot, A_C_Inorg, A_C_Org, A_As, A_Cd,  A_Pb, A_Cr) %>%
+      rename("LAB_ID"=A_LabID,
+             "LandCover" =LandCover1,
+             "Soil_depth" = A_Depth,
+             "Total_Carbon" = A_C_Tot,
+             "Inorg_Carbon" = A_C_Inorg,
+             "Organic_Carbon"= A_C_Org, 
+             "Arsenic" = A_As,
+             "Cadmium" = A_Cd,
+             "Lead" = A_Pb,
+             "Chromium" = A_Cr) %>% glimpse()
+```
+
+Now, we filter the data where records have N.S. values INS:
+
+```{r}
+mf.geo<- mf.geo %>% 
+        filter(Soil_depth != "N.S." & Total_Carbon !="INS")
+```
+
+Then, we will convert all N.D. values to empty string:
+
+```{r}
+mf.geo[mf.geo=="N.D."]<- ""
+```
+
+Here detection limits of As, Cd, Pb and Cr are 0.6, 0.1, 0.5, and 1 mg/kg, respectively. We will replace the values below detection limits by half of detection limits of these heavy-metals. Before that we have to remove **"\<"** and convert the all <chr> to <double>.
+
+```{r}
+mf.geo <- mf.geo %>%
+      mutate_at(c("Arsenic", "Cadmium", "Lead", "Chromium"), str_replace, "<", "") %>%
+      mutate_at(c(5:11), as.numeric) %>% glimpse()
+```
+
+Now replace values below detection limits:
+
+```{r}
+mf.geo["Arsenic"][mf.geo["Arsenic"] == 0.6] <- 0.3
+mf.geo["Cadmium"][mf.geo["Cadmium"] == 0.1] <- 0.05
+mf.geo["Lead"][mf.geo["Lead"] == 0.5] <- 0.25
+mf.geo["Chromium"][mf.geo["Chromium"] == 1] <- 0.5
+```
+
+Now will check the missing values of the data:
+
+```{r}
+# counting unique, missing, and median values
+Arsenic<- mf.geo %>% summarise(N = length(Arsenic),
+                 na = sum(is.na(Arsenic)),
+                 Min = min(Arsenic, na.rm = TRUE),
+                 Max =max(Arsenic, na.rm = TRUE))
+
+Cadmium<- mf.geo %>% summarise(N = length(Cadmium),
+                 na = sum(is.na(Cadmium)),
+                 Min = min(Cadmium, na.rm = TRUE),
+                 Max =max(Cadmium, na.rm = TRUE))
+
+Lead<- mf.geo %>% summarise(N = length(Lead),
+                 na = sum(is.na(Lead)),
+                 Min = min(Lead, na.rm = TRUE),
+                 Max =max(Lead, na.rm = TRUE))
+
+Chromium<- mf.geo %>% summarise(N = length(Chromium),
+                 na = sum(is.na(Chromium)),
+                 Min = min(Chromium, na.rm = TRUE),
+                 Max =max(Chromium, na.rm = TRUE),
+                 )
+
+#bind the data
+geo.sum<- bind_rows(Arsenic, Cadmium, Lead, Chromium)
+
+#add.row.names
+row.names(geo.sum) <- c("Arsenic", "Cadmium", "Lead", "Chromium")
+head(geo.sum)
+```
+
+One of the common method of replacing missing values is **na.omit**. The function **na.omit()** returns the object with listwise deletion of missing values and function create new dataset without missing data.
+
+```{r}
+newdata <- na.omit(mf.geo)
+glimpse(newdata)
+```
+
+This function delete all records with missing values. Now newdata have only 1,167 records, since Inorg_Carbon variable has 3,690 missing values which all are omitted.
+
+We can impute missing values in several ways. The easiest way to impute missing values is by replacing the mean values of the variable. The following code replace missing of Arsenic, Cadmium, Lead and Chromium with their mean values.
+
+```{r}
+mf.geo.new<-mf.geo %>% mutate_at(vars(Arsenic, Cadmium, Lead, Chromium),~ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)) %>% glimpse()
+```
+
+```{r}
+mf.geo.new %>%summarise(sum(is.na(Chromium)))
+# save clean data
+#write_csv(mf.geo.new,"usa_geochemical_clean.csv" )
+```
+
+::: callout-note
+
+### Homework-1
+
+1. Create a folder in your computer name Homework.
+
+2. Create a R-Markdown Project using this Homework directory as shown before.
+
+3. Create a R-Markdown  documents (name homework_01.rmd) in this project and do all Tasks (1 to 23) using the data shown below. 
+
+4. Submit all codes and output  as a HTML document (homework_01.html) before class of next week. 
+
+#### Required R-Package
+
+>library(tidyverse)
+
+#### Data
+
+1.  [bd_rice_production.csv](https://www.dropbox.com/s/civw156b81mhvm6/bd_rice_production.csv?dl=0): Yearly rice production of Bangladesh
+
+2. [bd_district.csv](https://www.dropbox.com/s/jnaq80qq8rnxhp9/bd_district.csv?dl=0): District names with DISTRICT_ID and DIVISION_PCODE
+
+3. [bd_division.csv](https://www.dropbox.com/s/iofedcoopx5tkwa/bd_division.csv?dl=0) Division names and DIVISION_PCODE
+
+4. [raj_soil_data.csv](https://www.dropbox.com/s/pdaclpszt9bto8b/raj_soil_data.csv?dl=0): SRDI soil data for Rajshahi Division
+
+5. [bd_soil_data_raw.csv](https://www.dropbox.com/s/cc41v0an9ia5w52/bd_soil_data_raw.csv?dl=0): SRDI soil data, not cleaned
+
+
+Download all above data and save in your project directory. Use read_csv to load the data in your R-session. For example:
+
+> rice<-read_csv("bd_rice_production.csv"))
+
+#### Tasks
+
+1. Join rice production, and district file using dplyr::inner_join()
+
+2. Then join division file using dplyr::inner_join()
+
+3. Organize column as (DIVISION_ID, DIVISION_NAME, DISTRICT_ID, DISTRICT_NAME, YEAR, MT using dplyr::relocate()
+
+4. Rename "DISTRICT_ID" to "DISTRICT_PCODE" using dplyr::rename()
+
+5. Run all the above code using pipe function in a single line and create a data frame name df.rice.csv
+
+6. Form df.rice data that you have created before, use select() function to create a data frame only with DISTRICT_NAME, YEAR and MT
+
+7. Filter out the data from Rajshahi division using dplyr::filter()
+
+8. Filter (Filtering by multiple criteria) all district in Rajshahi and Dhaka divisions using dplyr::filter()
+
+9. Use **\|** or **OR** in the logical condition in filter function, select data from any of the two divisions.
+
+10. Apply filter create a files for the Rajshai Division only with Bogra District.
+
+11. Select districts where rice production (MT) is greater than the global average
+
+12. Use **&** to select district where `MT` is greater than the global average of for the year 2018-2019
+
+13. Select districts starting with "P"
+
+14. Use raj_soil data to calculate mean of SOM using dplyr::summarise_at() function
+
+15. Use bd_soil data to calculate mean of SOM and NDVI using dplyr::summarise_at() function
+
+16. Use dplyr::summarise_if() to calculate mean() to the numeric columns
+
+17. Select numerical columns (pH,SOM, DEM, NDVI, NDFI) and then apply dplyr::summarise_all()\*to calculate mean of these variables
+
+18. Create a new column (MT_1000) in df.rice dataframe dividing MT column by 1000 using mutate()
+
+20. Apply the group_by(), summarize()\*\* and mutate() functions with pipe to calculate mean of corn production in 1000 MT by division for the year 2018-2019
+
+21. Use df.rice data to create a wider data frame using tidyr::pivot_wider() function
+
+22. Convert rice.wider data to a longer format use tidyr::pivot_longer()
+
+23. Clean bd_soil_data_raw.csv and save as bd_soil_data.final.csv.
+:::
+
+{{< pagebreak >}}
+
+### Further Reading
+
+1.  [R for Data Science](https://r4ds.had.co.nz/)
+
+2.  [Data Wrangling with R](https://cengel.github.io/R-data-wrangling/)
+
+3.  [Book: Data Wrangling with R](https://link.springer.com/book/10.1007/978-3-319-45599-0)
+
+4.  [PDF Data wrangling with R and RStudio](https://github.com/rstudio/webinars/blob/master/05-Data-Wrangling-with-R-and-RStudio/wrangling-webinar.pdf)
+
+5.  [Youtube Data Wrangling with R and the Tidyverse - Workshop](https://www.youtube.com/watch?v=CnY5Y5ANnjE)

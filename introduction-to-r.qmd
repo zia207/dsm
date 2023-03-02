@@ -1,16 +1,14 @@
-# Introduction to Using R {.unnumbered}
-
-## Introduction
+# Introduction to use R {.unnumbered}
 
 R is an object-oriented programming language like [Python](https://www.python.org/), [Julia](https://julialang.org/), and [JavaScript](https://www.javascript.com/). Like these programming languages, R has a specific syntax or function, which is essential to understand if you want to use its features to accomplish thousands of things with R. However, one of the most challenging parts of learning R is finding your way around. In section of tutorial you will learn some basic of R such as syntax of R programming, assignment statements, r-data types, control statements and simple r-function.
 
-## Screen Prompt
+### Screen Prompt
 
 The **screen prompt \>** in R-console is an place to put command or instruction for R to work. Press the "Ctrl" + "L" keys simultaneously. The screen will now be refreshed and the console should be cleared.
 
 ![R Screen Prompt](Image/sreen_prompt.png){#fig-screen_prompt}
 
-## R as a Calculator
+### R as a Calculator
 
 We can use R as a calculators, at the prompt, we enter the expression that we want evaluated and when we hit enter, it will compute the result for us . For Example:
 
@@ -44,11 +42,11 @@ Use parentheses to ensure that it understands what you are trying to compute.
 
 https://www.geeksforgeeks.org/control-statements-in-r-programming/?ref=lbp
 
-## Syntax of R program
+### Syntax of R program
 
 **Variables**, **Comments**, and **Keywords** are the three main components in R- programming. Variables are used to store the data, Comments are used to improve code readability, and Keywords are reserved words that hold a specific meaning to the compiler.
 
-## Built in Function
+### Built in Function
 
 There are so many built-in mathematical functions are available in base-R. Some are shown in below table:
 
@@ -72,7 +70,7 @@ pi
 sin(pi/2)
 ```
 
-## Number with Exponents
+### Number with Exponents
 
 We can use very big numbers or very small numbers in R using the following scheme:
 
@@ -84,7 +82,7 @@ We can use very big numbers or very small numbers in R using the following schem
 1.2e-2 # means 0.012 because the e-2 means ‘move the decimal point 2 places to the left’
 ```
 
-## Modulo and Integer Quotients
+### Modulo and Integer Quotients
 
 Suppose we want to know the integer part of a division: say, how many 13s are there in 119:
 
@@ -98,7 +96,7 @@ Suppose we wanted to know the remainder (what is left over when 119 is divided b
 119 %% 13
 ```
 
-## Rounding
+### Rounding
 
 Several types of rounding (rounding up, rounding down, rounding to the nearest integer) can be done easily with R.
 
@@ -114,7 +112,7 @@ The 'next integer' function is **ceiling**()
 ceiling(5.7)
 ```
 
-## Assignment Statements
+### Assignment Statements or assigning values to variables:
 
 Just like in algebra, we often want to store a computation under some variable name. The result is assigned to a variable with the symbols = or <- which is formed by the "less than" symbol followed immediately by a hyphen.
 
@@ -139,7 +137,7 @@ c=a+b;
 c
 ```
 
-## Variable Names
+### Variable Names
 
 -   Do not begin a variable name with a period or a number. Variable names are case (upper/lower) sensitive.
 
@@ -149,7 +147,7 @@ c
 
 -   Variable names should not contain blank spaces: use grain.yield
 
-## Operators
+### Operators
 
 ```{r}
 # + - */%% ^ arithmetic
@@ -161,13 +159,24 @@ c
 # : create a sequence
 ```
 
-## R Data Types
+## Basic Data Types
 
-R has a wide variety of data types including scalars, vectors (numerical, character, logical), matrices, data frames, and lists.
+R has a wide variety of data types including scalars, vectors (numerical, character, logical), matrices, data frames, and lists.You can check the type of a variable using the class() function. For example: 
+
+```{r}
+x <- 5
+class(x) # numeric
+
+y <- "hello"
+class(y) # character
+
+z <- TRUE
+class(z) # logical
+```
 
 ### Vectors
 
-Vectors is data-type with one or more values of the same type such as logical, integer, real, complex, string (or character) or raw vectors. Unlike Python, the indexing of the vector in R will start from '1' and not from '0'.
+A vector is a basic data structure in R that can hold multiple values of the same data type. 
 
 A scalar data structure is the most basic data type that holds only a **single atomic value** at a time. Using scalars, more complex data types can be constructed. The most commonly used scalar types in R:
 
@@ -451,27 +460,6 @@ class(gender) #
 summary(gender)
 ```
 
-### Array
-
-Arrays is data storage structures with fixed number of dimensions. An array in R can be created with the use of **array()** function.
-
-```{r}
-arr = array(2:13, dim = c(2, 3, 2))
-print(arr)
-```
-
-Vectors of different lengths can also be fed as input into the array() function
-
-```{r}
-vec1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9)
-vec2 <- c(10, 11, 12)
-  
-# elements are combined into a single vector, 
-# vec1 elements followed by vec2 elements.
-arr = array(c(vec1, vec2), dim = c(2, 3, 2))
-print (arr)
-```
-
 ### Lists
 
 List is a one-detrimental data element which consist of several objects in a order. The object in a list may be mixed data types or different data types.The list can be a list of vectors, a list of matrices, a list of characters and a list of functions, and so on.
@@ -536,7 +524,7 @@ my.df[,4:5]
 
 ## Control Statements
 
-**Control flow** is the order in which a statement execute and **control statements** use to control the execution and flow of the program based on conditions provided in the statements.
+Control statements are programming language constructs that allow the programmer to control the flow of execution of a program. They are used to alter the order in which statements are executed, and to make decisions based on conditions.
 
 The eight major types of control statements are follows:
 
@@ -635,26 +623,6 @@ while (i < 5) {
    i = i + 1
    result = result + 1
 }
-```
-
-### repeat loop
-
-A repeat loop is used to iterate over a block of code multiple number of times.
-
-```{r}
-# randomly draw values from a uniform distribution between 1 and 15.
-result <- 1
-x <- NULL
-# random draws of values between 1 and 15 
-repeat {
-        x <- c(x, round(runif(1, min = 1, max = 15)))
-       if(all(1:15 %in% x)) {
-# for exit the loop
-          break
-        }
-result<- result + 1
-}
-result
 ```
 
 ## Writing R Functions

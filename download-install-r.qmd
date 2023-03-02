@@ -1,16 +1,10 @@
 # Download and Installation of R and R-Studio {.unnumbered}
 
-## Introduction
-
 This tutorial will teach you how to begin programming with **R** using **RStudio**. We'll install R, and RStudio, a popular development environment for R. We'll also learn how to install **R-package** and some key RStudio features to start programming in R on our own.
-
-## What is R?
-
-[R](https://www.r-project.org/) is one of the most popular open-source statistical computing and visualization environments. It was developed in 1980 based on the [S-language](https://en.wikipedia.org/wiki/S_(programming_language)), and an open-source community regularly updates the software for a robust, programmable, portable, and open-source computing environment. We can use it to solve complex and sophisticated problems and "routine" analysis without restrictions on access or use.
 
 ## Download R
 
-We can download R from the [R project](https://www.r-project.org/) of a repository CRAN. The version of R to download depends on our operating system. We can also install [Microsoft R Open](https://mran.microsoft.com/download), the enhanced distribution of R from Microsoft. It includes additional capabilities for improved performance and reproducibility and support for Windows and Linux-based platforms.
+You can download the latest version of R from the Comprehensive R Archive Network (CRAN) website (https://cran.r-project.org/). Follow the instructions to install it on your computer. The version of R to download depends on our operating system. We can also install [Microsoft R Open](https://mran.microsoft.com/download), the enhanced distribution of R from Microsoft. It includes additional capabilities for improved performance and reproducibility and support for Windows and Linux-based platforms.
 
 1.  Click [this link](https://www.r-project.org//) to download the latest stable version of R
 2.  Select a CRAN location (a mirror site) close to you
@@ -82,7 +76,7 @@ Step 7: Check R -version
 
 > R --version
 
-## Open R-Base
+### Open R-Base
 
 After R installation in Windows, double click on the desktop icon or open the program from START to run R. R will be open as a **Console** window.
 
@@ -91,6 +85,16 @@ After R installation in Windows, double click on the desktop icon or open the pr
 You can work in the console and the command line. However, the command line can be pretty daunting to a beginner. It is better to work in **R Editor**. First, you must create a **New script** from **File** menu. Any code you run in R-script output will be displayed in the console window. You can save all your R codes as an R script file and output in the console as an R-Data file.
 
 {{< video https://www.youtube.com/embed/bJRq1-trxcY >}}
+
+## RTools
+
+[Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools42/rtools.html) is a collection of software tools that are used to build packages for the R programming language on Windows operating system. It includes various programs and libraries, such as make, gcc, g++, and others, that are needed to compile and build R packages that contain compiled code. Without Rtools, it is not possible to build such packages on Windows.
+
+Rtools is not needed if you only use R for data analysis and use packages that only contain interpreted code. However, if you need to use a package that contains compiled code, you will need to install Rtools in order to use that package.
+
+The version of may be installed from the Rtools [installer](https://cran.r-project.org/bin/windows/Rtools/rtools42/files/rtools42-5355-5357.exe). It is recommended to use the defaults, including the default installation location of C:\rtools42.
+
+When using R installed by the installer, no further setup is necessary after installing Rtools to build R packages from source. When using the default installation location, R and Rtools42 may be installed in any order and Rtools42 may be installed when R is already running.
 
 ## Integrated Development Environment for R
 
@@ -106,7 +110,7 @@ R can be run in the command line and graphical user interfaces in [integrated de
 8.  [RBox](https://atom.io/packages/rbox)
 9.  [Code](https://code.visualstudio.com/)
 
-### Download and Installation RStudio
+## Download and Installation RStudio
 
 [RStudio](https://posit.co) is one of the best [integrated development environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment) for R that includes a [console](https://support.rstudio.com/hc/en-us/articles/200404846-Working-in-the-Console), a [terminal](https://support.rstudio.com/hc/en-us/articles/115010737148-Using-the-RStudio-Terminal-in-the-RStudio-IDE) syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management. RStudio Desktop and RStudio Server for Windows, Mac, and Linux are open sources.
 
@@ -150,17 +154,55 @@ If we want see content of any library, just use **help()** function or package s
 
 ## R Markdown
 
-Markdown is a lightweight markup language for creating formatted text using a plain-text editor. Markdown is widely used in blogging, instant messaging, online forums, collaborative software, documentation pages, and readme files ([wikipedia)](https://en.wikipedia.org/wiki/Markdown).
+R Markdown is an extension of the Markdown language that allows us to embed R code and its output within your documents. With R Markdown, we can create dynamic documents that integrate R code, results, and visualization with narrative text, all in a single document. R Markdown files have the extension ".Rmd" and can be rendered into various output formats such as HTML, PDF, Word, and more.
 
-R Markdown is an excellent platform for data analysis and turns it into a high-quality document, webpage, dashboard, and presentation. It is reproducible and supports multiple languages, including R, Python, and SQL. R Markdown supports dozens of static and dynamic output formats, including HTML, PDF, MS Word, Beamer, HTML5 slides, Tufte-style handouts, books, dashboards, shiny applications, scientific articles, websites, and more. ([R Markdown)](https://rmarkdown.rstudio.com/index.html)
+R Markdown documents contain three main components: 1. The YAML header specifies the document's metadata, such as the title, author, and output format.
 
-You can use a single R Markdown file to i) save and execute code and ii) generate high quality reports that can be shared with an audience.
+2.  The text body, contains the narrative text written in Markdown syntax.
+
+3.  Code chunks are blocks of R code that can be executed and rendered within the document.
+
+R Markdown is a powerful tool for creating reproducible research documents, reports, presentations, and websites. It allows the integration of code, results, and visualization into a single document that others can easily share and reproduce.
 
 A brief overview could be found [here](https://rmarkdown.rstudio.com/lesson-1.html):
 
-For a brief a brief tutorial, please visit [here](https://rmarkdown.rstudio.com/lesson-2.html)
+For a brief tutorial, please visit [here](https://rmarkdown.rstudio.com/lesson-2.html).
+
+### R-Markdown Project
+
+To create a new R Project, open RStudio and click on
+
+File -\> New Project
+
+{{< video https://youtu.be/WnOmBKH2_C0 >}}
+
+### R-Markdown Document
+
+To create a new R Markdown document, open RStudio and click on
+
+File -\> New File -\> R Markdown.
+
+![](Image/mark_down_01.png){width="672"}
+
+You will be prompted to choose a document format. Choose the format that suits your needs. In this tutorial, we will choose the "HTML" format.
+
+Give your document a title and author name, then click "Create". This will create a new R Markdown document with the extension ".Rmd".
+
+![](Image/markdown_02.png){width="684"}
+
+Your new R Markdown document will contain a template that you can use as a starting point. You can start adding content to your document by editing the template. The template contains a YAML header, which specifies the title, author, and output format of the document, and a Markdown body, which is where you can write your text.
+
+![](Image/mardown_03.png)
+
+You can add headings, lists, and links using Markdown syntax. You can also add inline R code and code chunks to your document. Once you have added content to your document, you can preview it by clicking on the "Knit" button at the top of the document editor. This will compile your R Markdown document into an output format (e.g. HTML, PDF, Word) based on the output format specified in the YAML header.
+
+![](Image/markdown_04.png)
+
+Here below cheat sheet rmarkdown syntax:
 
 ![R-Markdown Cheat Sheet -1](Image/rarkdown_cheat_sheet_01.png){#fig-cheat_sheet-1}
+
+![R-Markdown Cheat Sheet -1](Image/rarkdown_cheat_sheet_01.png)
 
 ![R-Markdown Cheat Sheet -2](Image/rarkdown_cheat_sheet_02.png){#fig-cheat_sheet-2}
 
@@ -172,7 +214,7 @@ Like R Markdown, Quarto uses *Knitr* to execute R code. So it can render most ex
 
 To run Quarto on RStudio, you must install it in your system. You can download it from [here](https://quarto.org/docs/get-started/) according to your operating system. After installation, you need to install the **quarto** package to render documents from the R console.
 
-> install.packages("quarto") 
+> install.packages("quarto")
 
 > quarto::quarto_render("hello.qmd")
 

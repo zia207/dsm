@@ -1,0 +1,258 @@
+# Data Wrangling with Janitor {.unnumbered}
+
+![](Image/Janitor.png)
+
+The R package [janitor](https://github.com/sfirke/janitor) provides a set of tools for cleaning and organizing data in R. The package is designed to help make data cleaning tasks easier and more efficient, with functions that handle common data cleaning tasks.
+
+Some of the functions provided by the janitor package include:
+
+**clean_names**: This function cleans column names by removing special characters and converting them to lowercase.
+
+**remove_empty**: This function removes rows or columns that are entirely empty from a data frame.
+
+**tabyl**: This function creates frequency tables with ease.
+
+**get_dupes**: This function identifies duplicate rows in a data frame.
+
+**factorize**: This function converts columns in a data frame to factors.
+
+The janitor package can be installed using the following command in R:
+
+> install.packages("janitor")
+
+### Load Packages
+
+```{r}
+#| warning: false
+#| error: false
+library(tidyverse)
+library(janitor)
+```
+
+## Some Important functions
+
+We will create some "bad" data and clean them with janitor. We will apply following functions:
+
+* clean_names()
+* remove_empty()
+* trim_ws()
+* get_dupes()
+* remove_constant()
+
+### clean_names()
+
+The **clean_names()** function is used to clean column names in a data frame. It converts the column names to lowercase and replaces all spaces and special characters with underscores.
+
+```{r}
+#| warning: false
+#| error: false
+#| 
+# Create a data frame with messy column names
+df <- data.frame("Column One" = 1:5, 
+                 "Column Two!!" = 6:10, 
+                 "Column Three $" = 11:15,
+                 "%Column four" = 11:15)
+head(df)
+
+```
+
+```{r}
+#| warning: false
+#| error: false
+
+df %>%
+  janitor::clean_names()
+```
+
+### remove_empty()
+
+The remove_empty() function is used to remove rows or columns that contain only missing or empty values.
+
+```{r}
+#| warning: false
+#| error: false
+# Create a data frame with empty rows and columns
+df <-  data.frame(x = c(1,NA,4),
+                    y = c(NA,NA,3),
+                    z = c(NA, NA, NA))
+
+head(df)
+```
+```{r}
+#| warning: false
+#| error: false
+df %>% 
+  janitor::remove_empty(c("rows","cols"))
+```
+
+
+### get_dupes()
+
+The get_dupes() function is used to find duplicate rows in a data frame.
+
+```{r}
+#| warning: false
+#| error: false
+#| 
+df <- data.frame("Column One" = c(1, 2, 3, 1), "Column Two" = c("A", "B", "C", "A"))
+get_dupes(df)
+```
+
+### Cleanind a bad data
+
+Now we will clean on very messy data using some functions of janitor packages. We will use [Lung Cancer Mortality data](https://www.dropbox.com/s/ovm7dc2szax6kcz/USA_LBC_Data.csv?dl=0). 
+
+
+```{r}
+#| warning: false
+#| error: false
+
+## Create a data folder
+dataFolder<-"D:/Dropbox/GitHub/Data/USA/"
+df<-read_csv(paste0(dataFolder,"USA_LBC_Data.csv"))
+```
+
+```{r}
+#| warning: false
+#| error: false
+glimpse(df)
+```
+
+You’ve probably received plenty of data files like this,  that have some text at the top of the spreadsheet before the actual data begins.
+
+In this df.lbc data-frame, the column heading describe briefly the data. But we want 1st row as column heading. So we apply  we will apply **row_to_names()**. The row_to_names() function takes the following arguments: the data source, the row number that column names should come from, whether that row should be deleted from the data, and whether the rows above should be deleted from the data:
+
+```{r}
+#| warning: false
+#| error: false
+df.01 = df %>% 
+  janitor::row_to_names(1, remove_row = TRUE, remove_rows_above = TRUE) %>%
+  glimpse()
+```
+
+
+Still data has some empty  columns and and empty rows, we are going to remove these empty columns and rows using **remove_empty()** function: 
+
+```{r}
+#| warning: false
+#| error: false
+
+df.02 = df.01 %>% 
+  janitor::remove_empty() %>%
+  glimpse()
+```
+
+
+Now, we are going fix column headings using **clean_names()**. It converts the column names to lowercase and replaces all spaces and special characters with underscores.
+
+
+```{r}
+#| warning: false
+#| error: false
+
+df.03 = df.02 %>%
+  janitor::clean_names() %>%
+  glimpse()
+```
+
+
+All data are exported in R as **chr**. We are going to convert column from 4 to 21 **as.numeric** and 22 to 23 **as.factor**. We use **dplyr::mutate_at()** function: 
+
+```{r}
+#| warning: false
+#| error: false
+
+df.04= df.03 %>%
+     dplyr::mutate_at(4:21, as.numeric) %>%
+     dplyr::mutate_at(22:24, as.factor) %>%
+     glimpse()
+```
+
+
+Now will check the duplicates record in the  this data: 
+
+```{r}
+#| warning: false
+#| error: false
+
+df.04 %>% janitor::get_dupes(fips)
+```
+
+
+As shown above, the data frame is filtered down to those rows with duplicate values in the Fips column. For removing these duplicate rows, we have to use **dplyr::distinct(.keep_all = TRUE)**
+
+Now will check the duplicates record in the  this data: 
+
+```{r}
+#| warning: false
+#| error: false
+
+df.05= df.04 %>% 
+     dplyr::distinct(fips,.keep_all = TRUE) %>%
+     glimpse()
+```
+
+
+Now we run all above function with Pipe (%>%): 
+
+```{r}
+#| warning: false
+#| error: false
+df_clean = df %>% 
+  janitor::row_to_names(1, remove_row = TRUE, remove_rows_above = TRUE) %>%
+  janitor::remove_empty() %>%
+  janitor::clean_names() %>%
+  dplyr::mutate_at(4:21, as.numeric) %>%
+  dplyr::mutate_at(22:24, as.factor) %>%
+  dplyr::distinct(fips,.keep_all = TRUE) %>%
+     glimpse()
+```
+
+
+::: callout-note
+
+### Homework-2
+
+1. Create a R-Markdown Project using this Homework directory as shown before.
+
+2. Create a R-Markdown  documents (name homework_02.rmd) in this project and do all Tasks (1 to 6) using the data shown below. 
+
+3. Submit all codes and output  as a HTML document (homework_02.html) before class of next week. 
+
+#### Required R-Package
+
+>library(tidyverse)
+>library(janitor)
+
+#### Data
+
+[bd_arsenic_data_raw.csv](https://www.dropbox.com/s/6kw0wkprpw31kis/bd_arsenic_data_raw.csv?dl=0) 
+
+
+Download the data and save in your project directory. Use read_csv to load the data in your R-session. For example:
+
+> bf<-read_csv("bd_arsenic_data_raw.csv"))
+
+#### Tasks
+
+1. Use row_to_names() remove text from column heading
+
+2. Remove empty rows and columns using remove_empty()
+
+3. Clean column names using clean_names()
+
+4. Use as.numeric and as.factor arguments in  **dplyr::mutate_at()** function to convert 'chr' columns to numeric and factors accordingly
+
+5. Find duplicate records and remove them
+
+6. Run all above functions with pipe. 
+
+:::
+
+### Further Reading
+
+1. [Overview of janitor functions](https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html)
+
+2. [Cleaning and Exploring Data with the “janitor” Package](https://towardsdatascience.com/cleaning-and-exploring-data-with-the-janitor-package-ee4a3edf085e)
+
+

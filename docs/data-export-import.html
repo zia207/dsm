@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Digital Soil Mapping with R – data-export-import</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Digital Soil Mapping with R</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page">
+ <span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207/dsm"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/zia207"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started-r.html" class="sidebar-item-text sidebar-link">Getting Started DSM with R</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basic R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-install-r.html" class="sidebar-item-text sidebar-link">Download and Installation R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction-to-r.html" class="sidebar-item-text sidebar-link">Introduction to use R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-export-import.html" class="sidebar-item-text sidebar-link active">Data export/import to/from R</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Data Wragling with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-basic.html" class="sidebar-item-text sidebar-link">Introduction to Data Wragling</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-dplyr.html" class="sidebar-item-text sidebar-link">Data Wrangling with dplyr and tidyr</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-wrgaling-janitor.html" class="sidebar-item-text sidebar-link">Data Wrangling with janitor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Data Exploration with R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-exploration-basic.html" class="sidebar-item-text sidebar-link">Introduction to Data Exploration</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#data-import-export-intofrom-r" id="toc-data-import-export-intofrom-r" class="nav-link active" data-scroll-target="#data-import-export-intofrom-r">Data Import-Export into/from R</a>
+  <ul>
+  <li><a href="#working-directory" id="toc-working-directory" class="nav-link" data-scroll-target="#working-directory">Working directory</a></li>
+  <li><a href="#readimport-data-into-r" id="toc-readimport-data-into-r" class="nav-link" data-scroll-target="#readimport-data-into-r">Read/Import Data into R</a>
+  <ul class="collapse">
+  <li><a href="#importing-data-using-r-studio-ide" id="toc-importing-data-using-r-studio-ide" class="nav-link" data-scroll-target="#importing-data-using-r-studio-ide">Importing data using R-Studio IDE</a></li>
+  <li><a href="#text-file-.txt" id="toc-text-file-.txt" class="nav-link" data-scroll-target="#text-file-.txt">Text File (.txt)</a></li>
+  <li><a href="#comma-separated-file-.csv" id="toc-comma-separated-file-.csv" class="nav-link" data-scroll-target="#comma-separated-file-.csv">Comma-Separated File (.csv)</a></li>
+  <li><a href="#excel-files-.xlsx" id="toc-excel-files-.xlsx" class="nav-link" data-scroll-target="#excel-files-.xlsx">Excel Files (.xlsx)</a></li>
+  <li><a href="#json-files-.json" id="toc-json-files-.json" class="nav-link" data-scroll-target="#json-files-.json">JSON Files (.json)</a></li>
+  </ul></li>
+  <li><a href="#import-data-from-other-stattistcal-software" id="toc-import-data-from-other-stattistcal-software" class="nav-link" data-scroll-target="#import-data-from-other-stattistcal-software">Import Data from Other Stattistcal Software</a>
+  <ul class="collapse">
+  <li><a href="#stata-file-.dta" id="toc-stata-file-.dta" class="nav-link" data-scroll-target="#stata-file-.dta">STATA File (.dta)</a></li>
+  <li><a href="#spss-file-.sav" id="toc-spss-file-.sav" class="nav-link" data-scroll-target="#spss-file-.sav">SPSS File (.sav)</a></li>
+  <li><a href="#sas-file-.sas7bdat" id="toc-sas-file-.sas7bdat" class="nav-link" data-scroll-target="#sas-file-.sas7bdat">SAS File (.sas7bdat)</a></li>
+  </ul></li>
+  <li><a href="#export-files-from-r" id="toc-export-files-from-r" class="nav-link" data-scroll-target="#export-files-from-r">Export files from R</a>
+  <ul class="collapse">
+  <li><a href="#csv-file" id="toc-csv-file" class="nav-link" data-scroll-target="#csv-file">CSV File</a></li>
+  <li><a href="#excel-file" id="toc-excel-file" class="nav-link" data-scroll-target="#excel-file">Excel File</a></li>
+  <li><a href="#json-objects" id="toc-json-objects" class="nav-link" data-scroll-target="#json-objects">JSON Objects</a></li>
+  <li><a href="#r-data-file" id="toc-r-data-file" class="nav-link" data-scroll-target="#r-data-file">R Data File</a></li>
+  </ul></li>
+  <li><a href="#export-to-other-statistcal-software" id="toc-export-to-other-statistcal-software" class="nav-link" data-scroll-target="#export-to-other-statistcal-software">Export to Other Statistcal Software</a>
+  <ul class="collapse">
+  <li><a href="#stata-file" id="toc-stata-file" class="nav-link" data-scroll-target="#stata-file">STATA File</a></li>
+  <li><a href="#spss-file" id="toc-spss-file" class="nav-link" data-scroll-target="#spss-file">SPSS File</a></li>
+  <li><a href="#sas-file" id="toc-sas-file" class="nav-link" data-scroll-target="#sas-file">SAS File</a></li>
+  </ul></li>
+  <li><a href="#data.table-extension-of-data.frame" id="toc-data.table-extension-of-data.frame" class="nav-link" data-scroll-target="#data.table-extension-of-data.frame">data.table: Extension of ‘data.frame’</a>
+  <ul class="collapse">
+  <li><a href="#reaing-csv-file-with-fread" id="toc-reaing-csv-file-with-fread" class="nav-link" data-scroll-target="#reaing-csv-file-with-fread">Reaing CSV file with <strong>fread</strong></a></li>
+  <li><a href="#writing-csv-file-with-fwrite" id="toc-writing-csv-file-with-fwrite" class="nav-link" data-scroll-target="#writing-csv-file-with-fwrite">Writing CSV file with <strong>fwrite</strong></a></li>
+  </ul></li>
+  <li><a href="#feather-a-fast-on-disk-format-for-data-frames" id="toc-feather-a-fast-on-disk-format-for-data-frames" class="nav-link" data-scroll-target="#feather-a-fast-on-disk-format-for-data-frames">Feather: A Fast On-Disk Format for Data Frames</a></li>
+  <li><a href="#tidyverse-package-data-import-and-export" id="toc-tidyverse-package-data-import-and-export" class="nav-link" data-scroll-target="#tidyverse-package-data-import-and-export">Tidyverse Package: Data Import and Export</a>
+  <ul class="collapse">
+  <li><a href="#installation-and-use" id="toc-installation-and-use" class="nav-link" data-scroll-target="#installation-and-use">Installation and use</a></li>
+  <li><a href="#read-csv-files-with-readr" id="toc-read-csv-files-with-readr" class="nav-link" data-scroll-target="#read-csv-files-with-readr">Read CSV files with readr</a></li>
+  <li><a href="#write-csv-files-with-readr" id="toc-write-csv-files-with-readr" class="nav-link" data-scroll-target="#write-csv-files-with-readr">Write CSV files with readr</a></li>
+  </ul></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further Reading</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+<section id="data-import-export-intofrom-r" class="level1 unnumbered">
+<h1 class="unnumbered">Data Import-Export into/from R</h1>
+<p>Reading data for analysis and exporting the results to another system for report writing can be done efficiently with R. There are multiple ways to import and export data to/from R. In this tutorial, you will learn some most common ways to read and write data with R.</p>
+<p>All data set use in this exercise can be downloaded from my <a href="https://www.dropbox.com/sh/5au9x4jabyeelah/AAD4cqe97kuxGpkahKGqyenka?dl=0">dropbox folder</a>.</p>
+<section id="working-directory" class="level2">
+<h2 class="anchored" data-anchor-id="working-directory">Working directory</h2>
+<p>It would be best if you created a working directory in R to read and write files locally. The following example shows how to create the working directory in R.</p>
+<p>Before creating a working directory, you may check the directory of your current R session; the function <strong>getwd()</strong> will print the current working directory path as a string.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "F:/GitHub/R_QaurtoWebsite/dsm"</code></pre>
+</div>
+</div>
+<p>If you want to change the working directory in R you just need to call the <strong>setwd()</strong> function, specifying as argument the path of the new working directory folder.</p>
+<blockquote class="blockquote">
+<p>setwd(“F:\R-Project”) setwd(“F:/R-Project”</p>
+</blockquote>
+<p>Remember that you must use the forward slash <strong>/</strong> or double backslash <strong>\</strong> in R! The Windows format of single backslash will not work.</p>
+<p>The files under in a directory can check using <strong>dir()</strong> function</p>
+<blockquote class="blockquote">
+<p>dir()</p>
+</blockquote>
+</section>
+<section id="readimport-data-into-r" class="level2">
+<h2 class="anchored" data-anchor-id="readimport-data-into-r">Read/Import Data into R</h2>
+<section id="importing-data-using-r-studio-ide" class="level3">
+<h3 class="anchored" data-anchor-id="importing-data-using-r-studio-ide">Importing data using R-Studio IDE</h3>
+<p>Importing data into R becomes time intensive. The easiest way to import data into R is by using RStudio IDE. This feature can be accessed from the <strong>Environment pane</strong> or from the **tools menu*. The importers are grouped into three categories: Text data, Excel data, and statistical data. The detail could be found <a href="https://support.posit.co/hc/en-us/articles/218611977-Importing-Data-with-the-RStudio-IDE">here</a>.</p>
+<p>To access this feature, use the “Import Dataset” dropdown from the “Environment” pane:</p>
+<div id="fig-filemenu" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Data Import RStudio Environment Pane</figcaption><p></p>
+<p><img src="Image/import_srtudio_env.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>Or through the “File” menu, followed by the “Import Dataset” submenu:</p>
+<div id="fig-envpan" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Data Import RStudio File Menu</figcaption><p></p>
+<p><img src="Image/import_srtudio_fiel.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="text-file-.txt" class="level3">
+<h3 class="anchored" data-anchor-id="text-file-.txt">Text File (.txt)</h3>
+<p>The easiest form of data to import into R is a simple text file. The primary function to import from a text file is <strong>read.table()</strong>.</p>
+<blockquote class="blockquote">
+<p>read.table(file, header = FALSE, sep = ““, quote =”“’”,…..)</p>
+</blockquote>
+<div class="cell" title="read.table()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read .txt file</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df.txt<span class="ot">&lt;-</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.txt"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#data.txt&lt;-read.table("test_data.txt", header= TRUE) </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.txt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ID treat  var rep    PH   TN   PN   GW ster   DTM   SW   GAs  STAs
+1 Low    As BR01   1  84.0 28.3 27.7 35.7 20.5 126.0 28.4 0.762 14.60
+2 Low    As BR01   2 111.7 34.0 30.0 58.1 14.8 119.0 36.7 0.722 10.77
+3 Low    As BR01   3 102.3 27.7 24.0 44.6  5.8 119.7 32.9 0.858 12.69
+4 Low    As BR06   1 118.0 23.3 19.7 46.4 20.3 119.0 40.0 1.053 18.23
+5 Low    As BR06   2 115.3 16.7 12.3 19.9 32.3 120.0 28.2 1.130 13.72
+6 Low    As BR06   3 111.0 19.0 15.3 35.9 14.9 116.3 42.3 1.011 15.97</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df.txt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ID"    "treat" "var"   "rep"   "PH"    "TN"    "PN"    "GW"    "ster" 
+[10] "DTM"   "SW"    "GAs"   "STAs" </code></pre>
+</div>
+</div>
+<p>However, <strong>scan()</strong> function could be used to scan and read data. It is usually used to read data into vector or list or from file in R Language.</p>
+<blockquote class="blockquote">
+<p>sacn(scan(file = ““, what = double(), nmax = -1, n = -1, sep =”“,..)</p>
+</blockquote>
+<div class="cell" title="scan()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Scan data </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df.scan<span class="ot">&lt;-</span><span class="fu">scan</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.txt"</span>),  <span class="at">what =</span> <span class="fu">list</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span>))   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="comma-separated-file-.csv" class="level3">
+<h3 class="anchored" data-anchor-id="comma-separated-file-.csv">Comma-Separated File (.csv)</h3>
+<p>A comma delimited or comma-separated file (CSV) is one where each value in the file is separated by a comma, although other characters can be used. Reading data from a CSV file is made easy by the <strong>read.csv()</strong>, an extension of <strong>read.table()</strong>. It facilitates the direct import of data from CSV files.</p>
+<blockquote class="blockquote">
+<p>read.csv(file, header = TRUE, sep = “,”, quote = “““,…)</p>
+</blockquote>
+<div class="cell" title="read.csv()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read .csv file</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df.csv<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#head(data.csv)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="excel-files-.xlsx" class="level3">
+<h3 class="anchored" data-anchor-id="excel-files-.xlsx">Excel Files (.xlsx)</h3>
+<p>One of the best ways to read an Excel file is to export it to a comma-delimited file and import it using the method above. Alternatively, we can use the <strong>xlsx</strong> package to access Excel files. The first row should contain variable/column names.</p>
+<blockquote class="blockquote">
+<p>install.packages(“xlsx”) # Install “xlsx” package</p>
+</blockquote>
+<div class="cell" title="read.xlsx()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load xlsx package</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Sheet 1, from a excel file</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>data.xlsx <span class="ot">&lt;-</span>xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.xlsx"</span>), <span class="dv">1</span>) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#data.xlsx &lt;-read.xlsx("test_data.xlsx", 1)  </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data.xlsx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ID"    "treat" "var"   "rep"   "PH"    "TN"    "PN"    "GW"    "ster" 
+[10] "DTM"   "SW"    "GAs"   "STAs" </code></pre>
+</div>
+</div>
+</section>
+<section id="json-files-.json" class="level3">
+<h3 class="anchored" data-anchor-id="json-files-.json">JSON Files (.json)</h3>
+<p>JSON is an open standard file and lightweight data-interchange format that stands for <em>J</em>ava<em>S</em>cript <em>O</em>bject <em>N</em>otation. The JSON file is a text file that is language independent, self-describing, and easy to understand.</p>
+<p>The JSON file is read by R as a <strong>list</strong> using the function <strong>fromJSON()</strong> of <strong>rjson</strong> package.</p>
+<blockquote class="blockquote">
+<p>install.packages(“rjson”)</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>fromJSON(json_str, file, method = “C”, unexpected.escape = “error”, sim..)</p>
+</blockquote>
+<div class="cell" title="fromJSON()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load rjson package</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjson)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .json file</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>df.json <span class="ot">&lt;-</span> rjson<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="at">file=</span> <span class="fu">paste0</span>(dataFolder, <span class="st">"test_data.json"</span>),  <span class="at">simplify=</span><span class="cn">TRUE</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#print(df.json)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can convert to data frame</p>
+<div class="cell" title="Convert JSON file to DF">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df.json <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df.json)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ID  treat  var rep    PH   TN   PN   GW ster   DTM   SW   GAs  STAs
+1  1 Low As BR01   1  84.0 28.3 27.7 35.7 20.5 126.0 28.4 0.762 14.60
+2  2 Low As BR01   2 111.7 34.0 30.0 58.1 14.8 119.0 36.7 0.722 10.77
+3  3 Low As BR01   3 102.3 27.7 24.0 44.6  5.8 119.7 32.9 0.858 12.69
+4  4 Low As BR06   1 118.0 23.3 19.7 46.4 20.3 119.0 40.0 1.053 18.23
+5  5 Low As BR06   2 115.3 16.7 12.3 19.9 32.3 120.0 28.2 1.130 13.72
+6  6 Low As BR06   3 111.0 19.0 15.3 35.9 14.9 116.3 42.3 1.011 15.97</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="import-data-from-other-stattistcal-software" class="level2">
+<h2 class="anchored" data-anchor-id="import-data-from-other-stattistcal-software">Import Data from Other Stattistcal Software</h2>
+<p><strong>foreign</strong> packages is mostly used to read data stored by <strong>Minitab</strong>, <strong>S</strong>, <strong>SAS</strong>, <strong>SPSS</strong>, <strong>Stata</strong>, <strong>Systat</strong>, <strong>dBase</strong>, and so forth.</p>
+<blockquote class="blockquote">
+<p>install.packages(“foreign”)</p>
+</blockquote>
+<p><strong>Haven</strong> enables R to read and write various data formats used by other statistical packages by wrapping with <a href="https://github.com/WizardMac/ReadStat">ReadStat</a> C library. written b Haven is part of the tidyverse. Current it support <strong>SAS</strong>, <strong>SPSS</strong> and <strong>Stata</strong> files</p>
+<p>read.dta() function from <strong>foreign</strong> package can reads a file in Stata version 5-12 binary format (.dta) into a data frame.</p>
+<section id="stata-file-.dta" class="level3">
+<h3 class="anchored" data-anchor-id="stata-file-.dta">STATA File (.dta)</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Foreign - read.dta()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Haven read_dta()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .dta file</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>df.dta_01 <span class="ot">&lt;-</span> foreign<span class="sc">::</span><span class="fu">read.dta</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.dta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .dta file</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>df.dta_02 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.dta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="spss-file-.sav" class="level3">
+<h3 class="anchored" data-anchor-id="spss-file-.sav">SPSS File (.sav)</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Foreign - read.spss()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Haven read_sav()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sav file</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>df.sav_01 <span class="ot">&lt;-</span> foreign<span class="sc">::</span><span class="fu">read.spss</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sav"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sav file</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>df.sav_02 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sav</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sav"</span>)) </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#head(df.sav)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sas-file-.sas7bdat" class="level3">
+<h3 class="anchored" data-anchor-id="sas-file-.sas7bdat">SAS File (.sas7bdat)</h3>
+<p><strong>read_sas()</strong> function from haven package can read sas (.sas7bdat) file easily.</p>
+<div class="cell" title="read_sas()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sas7bdat file</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>df.sas <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sas</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sas7bdat"</span>)) </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#head(df.sas)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="export-files-from-r" class="level2">
+<h2 class="anchored" data-anchor-id="export-files-from-r">Export files from R</h2>
+<p>To export data and save to your local drive, you need the file path and an extension. First of all, the path is the location where the data will be stored.</p>
+<p>Before we start, we need to specify the working directory in which we can export the data.</p>
+<section id="csv-file" class="level3">
+<h3 class="anchored" data-anchor-id="csv-file">CSV File</h3>
+<p>First of all, let create a data frame that we will going to export as a text/CSV file.</p>
+<div class="cell" title="Create data-frame">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Variety <span class="ot">=</span><span class="fu">c</span>(<span class="st">"BR1"</span>,<span class="st">"BR3"</span>, <span class="st">"BR16"</span>, <span class="st">"BR17"</span>, <span class="st">"BR18"</span>, <span class="st">"BR19"</span>,<span class="st">"BR26"</span>,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>          <span class="st">"BR27"</span>,<span class="st">"BR28"</span>,<span class="st">"BR29"</span>,<span class="st">"BR35"</span>,<span class="st">"BR36"</span>) <span class="co"># create a text vector</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>Yield <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">5.2</span>,<span class="fl">6.0</span>,<span class="fl">6.6</span>,<span class="fl">5.6</span>,<span class="fl">4.7</span>,<span class="fl">5.2</span>,<span class="fl">5.7</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                <span class="fl">5.9</span>,<span class="fl">5.3</span>,<span class="fl">6.8</span>,<span class="fl">6.2</span>,<span class="fl">5.8</span>) <span class="co"># create numerical vector</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>rice.data<span class="ot">=</span> <span class="fu">data.frame</span>(Variety, Yield)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The popular R base functions for writing data are <strong>write.table()</strong>, <strong>write.csv()</strong>, <strong>write.csv2()</strong> and <strong>write.delim()</strong> functions.</p>
+<p>Before start, you need to specify the working or destination directory in where you will save the data.</p>
+<div class="cell" title="write.csv()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define destination folder</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(rice.data, <span class="fu">paste0</span>(dataFolder, <span class="st">"rice_data.csv"</span>), <span class="at">row.names =</span> F) <span class="co"># no row names</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># write.csv(rice.data, "rice_data.csv", row.names = F) # no row names</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="excel-file" class="level3">
+<h3 class="anchored" data-anchor-id="excel-file">Excel File</h3>
+<p>Exporting data from R to Excel can be achieved with several packages. The most known package to export data frames or tables as Excel is xlsx, that provides the <strong>write.xlsx</strong> and <strong>write.xlsx2</strong> functions.</p>
+<div class="cell" title="write.xlsx()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load xlsx</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define destination folder</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># write as xlsx file</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>xlsx<span class="sc">::</span><span class="fu">write.xlsx</span>(rice.data, <span class="fu">paste0</span>(dataFolder, <span class="st">"rice_data.xlsx"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="json-objects" class="level3">
+<h3 class="anchored" data-anchor-id="json-objects">JSON Objects</h3>
+<p>To write JSON Object to file, the <strong>toJSON()</strong> function from the <strong>rjson</strong> library can be used to prepare a JSON object and then use the <strong>write()</strong> function for writing the JSON object to a local file.</p>
+<div class="cell" title="toJSON()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load rjson package</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjson)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># create a JSON object</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>jsonData <span class="ot">&lt;-</span>rjson<span class="sc">::</span><span class="fu">toJSON</span>(rice.data)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># write JSON objects</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(jsonData, <span class="at">file=</span> <span class="fu">paste0</span>(dataFolder,<span class="st">"rice_data.json"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="r-data-file" class="level3">
+<h3 class="anchored" data-anchor-id="r-data-file">R Data File</h3>
+<p>If you want to share the data from R as Objects and share those with your colleagues through different systems so that they can use it right away into their R-workspace. These objects are of two types <strong>.rda/.RData</strong> which can be used to store some or all objects, functions from R global environment.</p>
+<p>The <strong>save()</strong> function allows us to save multiple objects into our global environment:</p>
+<div class="cell" title="save()">
+
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you specify <strong>save.image(file = “R_objects.RData”)</strong> Export all objects (the workspace image).</p>
+</div>
+</div>
+<p>To save only one object it is more recommended saving it as RDS with the <strong>saveRDS()</strong> function:</p>
+<div class="cell" title="saveRDS()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write .RDS file</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you specify <strong>compress = TRUE</strong> as argument of the above functions the file will be compressed by default as gzip.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="export-to-other-statistcal-software" class="level2">
+<h2 class="anchored" data-anchor-id="export-to-other-statistcal-software">Export to Other Statistcal Software</h2>
+<section id="stata-file" class="level4">
+<h4 class="anchored" data-anchor-id="stata-file">STATA File</h4>
+<p>If you want export data from R to STATA, you will need to use the <strong>write.dta()</strong> function of the <strong>foreign</strong> package. This package provides functions for r</p>
+<div class="cell" title="write.dta()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># write dta file</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>foreign<span class="sc">::</span><span class="fu">write.dta</span>(rice.data, <span class="at">file=</span> <span class="fu">paste0</span>(dataFolder,<span class="st">"rice_data.dta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="spss-file" class="level4">
+<h4 class="anchored" data-anchor-id="spss-file">SPSS File</h4>
+<p>Haven enables R to read and write various data formats used by other statistical packages by wrapping with <a href="https://github.com/WizardMac/ReadStat">ReadStat</a> C library. written b Haven is part of the tidyverse. Current it support <strong>SAS</strong>, <strong>SPSS</strong> and <strong>Stata</strong> files</p>
+<p>The <strong>write_sav()</strong> function of <strong>haven</strong> package can be used to export R-object to SPSS</p>
+<div class="cell" title="write_sva()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># write .sav file</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>haven<span class="sc">::</span><span class="fu">write_sav</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.sav"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="sas-file" class="level4">
+<h4 class="anchored" data-anchor-id="sas-file">SAS File</h4>
+<p>The <strong>write_sas()</strong> function of <strong>haven</strong> package can be used to export R-object to SAS (.sas7bdat)</p>
+<div class="cell" title="write_sva()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># write .sav file</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>haven<span class="sc">::</span><span class="fu">write_sas</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.sas7bdat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="data.table-extension-of-data.frame" class="level2">
+<h2 class="anchored" data-anchor-id="data.table-extension-of-data.frame">data.table: Extension of ‘data.frame’</h2>
+<p>The R-package <a href="https://rdatatable.gitlab.io/data.table/">data.tabel</a> a improved version of data.frame, the a R-base function. It has following advantages:</p>
+<p>• concise syntax: fast to type, fast to read • fast speed • memory efficient</p>
+<blockquote class="blockquote">
+<p>install.packages(“data.table”)</p>
+</blockquote>
+<p>We will use two important functions of data.table to read and write CSV files in R.</p>
+<section id="reaing-csv-file-with-fread" class="level3">
+<h3 class="anchored" data-anchor-id="reaing-csv-file-with-fread">Reaing CSV file with <strong>fread</strong></h3>
+<p><strong>fread</strong>: This function is capable of reading CSV files quickly and conveniently.</p>
+<blockquote class="blockquote">
+<p>fread(input, file,….)</p>
+</blockquote>
+<div class="cell" title="fread()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load library</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read with fread()</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>DT<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(DT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes 'data.table' and 'data.frame':  3110 obs. of  25 variables:
+ $ REGION_ID         : int  3 3 3 3 3 3 3 3 3 3 ...
+ $ STATE             : chr  "Alabama" "Alabama" "Alabama" "Alabama" ...
+ $ County            : chr  "Baldwin County" "Butler County" "Butler County" "Chambers County" ...
+ $ Empty Column 1    : logi  NA NA NA NA NA NA ...
+ $ X                 : num  789778 877732 877732 984215 726606 ...
+ $ Y                 : num  884557 1007286 1007286 1148649 1023616 ...
+ $ Fips              : int  1003 1013 1013 1017 1023 1025 1031 1035 1039 1041 ...
+ $ LCB Mortality Rate: num  48.1 38.3 38.3 49.6 31.8 42 53.7 46.9 65.5 57.1 ...
+ $ Smoking           : num  20.8 26 26 25.1 21.8 22.6 21.2 24.9 25.9 22.9 ...
+ $ PM  25            : num  7.89 8.46 8.46 8.87 8.58 8.42 8.42 8.23 8.24 8.45 ...
+ $ NO2               : num  0.794 0.634 0.634 0.844 0.593 ...
+ $ SO2               : num  0.0353 0.0135 0.0135 0.0482 0.024 ...
+ $ Ozone             : num  39.8 38.3 38.3 40.1 37.1 ...
+ $ Pop 65            : num  19.5 19 19 18.9 22.1 19 16.3 21.6 20.5 18.3 ...
+ $ Pop Black         : num  9.24 43.94 43.94 39.24 41.94 ...
+ $ Pop Hipanic       : num  4.54 1.26 1.26 2.14 0.86 1.34 6.76 1.84 1.62 1.86 ...
+ $ Pop White         : num  83.1 52.6 52.6 56.4 56.3 ...
+ $ Education         : int  66 38 38 47 55 39 60 35 53 44 ...
+ $ Poverty %         : num  13.1 26.1 26.1 21.5 23.1 ...
+ $ Income Equality   : num  4.5 5.1 5.1 4.7 5.8 8.2 4.8 4.9 4.6 5.8 ...
+ $ Uninsured         : num  13.3 12.7 12.7 13.3 12.9 ...
+ $ DEM               : num  36.8 111.7 111.7 227 68.2 ...
+ $ Radon Zone Class  : chr  "Zone-3" "Zone-3" "Zone-3" "Zone-3" ...
+ $ Urban Rural       : chr  "Medium/small metro" "Nonmetro" "Nonmetro" "Nonmetro" ...
+ $ Coal Production   : chr  "No" "No" "No" "No" ...
+ - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#DT&lt;-fread("usa_geochemical.csv", header= TRUE) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>You cam compare data reading time of <strong>fread()</strong> and <strong>read.csv()</strong> functions:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R-base function read.csv</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">data.table fread</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+   0.03    0.00    0.03 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+   0.00    0.00    0.01 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="writing-csv-file-with-fwrite" class="level3">
+<h3 class="anchored" data-anchor-id="writing-csv-file-with-fwrite">Writing CSV file with <strong>fwrite</strong></h3>
+<p><strong>fwrite()</strong>: This capable to write CSV field very fast!</p>
+<blockquote class="blockquote">
+<p>fwrite(x, file = ““, append = FALSE, quote =”auto”, …..)</p>
+</blockquote>
+<div class="cell" title="fwrite()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read with fread()</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F, <span class="at">quote=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now we compare writing time of <strong>frwite</strong> functions with write.csv functions.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R-base function write.csv</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">data.table fwrite</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">write.csv</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<p>user system elapsed 0.11 0.00 0.15</p>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F, <span class="at">quote=</span><span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+   0.00    0.00    0.08 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="feather-a-fast-on-disk-format-for-data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="feather-a-fast-on-disk-format-for-data-frames">Feather: A Fast On-Disk Format for Data Frames</h2>
+<p>Feather is a fast, lightweight, and easy-to-use binary file format for storing data frames. It has a few specific design goals:</p>
+<ul>
+<li><p>Lightweight, minimal API: make pushing data frames in and out of memory as simple as possible</p></li>
+<li><p>Language agnostic: Feather files are the same whether written by Python or R code. Other languages can read and write Feather files, too.</p></li>
+</ul>
+<p>Feather is extremely fast. Since Feather does not currently use any compression internally, it works best when used with solid-state drives as come with most of today’s laptop computers. For this first release, we prioritized a simple implementation and are thus writing unmodified Arrow memory to disk <a href="https://www.rstudio.com/blog/feather/">source</a>.</p>
+<blockquote class="blockquote">
+<p>install.packages(“feather”)</p>
+</blockquote>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("feather")</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feather)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>First we have to create feather data using <strong>write_feather()</strong> function</p>
+<blockquote class="blockquote">
+<p>write_feather(x, path)</p>
+</blockquote>
+<div class="cell" title="write_feather()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load feather</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feather)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># write_feather()</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>feather<span class="sc">::</span><span class="fu">write_feather</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can read this feather data with lighting speed using read_feather function()</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>DT_feather <span class="ot">&lt;-</span> feather<span class="sc">::</span><span class="fu">read_feather</span>(<span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(DT_feather)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [3,110 × 25] (S3: tbl_df/tbl/data.frame)
+ $ REGION_ID         : int [1:3110] 3 3 3 3 3 3 3 3 3 3 ...
+ $ STATE             : chr [1:3110] "Alabama" "Alabama" "Alabama" "Alabama" ...
+ $ County            : chr [1:3110] "Baldwin County" "Butler County" "Butler County" "Chambers County" ...
+ $ Empty Column 1    : logi [1:3110] NA NA NA NA NA NA ...
+ $ X                 : num [1:3110] 789778 877732 877732 984215 726606 ...
+ $ Y                 : num [1:3110] 884557 1007286 1007286 1148649 1023616 ...
+ $ Fips              : int [1:3110] 1003 1013 1013 1017 1023 1025 1031 1035 1039 1041 ...
+ $ LCB Mortality Rate: num [1:3110] 48.1 38.3 38.3 49.6 31.8 42 53.7 46.9 65.5 57.1 ...
+ $ Smoking           : num [1:3110] 20.8 26 26 25.1 21.8 22.6 21.2 24.9 25.9 22.9 ...
+ $ PM  25            : num [1:3110] 7.89 8.46 8.46 8.87 8.58 8.42 8.42 8.23 8.24 8.45 ...
+ $ NO2               : num [1:3110] 0.794 0.634 0.634 0.844 0.593 ...
+ $ SO2               : num [1:3110] 0.0353 0.0135 0.0135 0.0482 0.024 ...
+ $ Ozone             : num [1:3110] 39.8 38.3 38.3 40.1 37.1 ...
+ $ Pop 65            : num [1:3110] 19.5 19 19 18.9 22.1 19 16.3 21.6 20.5 18.3 ...
+ $ Pop Black         : num [1:3110] 9.24 43.94 43.94 39.24 41.94 ...
+ $ Pop Hipanic       : num [1:3110] 4.54 1.26 1.26 2.14 0.86 1.34 6.76 1.84 1.62 1.86 ...
+ $ Pop White         : num [1:3110] 83.1 52.6 52.6 56.4 56.3 ...
+ $ Education         : int [1:3110] 66 38 38 47 55 39 60 35 53 44 ...
+ $ Poverty %         : num [1:3110] 13.1 26.1 26.1 21.5 23.1 ...
+ $ Income Equality   : num [1:3110] 4.5 5.1 5.1 4.7 5.8 8.2 4.8 4.9 4.6 5.8 ...
+ $ Uninsured         : num [1:3110] 13.3 12.7 12.7 13.3 12.9 ...
+ $ DEM               : num [1:3110] 36.8 111.7 111.7 227 68.2 ...
+ $ Radon Zone Class  : chr [1:3110] "Zone-3" "Zone-3" "Zone-3" "Zone-3" ...
+ $ Urban Rural       : chr [1:3110] "Medium/small metro" "Nonmetro" "Nonmetro" "Nonmetro" ...
+ $ Coal Production   : chr [1:3110] "No" "No" "No" "No" ...</code></pre>
+</div>
+</div>
+<p>Compare to and <strong>write.csv()</strong> as well as <strong>frwite()</strong>, <strong>write_feather()</strong> is very fast:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R-base write.csv</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">data.table fwrite</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false">Feather write_feather</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">write.csv</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.csv"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+   0.11    0.00    0.16 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CSV file with fwrite</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.csv"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+   0.00    0.00    0.03 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># feather file with </span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(feather<span class="sc">::</span><span class="fu">write_feather</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+      0       0       0 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="tidyverse-package-data-import-and-export" class="level2">
+<h2 class="anchored" data-anchor-id="tidyverse-package-data-import-and-export">Tidyverse Package: Data Import and Export</h2>
+<p>The tidyverse is an collection of several R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures <a href="https://www.tidyverse.org/">(Source)</a>.</p>
+<p>The core tidyverse includes the packages that you’re likely to use in everyday data analyses. As of tidyverse 1.3.0, the following packages are included in the core tidyverse:</p>
+<div id="fig-rpkages" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Core R-Packages</figcaption><p></p>
+<p><img src="Image/tidyverse.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<section id="installation-and-use" class="level3">
+<h3 class="anchored" data-anchor-id="installation-and-use">Installation and use</h3>
+<ul>
+<li><p>Install all the packages in the tidyverse by running install.packages(“tidyverse”).</p></li>
+<li><p>Run library(tidyverse) to load the core tidyverse with and make it available in your current R session.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>install.packages(“tidyverse”)</p>
+</blockquote>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>As well as <strong>readr</strong>, for reading flat files, the tidyverse package installs a number of other packages for reading data:</p>
+<ul>
+<li><p><strong>DBI</strong> for relational databases. You’ll need to pair DBI with a database specific backends like <em>RSQLite</em>, <em>RMariaDB</em>, <em>RPostgres</em>, or <em>odbc</em>. Learn more at https://db.rstudio.com.</p></li>
+<li><p><strong>haven</strong> for SPSS, Stata, and SAS data.</p></li>
+<li><p><strong>httr</strong> for web APIs.</p></li>
+<li><p><strong>readxl</strong> for .xls and .xlsx sheets.</p></li>
+<li><p><strong>googlesheets4</strong> for Google Sheets via the Sheets API v4.</p></li>
+<li><p><strong>googledrive</strong> for Google Drive files.</p></li>
+<li><p><strong>rvest</strong> for web scraping.</p></li>
+<li><p><strong>jsonlite</strong> for JSON. (Maintained by Jeroen Ooms.)</p></li>
+<li><p><strong>xml2</strong> for XML</p></li>
+</ul>
+</section>
+<section id="read-csv-files-with-readr" class="level3">
+<h3 class="anchored" data-anchor-id="read-csv-files-with-readr">Read CSV files with readr</h3>
+<p>A <strong>tibble</strong>, or <strong>tbl_df</strong>, is the latest method for reimagining of modern data-frame and It keeps all the crucial features regarding the data frame. Since R is an old language, and some things that were useful 10 or 20 years ago now get in your way. It’s difficult to change base R without breaking existing code, so most innovation occurs in <strong>tibble()</strong> data-frame with tibble package.</p>
+<p><em>Key features of Tibble</em></p>
+<ul>
+<li><p>A Tibble never alters the input type.</p></li>
+<li><p>With Tibble, there is no need for us to be bothered about the automatic changing of characters to strings.</p></li>
+<li><p>Tibbles can also contain columns that are the lists.</p></li>
+<li><p>We can also use non-standard variable names in Tibble.</p></li>
+<li><p>We can start the name of a Tibble with a number, or we can also contain space.</p></li>
+<li><p>To utilize these names, we must mention them in backticks.</p></li>
+<li><p>Tibble only recycles the vectors with a length of 1.</p></li>
+<li><p>Tibble can never generate the names of rows.</p></li>
+</ul>
+<p>source: https://www.educative.io/answers/what-is-tibble-versus-data-frame-in-r</p>
+<p>We can use following functions <strong>readr</strong> package to import tabular data into R as tibble:</p>
+<div id="fig-read" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: read() Functions</figcaption><p></p>
+<p><img src="Image/read_readr_function.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p><strong>read_csv()</strong> and <strong>read_tsv()</strong> are special cases of the more general <strong>read_delim()</strong>. They’re useful for reading the most common types of flat file data, comma separated values and tab separated values, respectively. <strong>read_csv2()</strong> uses ⁠;⁠ for the field separator and ⁠,⁠ for the decimal point. This format is common in some European countries.</p>
+<p>For example, we will use <strong>read_csv()</strong> to import CSV file and see use <strong>glimpse()</strong> functions of <strong>dplyr</strong> package to explore the file structure.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">read_csv()</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">read.csv()</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell" title="read_csv()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>df.chem_01<span class="ot">&lt;-</span>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<pre><code>Rows: 20 Columns: 23
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (1): Subject
+dbl (22): Napthalene, 1-Methyl Napthalene, 2-Methyl Napthalene, Acenapthylen...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(df.chem_01)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<p>Rows: 20 Columns: 23 $ Subject <chr> “P1”, “P3”, “P4”, “P5”, “P6”, “P7”, “P8”, … $ Napthalene <dbl> 0.8993, 3.6257, 3.3921, 3.5772, 4.4907, NA… $ <code>1-Methyl Napthalene</code> <dbl> 4.9681, 4.6941, 3.5386, 4.7475, 5.1147, NA… $ <code>2-Methyl Napthalene</code> <dbl> 2.1508, 3.9316, 1.6955, 2.9361, 3.9976, NA… $ Acenapthylene <dbl> 0.0131, 3.0151, 1.3859, 3.3943, 6.6593, NA… $ <code>1,2 Dimethyl napthalene</code> <dbl> NA, NA, 1.2389, 2.6427, 2.1442, NA, 0.3623… $ <code>1,6 Dimethyl Napthalene</code> <dbl> 0.7003, 2.6382, 1.3807, 1.1006, 2.2575, NA… $ Fluorene <dbl> 2.2481, 7.3490, 7.1567, 8.4422, 9.2363, NA… $ <code>1,6,7 Trimethylnapthalene</code> <dbl> 5.1024, 6.7913, 6.5171, 4.6803, 6.4649, NA… $ Anthracene <dbl> 10.1656, 9.6419, 22.3997, 26.3787, 20.9594… $ Dibenzothiopene <dbl> 1.1633, 4.1160, 4.2256, 3.9885, 3.2560, NA… $ <code>2-Methyl Anthracene</code> <dbl> 0.5409, 4.5190, 8.4014, 13.0101, 4.4900, N… $ <code>1-Methylphenanthrene</code> <dbl> 14.9581, 12.0937, 19.4927, 11.2138, 2.0336… $ <code>2-Methylphenanthrene</code> <dbl> 5.4785, 18.2456, 36.4282, 16.4553, 10.8040… $ Pyrene <dbl> 4.8498, 14.9369, 10.1099, 26.0579, 20.8687… $ Fluoranthene <dbl> 4.4798, 9.7189, 9.8037, 19.0489, 20.0866, … $ <code>1-Phenyl napthalene</code> <dbl> 2.8778, 6.2493, 5.2998, 7.9514, 10.1570, N… $ <code>2-Phenyl napthalene</code> <dbl> 3.4092, 8.7412, 3.6956, 12.8510, 15.1037, … $ <code>1 Methylpyrene</code> <dbl> 4.5763, 7.5114, 13.6010, 8.1125, 19.2354, … $ <code>Benzo(c)phenanthrene</code> <dbl> 3.6456, 7.0372, 5.0960, 3.3828, 8.1571, NA… $ <code>Triphenylene/Chrysene</code> <dbl> 1.7422, 5.1389, 3.1635, 5.7081, 6.7483, NA… $ <code>Benz(a)pyrene</code> <dbl> NA, 2.8455, NA, 5.0701, 0.5873, NA, 9.0914… $ <code>Benz(e)pyrene</code> <dbl> NA, 1.8163, 0.2980, 0.6617, 2.3666, NA, 2.…</dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></dbl></chr></p>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell" title="read.csv()">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>df.chem_02<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>))</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(df.chem_02)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 20
+Columns: 23
+$ Subject                    &lt;chr&gt; "P1", "P3", "P4", "P5", "P6", "P7", "P8", "…
+$ Napthalene                 &lt;dbl&gt; 0.8993, 3.6257, 3.3921, 3.5772, 4.4907, NA,…
+$ X1.Methyl.Napthalene       &lt;dbl&gt; 4.9681, 4.6941, 3.5386, 4.7475, 5.1147, NA,…
+$ X2.Methyl.Napthalene       &lt;dbl&gt; 2.1508, 3.9316, 1.6955, 2.9361, 3.9976, NA,…
+$ Acenapthylene              &lt;dbl&gt; 0.0131, 3.0151, 1.3859, 3.3943, 6.6593, NA,…
+$ X1.2.Dimethyl.napthalene   &lt;dbl&gt; NA, NA, 1.2389, 2.6427, 2.1442, NA, 0.3623,…
+$ X1.6.Dimethyl.Napthalene   &lt;dbl&gt; 0.7003, 2.6382, 1.3807, 1.1006, 2.2575, NA,…
+$ Fluorene                   &lt;dbl&gt; 2.2481, 7.3490, 7.1567, 8.4422, 9.2363, NA,…
+$ X1.6.7.Trimethylnapthalene &lt;dbl&gt; 5.1024, 6.7913, 6.5171, 4.6803, 6.4649, NA,…
+$ Anthracene                 &lt;dbl&gt; 10.1656, 9.6419, 22.3997, 26.3787, 20.9594,…
+$ Dibenzothiopene            &lt;dbl&gt; 1.1633, 4.1160, 4.2256, 3.9885, 3.2560, NA,…
+$ X2.Methyl.Anthracene       &lt;dbl&gt; 0.5409, 4.5190, 8.4014, 13.0101, 4.4900, NA…
+$ X1.Methylphenanthrene      &lt;dbl&gt; 14.9581, 12.0937, 19.4927, 11.2138, 2.0336,…
+$ X2.Methylphenanthrene      &lt;dbl&gt; 5.4785, 18.2456, 36.4282, 16.4553, 10.8040,…
+$ Pyrene                     &lt;dbl&gt; 4.8498, 14.9369, 10.1099, 26.0579, 20.8687,…
+$ Fluoranthene               &lt;dbl&gt; 4.4798, 9.7189, 9.8037, 19.0489, 20.0866, N…
+$ X1.Phenyl.napthalene       &lt;dbl&gt; 2.8778, 6.2493, 5.2998, 7.9514, 10.1570, NA…
+$ X2.Phenyl.napthalene       &lt;dbl&gt; 3.4092, 8.7412, 3.6956, 12.8510, 15.1037, N…
+$ X1.Methylpyrene            &lt;dbl&gt; 4.5763, 7.5114, 13.6010, 8.1125, 19.2354, N…
+$ Benzo.c.phenanthrene       &lt;dbl&gt; 3.6456, 7.0372, 5.0960, 3.3828, 8.1571, NA,…
+$ Triphenylene.Chrysene      &lt;dbl&gt; 1.7422, 5.1389, 3.1635, 5.7081, 6.7483, NA,…
+$ Benz.a.pyrene              &lt;dbl&gt; NA, 2.8455, NA, 5.0701, 0.5873, NA, 9.0914,…
+$ Benz.e.pyrene              &lt;dbl&gt; NA, 1.8163, 0.2980, 0.6617, 2.3666, NA, 2.6…</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>glimps() of dplyr is a improved function of r-base str().</p>
+</div>
+</div>
+</section>
+<section id="write-csv-files-with-readr" class="level3">
+<h3 class="anchored" data-anchor-id="write-csv-files-with-readr">Write CSV files with readr</h3>
+<p>The <strong>write()</strong>⁠ family functions of are an improvement to analogous function such as write.csv() because they are approximately twice as fast. Unlike write.csv(), these functions do not include row names as a column in the written file. A generic function, output_column(), is applied to each variable to coerce columns to suitable output.</p>
+<p>We can use following functions <strong>readr</strong> package to extort tabular data from R:</p>
+<div id="fig-write" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: write() Functions</figcaption><p></p>
+<p><img src="Image\write_readr_function.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(df.chem_02, <span class="st">"df.chem_02"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can also use <strong>as_tibble()</strong> function of <strong>tibble</strong> package</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>df.chem_03<span class="ot">&lt;-</span>tibble<span class="sc">::</span><span class="fu">as_tibble</span>(<span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df.chem_03)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [20 × 23] (S3: tbl_df/tbl/data.frame)
+ $ Subject                  : chr [1:20] "P1" "P3" "P4" "P5" ...
+ $ Napthalene               : num [1:20] 0.899 3.626 3.392 3.577 4.491 ...
+ $ 1-Methyl Napthalene      : num [1:20] 4.97 4.69 3.54 4.75 5.11 ...
+ $ 2-Methyl Napthalene      : num [1:20] 2.15 3.93 1.7 2.94 4 ...
+ $ Acenapthylene            : num [1:20] 0.0131 3.0151 1.3859 3.3943 6.6593 ...
+ $ 1,2 Dimethyl napthalene  : num [1:20] NA NA 1.24 2.64 2.14 ...
+ $ 1,6 Dimethyl Napthalene  : num [1:20] 0.7 2.64 1.38 1.1 2.26 ...
+ $ Fluorene                 : num [1:20] 2.25 7.35 7.16 8.44 9.24 ...
+ $ 1,6,7 Trimethylnapthalene: num [1:20] 5.1 6.79 6.52 4.68 6.46 ...
+ $ Anthracene               : num [1:20] 10.17 9.64 22.4 26.38 20.96 ...
+ $ Dibenzothiopene          : num [1:20] 1.16 4.12 4.23 3.99 3.26 ...
+ $ 2-Methyl Anthracene      : num [1:20] 0.541 4.519 8.401 13.01 4.49 ...
+ $ 1-Methylphenanthrene     : num [1:20] 14.96 12.09 19.49 11.21 2.03 ...
+ $ 2-Methylphenanthrene     : num [1:20] 5.48 18.25 36.43 16.46 10.8 ...
+ $ Pyrene                   : num [1:20] 4.85 14.94 10.11 26.06 20.87 ...
+ $ Fluoranthene             : num [1:20] 4.48 9.72 9.8 19.05 20.09 ...
+ $ 1-Phenyl napthalene      : num [1:20] 2.88 6.25 5.3 7.95 10.16 ...
+ $ 2-Phenyl napthalene      : num [1:20] 3.41 8.74 3.7 12.85 15.1 ...
+ $ 1 Methylpyrene           : num [1:20] 4.58 7.51 13.6 8.11 19.24 ...
+ $ Benzo(c)phenanthrene     : num [1:20] 3.65 7.04 5.1 3.38 8.16 ...
+ $ Triphenylene/Chrysene    : num [1:20] 1.74 5.14 3.16 5.71 6.75 ...
+ $ Benz(a)pyrene            : num [1:20] NA 2.845 NA 5.07 0.587 ...
+ $ Benz(e)pyrene            : num [1:20] NA 1.816 0.298 0.662 2.367 ...</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="further-reading">Further Reading</h2>
+<ol type="1">
+<li><p><a href="https://www.datafiles.samhsa.gov/get-help/format-specific-issues/how-do-i-read-data-r">How do I read data into R?</a></p></li>
+<li><p><a href="https://r-coder.com/export-data-r/">R Coder</a></p></li>
+<li><p><a href="https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html">Introduction to bioinformatics</a></p></li>
+<li><p><a href="https://medium.com/analytics-vidhya/many-ways-of-reading-data-into-r-1-52b02825cb27">Many Ways of Reading Data Into R — 1</a></p></li>
+<li><p><a href="https://readr.tidyverse.org/">readr</a></p></li>
+<li><p><a href="https://posit.co/blog/feather/">feather</a></p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html">data.tabler</a></p></li>
+<li><p><a href="https://www.oreilly.com/library/view/r-in-a/9781449377502/apas06.html">foreign</a></p></li>
+<li><p><a href="https://haven.tidyverse.org/">haven</a></p></li>
+</ol>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb57" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Import-Export into/from R {.unnumbered}</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>Reading data for analysis and exporting the results to another system for report writing can be done efficiently with R. There are multiple ways to import and export data to/from R. In this tutorial, you will learn some most common ways to read and write data with R.</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>All data set use in this exercise can be downloaded from my <span class="co">[</span><span class="ot">dropbox folder</span><span class="co">](https://www.dropbox.com/sh/5au9x4jabyeelah/AAD4cqe97kuxGpkahKGqyenka?dl=0)</span>.</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## Working directory</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>It would be best if you created a working directory in R to read and write files locally. The following example shows how to create the working directory in R.</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>Before creating a working directory, you may check the directory of your current R session; the function **getwd()** will print the current working directory path as a string.</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>If you want to change the working directory in R you just need to call the **setwd()** function, specifying as argument the path of the new working directory folder.</span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; setwd("F:</span><span class="sc">\\</span><span class="at">R-Project") setwd("F:/R-Project"</span></span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>Remember that you must use the forward slash **/** or double backslash **\\** in R! The Windows format of single backslash will not work.</span>
+<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a>The files under in a directory can check using **dir()** function</span>
+<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; dir()</span></span>
+<span id="cb57-29"><a href="#cb57-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-30"><a href="#cb57-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Read/Import Data into R</span></span>
+<span id="cb57-31"><a href="#cb57-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-32"><a href="#cb57-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Importing data using R-Studio IDE</span></span>
+<span id="cb57-33"><a href="#cb57-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-34"><a href="#cb57-34" aria-hidden="true" tabindex="-1"></a>Importing data into R becomes time intensive. The easiest way to import data into R is by using RStudio IDE. This feature can be accessed from the **Environment pane** or from the <span class="sc">\*\*</span>tools menu<span class="sc">\*</span>. The importers are grouped into three categories: Text data, Excel data, and statistical data. The detail could be found <span class="co">[</span><span class="ot">here</span><span class="co">](https://support.posit.co/hc/en-us/articles/218611977-Importing-Data-with-the-RStudio-IDE)</span>.</span>
+<span id="cb57-35"><a href="#cb57-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-36"><a href="#cb57-36" aria-hidden="true" tabindex="-1"></a>To access this feature, use the "Import Dataset" dropdown from the "Environment" pane:</span>
+<span id="cb57-37"><a href="#cb57-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-38"><a href="#cb57-38" aria-hidden="true" tabindex="-1"></a><span class="al">![Data Import RStudio Environment Pane](Image/import_srtudio_env.png)</span>{#fig-filemenu}</span>
+<span id="cb57-39"><a href="#cb57-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-40"><a href="#cb57-40" aria-hidden="true" tabindex="-1"></a>Or through the "File" menu, followed by the "Import Dataset" submenu:</span>
+<span id="cb57-41"><a href="#cb57-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a><span class="al">![Data Import RStudio File Menu](Image/import_srtudio_fiel.png)</span>{#fig-envpan}</span>
+<span id="cb57-43"><a href="#cb57-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-44"><a href="#cb57-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### Text File (.txt)</span></span>
+<span id="cb57-45"><a href="#cb57-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-46"><a href="#cb57-46" aria-hidden="true" tabindex="-1"></a>The easiest form of data to import into R is a simple text file. The primary function to import from a text file is **read.table()**.</span>
+<span id="cb57-47"><a href="#cb57-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-48"><a href="#cb57-48" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; read.table(file, header = FALSE, sep = "", quote =""'",.....)</span></span>
+<span id="cb57-49"><a href="#cb57-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-52"><a href="#cb57-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-53"><a href="#cb57-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read.table()" </span></span>
+<span id="cb57-54"><a href="#cb57-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-55"><a href="#cb57-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-56"><a href="#cb57-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-57"><a href="#cb57-57" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-58"><a href="#cb57-58" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-59"><a href="#cb57-59" aria-hidden="true" tabindex="-1"></a><span class="co"># read .txt file</span></span>
+<span id="cb57-60"><a href="#cb57-60" aria-hidden="true" tabindex="-1"></a>df.txt<span class="ot">&lt;-</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.txt"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb57-61"><a href="#cb57-61" aria-hidden="true" tabindex="-1"></a><span class="co">#data.txt&lt;-read.table("test_data.txt", header= TRUE) </span></span>
+<span id="cb57-62"><a href="#cb57-62" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.txt)</span>
+<span id="cb57-63"><a href="#cb57-63" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df.txt)</span>
+<span id="cb57-64"><a href="#cb57-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-65"><a href="#cb57-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-66"><a href="#cb57-66" aria-hidden="true" tabindex="-1"></a>However, **scan()** function could be used to scan and read data. It is usually used to read data into vector or list or from file in R Language.</span>
+<span id="cb57-67"><a href="#cb57-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-68"><a href="#cb57-68" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; sacn(scan(file = "", what = double(), nmax = -1, n = -1, sep ="",..)</span></span>
+<span id="cb57-69"><a href="#cb57-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-72"><a href="#cb57-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-73"><a href="#cb57-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "scan()" </span></span>
+<span id="cb57-74"><a href="#cb57-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-75"><a href="#cb57-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-76"><a href="#cb57-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-77"><a href="#cb57-77" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-78"><a href="#cb57-78" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-79"><a href="#cb57-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Scan data </span></span>
+<span id="cb57-80"><a href="#cb57-80" aria-hidden="true" tabindex="-1"></a>df.scan<span class="ot">&lt;-</span><span class="fu">scan</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.txt"</span>),  <span class="at">what =</span> <span class="fu">list</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span>))   </span>
+<span id="cb57-81"><a href="#cb57-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-82"><a href="#cb57-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-83"><a href="#cb57-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comma-Separated File (.csv)</span></span>
+<span id="cb57-84"><a href="#cb57-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-85"><a href="#cb57-85" aria-hidden="true" tabindex="-1"></a>A comma delimited or comma-separated file (CSV) is one where each value in the file is separated by a comma, although other characters can be used. Reading data from a CSV file is made easy by the **read.csv()**, an extension of **read.table()**. It facilitates the direct import of data from CSV files.</span>
+<span id="cb57-86"><a href="#cb57-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-87"><a href="#cb57-87" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; read.csv(file, header = TRUE, sep = ",", quote = """,...)</span></span>
+<span id="cb57-88"><a href="#cb57-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-91"><a href="#cb57-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-92"><a href="#cb57-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read.csv()" </span></span>
+<span id="cb57-93"><a href="#cb57-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-94"><a href="#cb57-94" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-95"><a href="#cb57-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-96"><a href="#cb57-96" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-97"><a href="#cb57-97" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-98"><a href="#cb57-98" aria-hidden="true" tabindex="-1"></a><span class="co"># read .csv file</span></span>
+<span id="cb57-99"><a href="#cb57-99" aria-hidden="true" tabindex="-1"></a>df.csv<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb57-100"><a href="#cb57-100" aria-hidden="true" tabindex="-1"></a><span class="co">#head(data.csv)</span></span>
+<span id="cb57-101"><a href="#cb57-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-102"><a href="#cb57-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-103"><a href="#cb57-103" aria-hidden="true" tabindex="-1"></a><span class="fu">### Excel Files (.xlsx)</span></span>
+<span id="cb57-104"><a href="#cb57-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-105"><a href="#cb57-105" aria-hidden="true" tabindex="-1"></a>One of the best ways to read an Excel file is to export it to a comma-delimited file and import it using the method above. Alternatively, we can use the **xlsx** package to access Excel files. The first row should contain variable/column names.</span>
+<span id="cb57-106"><a href="#cb57-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-107"><a href="#cb57-107" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("xlsx") </span><span class="sc">\#</span><span class="at"> Install "xlsx" package</span></span>
+<span id="cb57-108"><a href="#cb57-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-111"><a href="#cb57-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-112"><a href="#cb57-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read.xlsx()" </span></span>
+<span id="cb57-113"><a href="#cb57-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-114"><a href="#cb57-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-115"><a href="#cb57-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-116"><a href="#cb57-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Load xlsx package</span></span>
+<span id="cb57-117"><a href="#cb57-117" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb57-118"><a href="#cb57-118" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-119"><a href="#cb57-119" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-120"><a href="#cb57-120" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Sheet 1, from a excel file</span></span>
+<span id="cb57-121"><a href="#cb57-121" aria-hidden="true" tabindex="-1"></a>data.xlsx <span class="ot">&lt;-</span>xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.xlsx"</span>), <span class="dv">1</span>) </span>
+<span id="cb57-122"><a href="#cb57-122" aria-hidden="true" tabindex="-1"></a><span class="co">#data.xlsx &lt;-read.xlsx("test_data.xlsx", 1)  </span></span>
+<span id="cb57-123"><a href="#cb57-123" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data.xlsx)</span>
+<span id="cb57-124"><a href="#cb57-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-125"><a href="#cb57-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-126"><a href="#cb57-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### JSON Files (.json)</span></span>
+<span id="cb57-127"><a href="#cb57-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-128"><a href="#cb57-128" aria-hidden="true" tabindex="-1"></a>JSON is an open standard file and lightweight data-interchange format that stands for *J*ava*S*cript *O*bject *N*otation. The JSON file is a text file that is language independent, self-describing, and easy to understand.</span>
+<span id="cb57-129"><a href="#cb57-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-130"><a href="#cb57-130" aria-hidden="true" tabindex="-1"></a>The JSON file is read by R as a **list** using the function **fromJSON()** of **rjson** package.</span>
+<span id="cb57-131"><a href="#cb57-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-132"><a href="#cb57-132" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("rjson")</span></span>
+<span id="cb57-133"><a href="#cb57-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-134"><a href="#cb57-134" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; fromJSON(json_str, file, method = "C", unexpected.escape = "error", sim..)</span></span>
+<span id="cb57-135"><a href="#cb57-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-138"><a href="#cb57-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-139"><a href="#cb57-139" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "fromJSON()" </span></span>
+<span id="cb57-140"><a href="#cb57-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-141"><a href="#cb57-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-142"><a href="#cb57-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-143"><a href="#cb57-143" aria-hidden="true" tabindex="-1"></a><span class="co"># Load rjson package</span></span>
+<span id="cb57-144"><a href="#cb57-144" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjson)</span>
+<span id="cb57-145"><a href="#cb57-145" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-146"><a href="#cb57-146" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-147"><a href="#cb57-147" aria-hidden="true" tabindex="-1"></a><span class="co"># read .json file</span></span>
+<span id="cb57-148"><a href="#cb57-148" aria-hidden="true" tabindex="-1"></a>df.json <span class="ot">&lt;-</span> rjson<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="at">file=</span> <span class="fu">paste0</span>(dataFolder, <span class="st">"test_data.json"</span>),  <span class="at">simplify=</span><span class="cn">TRUE</span>)</span>
+<span id="cb57-149"><a href="#cb57-149" aria-hidden="true" tabindex="-1"></a><span class="co">#print(df.json)</span></span>
+<span id="cb57-150"><a href="#cb57-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-151"><a href="#cb57-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-152"><a href="#cb57-152" aria-hidden="true" tabindex="-1"></a>We can convert to data frame</span>
+<span id="cb57-153"><a href="#cb57-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-156"><a href="#cb57-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-157"><a href="#cb57-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "Convert JSON file to DF" </span></span>
+<span id="cb57-158"><a href="#cb57-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-159"><a href="#cb57-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-160"><a href="#cb57-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-161"><a href="#cb57-161" aria-hidden="true" tabindex="-1"></a>df.json <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df.json)</span>
+<span id="cb57-162"><a href="#cb57-162" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.json)</span>
+<span id="cb57-163"><a href="#cb57-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-164"><a href="#cb57-164" aria-hidden="true" tabindex="-1"></a><span class="fu">##  Import Data from Other Stattistcal Software</span></span>
+<span id="cb57-165"><a href="#cb57-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-166"><a href="#cb57-166" aria-hidden="true" tabindex="-1"></a>**foreign**  packages is mostly used to read data stored by **Minitab**, **S**, **SAS**, **SPSS**, **Stata**, **Systat**, **dBase**, and so forth. </span>
+<span id="cb57-167"><a href="#cb57-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-168"><a href="#cb57-168" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("foreign")</span></span>
+<span id="cb57-169"><a href="#cb57-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-170"><a href="#cb57-170" aria-hidden="true" tabindex="-1"></a>**Haven** enables R to read and write various data formats used by other statistical packages by wrapping with [ReadStat](https://github.com/WizardMac/ReadStat) C library.  written b Haven is part of the tidyverse. Current it support **SAS**, **SPSS** and **Stata** files</span>
+<span id="cb57-171"><a href="#cb57-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-172"><a href="#cb57-172" aria-hidden="true" tabindex="-1"></a>read.dta() function from **foreign** package can reads a file in Stata version 5-12 binary format (.dta) into a data frame.</span>
+<span id="cb57-173"><a href="#cb57-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-174"><a href="#cb57-174" aria-hidden="true" tabindex="-1"></a><span class="fu">### STATA File (.dta)</span></span>
+<span id="cb57-175"><a href="#cb57-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-176"><a href="#cb57-176" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-177"><a href="#cb57-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-178"><a href="#cb57-178" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Foreign - read.dta()</span></span>
+<span id="cb57-179"><a href="#cb57-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-182"><a href="#cb57-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-183"><a href="#cb57-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-184"><a href="#cb57-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-185"><a href="#cb57-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-186"><a href="#cb57-186" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb57-187"><a href="#cb57-187" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb57-188"><a href="#cb57-188" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-189"><a href="#cb57-189" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-190"><a href="#cb57-190" aria-hidden="true" tabindex="-1"></a><span class="co"># read .dta file</span></span>
+<span id="cb57-191"><a href="#cb57-191" aria-hidden="true" tabindex="-1"></a>df.dta_01 <span class="ot">&lt;-</span> foreign<span class="sc">::</span><span class="fu">read.dta</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.dta"</span>)) </span>
+<span id="cb57-192"><a href="#cb57-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-193"><a href="#cb57-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-194"><a href="#cb57-194" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Haven read_dta()</span></span>
+<span id="cb57-195"><a href="#cb57-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-198"><a href="#cb57-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-199"><a href="#cb57-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-200"><a href="#cb57-200" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-201"><a href="#cb57-201" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb57-202"><a href="#cb57-202" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb57-203"><a href="#cb57-203" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-204"><a href="#cb57-204" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-205"><a href="#cb57-205" aria-hidden="true" tabindex="-1"></a><span class="co"># read .dta file</span></span>
+<span id="cb57-206"><a href="#cb57-206" aria-hidden="true" tabindex="-1"></a>df.dta_02 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.dta"</span>)) </span>
+<span id="cb57-207"><a href="#cb57-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-208"><a href="#cb57-208" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-209"><a href="#cb57-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-210"><a href="#cb57-210" aria-hidden="true" tabindex="-1"></a><span class="fu">### SPSS File (.sav)</span></span>
+<span id="cb57-211"><a href="#cb57-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-212"><a href="#cb57-212" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-213"><a href="#cb57-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-214"><a href="#cb57-214" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Foreign - read.spss()</span></span>
+<span id="cb57-215"><a href="#cb57-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-218"><a href="#cb57-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-219"><a href="#cb57-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-220"><a href="#cb57-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-221"><a href="#cb57-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-222"><a href="#cb57-222" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb57-223"><a href="#cb57-223" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb57-224"><a href="#cb57-224" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-225"><a href="#cb57-225" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-226"><a href="#cb57-226" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sav file</span></span>
+<span id="cb57-227"><a href="#cb57-227" aria-hidden="true" tabindex="-1"></a>df.sav_01 <span class="ot">&lt;-</span> foreign<span class="sc">::</span><span class="fu">read.spss</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sav"</span>)) </span>
+<span id="cb57-228"><a href="#cb57-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-229"><a href="#cb57-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-230"><a href="#cb57-230" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Haven read_sav()</span></span>
+<span id="cb57-231"><a href="#cb57-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-234"><a href="#cb57-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-235"><a href="#cb57-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-236"><a href="#cb57-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-237"><a href="#cb57-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| </span></span>
+<span id="cb57-238"><a href="#cb57-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-239"><a href="#cb57-239" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb57-240"><a href="#cb57-240" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb57-241"><a href="#cb57-241" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-242"><a href="#cb57-242" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-243"><a href="#cb57-243" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sav file</span></span>
+<span id="cb57-244"><a href="#cb57-244" aria-hidden="true" tabindex="-1"></a>df.sav_02 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sav</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sav"</span>)) </span>
+<span id="cb57-245"><a href="#cb57-245" aria-hidden="true" tabindex="-1"></a><span class="co">#head(df.sav)</span></span>
+<span id="cb57-246"><a href="#cb57-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-247"><a href="#cb57-247" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-248"><a href="#cb57-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-249"><a href="#cb57-249" aria-hidden="true" tabindex="-1"></a><span class="fu">### SAS File (.sas7bdat)</span></span>
+<span id="cb57-250"><a href="#cb57-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-251"><a href="#cb57-251" aria-hidden="true" tabindex="-1"></a>**read_sas()** function  from haven package can read sas (.sas7bdat) file easily. </span>
+<span id="cb57-252"><a href="#cb57-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-255"><a href="#cb57-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-256"><a href="#cb57-256" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read_sas()" </span></span>
+<span id="cb57-257"><a href="#cb57-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-258"><a href="#cb57-258" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-259"><a href="#cb57-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-260"><a href="#cb57-260" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb57-261"><a href="#cb57-261" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb57-262"><a href="#cb57-262" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-263"><a href="#cb57-263" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-264"><a href="#cb57-264" aria-hidden="true" tabindex="-1"></a><span class="co"># read .sas7bdat file</span></span>
+<span id="cb57-265"><a href="#cb57-265" aria-hidden="true" tabindex="-1"></a>df.sas <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_sas</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"test_data.sas7bdat"</span>)) </span>
+<span id="cb57-266"><a href="#cb57-266" aria-hidden="true" tabindex="-1"></a><span class="co">#head(df.sas)</span></span>
+<span id="cb57-267"><a href="#cb57-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-268"><a href="#cb57-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-269"><a href="#cb57-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-270"><a href="#cb57-270" aria-hidden="true" tabindex="-1"></a><span class="fu">## Export files from R</span></span>
+<span id="cb57-271"><a href="#cb57-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-272"><a href="#cb57-272" aria-hidden="true" tabindex="-1"></a>To export data and save to your local drive, you need the file path and an extension. First of all, the path is the location where the data will be stored.</span>
+<span id="cb57-273"><a href="#cb57-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-274"><a href="#cb57-274" aria-hidden="true" tabindex="-1"></a>Before we start, we need to specify the working directory in which we can export the data.</span>
+<span id="cb57-275"><a href="#cb57-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-276"><a href="#cb57-276" aria-hidden="true" tabindex="-1"></a><span class="fu">### CSV File</span></span>
+<span id="cb57-277"><a href="#cb57-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-278"><a href="#cb57-278" aria-hidden="true" tabindex="-1"></a>First of all, let create a data frame that we will going to export as a text/CSV file.</span>
+<span id="cb57-279"><a href="#cb57-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-282"><a href="#cb57-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-283"><a href="#cb57-283" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "Create data-frame" </span></span>
+<span id="cb57-284"><a href="#cb57-284" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-285"><a href="#cb57-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-286"><a href="#cb57-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-287"><a href="#cb57-287" aria-hidden="true" tabindex="-1"></a>Variety <span class="ot">=</span><span class="fu">c</span>(<span class="st">"BR1"</span>,<span class="st">"BR3"</span>, <span class="st">"BR16"</span>, <span class="st">"BR17"</span>, <span class="st">"BR18"</span>, <span class="st">"BR19"</span>,<span class="st">"BR26"</span>,</span>
+<span id="cb57-288"><a href="#cb57-288" aria-hidden="true" tabindex="-1"></a>          <span class="st">"BR27"</span>,<span class="st">"BR28"</span>,<span class="st">"BR29"</span>,<span class="st">"BR35"</span>,<span class="st">"BR36"</span>) <span class="co"># create a text vector</span></span>
+<span id="cb57-289"><a href="#cb57-289" aria-hidden="true" tabindex="-1"></a>Yield <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">5.2</span>,<span class="fl">6.0</span>,<span class="fl">6.6</span>,<span class="fl">5.6</span>,<span class="fl">4.7</span>,<span class="fl">5.2</span>,<span class="fl">5.7</span>,</span>
+<span id="cb57-290"><a href="#cb57-290" aria-hidden="true" tabindex="-1"></a>                <span class="fl">5.9</span>,<span class="fl">5.3</span>,<span class="fl">6.8</span>,<span class="fl">6.2</span>,<span class="fl">5.8</span>) <span class="co"># create numerical vector</span></span>
+<span id="cb57-291"><a href="#cb57-291" aria-hidden="true" tabindex="-1"></a>rice.data<span class="ot">=</span> <span class="fu">data.frame</span>(Variety, Yield)</span>
+<span id="cb57-292"><a href="#cb57-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-293"><a href="#cb57-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-294"><a href="#cb57-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-295"><a href="#cb57-295" aria-hidden="true" tabindex="-1"></a>The popular R base functions for writing data are **write.table()**, **write.csv()**, **write.csv2()** and **write.delim()** functions.</span>
+<span id="cb57-296"><a href="#cb57-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-297"><a href="#cb57-297" aria-hidden="true" tabindex="-1"></a>Before start, you need to specify the working or destination directory in where you will save the data.</span>
+<span id="cb57-298"><a href="#cb57-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-299"><a href="#cb57-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-302"><a href="#cb57-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-303"><a href="#cb57-303" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write.csv()" </span></span>
+<span id="cb57-304"><a href="#cb57-304" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-305"><a href="#cb57-305" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-306"><a href="#cb57-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-307"><a href="#cb57-307" aria-hidden="true" tabindex="-1"></a><span class="co"># Define destination folder</span></span>
+<span id="cb57-308"><a href="#cb57-308" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-309"><a href="#cb57-309" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(rice.data, <span class="fu">paste0</span>(dataFolder, <span class="st">"rice_data.csv"</span>), <span class="at">row.names =</span> F) <span class="co"># no row names</span></span>
+<span id="cb57-310"><a href="#cb57-310" aria-hidden="true" tabindex="-1"></a><span class="co"># write.csv(rice.data, "rice_data.csv", row.names = F) # no row names</span></span>
+<span id="cb57-311"><a href="#cb57-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-312"><a href="#cb57-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-313"><a href="#cb57-313" aria-hidden="true" tabindex="-1"></a><span class="fu">### Excel File</span></span>
+<span id="cb57-314"><a href="#cb57-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-315"><a href="#cb57-315" aria-hidden="true" tabindex="-1"></a>Exporting data from R to Excel can be achieved with several packages. The most known package to export data frames or tables as Excel is xlsx, that provides the **write.xlsx** and **write.xlsx2** functions.</span>
+<span id="cb57-316"><a href="#cb57-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-319"><a href="#cb57-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-320"><a href="#cb57-320" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write.xlsx()" </span></span>
+<span id="cb57-321"><a href="#cb57-321" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-322"><a href="#cb57-322" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-323"><a href="#cb57-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-324"><a href="#cb57-324" aria-hidden="true" tabindex="-1"></a><span class="co"># load xlsx</span></span>
+<span id="cb57-325"><a href="#cb57-325" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb57-326"><a href="#cb57-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Define destination folder</span></span>
+<span id="cb57-327"><a href="#cb57-327" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-328"><a href="#cb57-328" aria-hidden="true" tabindex="-1"></a><span class="co"># write as xlsx file</span></span>
+<span id="cb57-329"><a href="#cb57-329" aria-hidden="true" tabindex="-1"></a>xlsx<span class="sc">::</span><span class="fu">write.xlsx</span>(rice.data, <span class="fu">paste0</span>(dataFolder, <span class="st">"rice_data.xlsx"</span>))</span>
+<span id="cb57-330"><a href="#cb57-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-331"><a href="#cb57-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-332"><a href="#cb57-332" aria-hidden="true" tabindex="-1"></a><span class="fu">### JSON Objects</span></span>
+<span id="cb57-333"><a href="#cb57-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-334"><a href="#cb57-334" aria-hidden="true" tabindex="-1"></a>To write JSON Object to file, the **toJSON()** function from the **rjson** library can be used to prepare a JSON object and then use the **write()** function for writing the JSON object to a local file.</span>
+<span id="cb57-335"><a href="#cb57-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-338"><a href="#cb57-338" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-339"><a href="#cb57-339" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "toJSON()" </span></span>
+<span id="cb57-340"><a href="#cb57-340" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-341"><a href="#cb57-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-342"><a href="#cb57-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-343"><a href="#cb57-343" aria-hidden="true" tabindex="-1"></a><span class="co"># Load rjson package</span></span>
+<span id="cb57-344"><a href="#cb57-344" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjson)</span>
+<span id="cb57-345"><a href="#cb57-345" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-346"><a href="#cb57-346" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-347"><a href="#cb57-347" aria-hidden="true" tabindex="-1"></a><span class="co"># create a JSON object</span></span>
+<span id="cb57-348"><a href="#cb57-348" aria-hidden="true" tabindex="-1"></a>jsonData <span class="ot">&lt;-</span>rjson<span class="sc">::</span><span class="fu">toJSON</span>(rice.data)</span>
+<span id="cb57-349"><a href="#cb57-349" aria-hidden="true" tabindex="-1"></a><span class="co"># write JSON objects</span></span>
+<span id="cb57-350"><a href="#cb57-350" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(jsonData, <span class="at">file=</span> <span class="fu">paste0</span>(dataFolder,<span class="st">"rice_data.json"</span>))</span>
+<span id="cb57-351"><a href="#cb57-351" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-352"><a href="#cb57-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-353"><a href="#cb57-353" aria-hidden="true" tabindex="-1"></a><span class="fu">### R Data File</span></span>
+<span id="cb57-354"><a href="#cb57-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-355"><a href="#cb57-355" aria-hidden="true" tabindex="-1"></a>If you want to share the data from R as Objects and share those with your colleagues through different systems so that they can use it right away into their R-workspace. These objects are of two types **.rda/.RData** which can be used to store some or all objects, functions from R global environment.</span>
+<span id="cb57-356"><a href="#cb57-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-357"><a href="#cb57-357" aria-hidden="true" tabindex="-1"></a>The **save()** function allows us to save multiple objects into our global environment:</span>
+<span id="cb57-358"><a href="#cb57-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-361"><a href="#cb57-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-362"><a href="#cb57-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "save()" </span></span>
+<span id="cb57-363"><a href="#cb57-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-364"><a href="#cb57-364" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-365"><a href="#cb57-365" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb57-366"><a href="#cb57-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-367"><a href="#cb57-367" aria-hidden="true" tabindex="-1"></a><span class="co"># Define destination folder</span></span>
+<span id="cb57-368"><a href="#cb57-368" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-369"><a href="#cb57-369" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(rice.data, Variety, Yield,  <span class="at">file=</span> <span class="fu">paste0</span>(dataFolder,<span class="st">"rice_data.RData"</span>))</span>
+<span id="cb57-370"><a href="#cb57-370" aria-hidden="true" tabindex="-1"></a><span class="co">#save(rice.data, Variety, Yield,  file="rice_data.RData")</span></span>
+<span id="cb57-371"><a href="#cb57-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-372"><a href="#cb57-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-373"><a href="#cb57-373" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb57-374"><a href="#cb57-374" aria-hidden="true" tabindex="-1"></a>If you specify **save.image(file = "R_objects.RData")** Export all objects (the workspace image).</span>
+<span id="cb57-375"><a href="#cb57-375" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-376"><a href="#cb57-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-377"><a href="#cb57-377" aria-hidden="true" tabindex="-1"></a>To save only one object it is more recommended saving it as RDS with the **saveRDS()** function:</span>
+<span id="cb57-378"><a href="#cb57-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-381"><a href="#cb57-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-382"><a href="#cb57-382" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "saveRDS()" </span></span>
+<span id="cb57-383"><a href="#cb57-383" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-384"><a href="#cb57-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-385"><a href="#cb57-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-386"><a href="#cb57-386" aria-hidden="true" tabindex="-1"></a><span class="co"># write .RDS file</span></span>
+<span id="cb57-387"><a href="#cb57-387" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.rds"</span>)</span>
+<span id="cb57-388"><a href="#cb57-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-389"><a href="#cb57-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-390"><a href="#cb57-390" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb57-391"><a href="#cb57-391" aria-hidden="true" tabindex="-1"></a>If you specify **compress = TRUE** as argument of the above functions the file will be compressed by default as gzip.</span>
+<span id="cb57-392"><a href="#cb57-392" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-393"><a href="#cb57-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-394"><a href="#cb57-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-395"><a href="#cb57-395" aria-hidden="true" tabindex="-1"></a><span class="fu">## Export to Other Statistcal Software</span></span>
+<span id="cb57-396"><a href="#cb57-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-397"><a href="#cb57-397" aria-hidden="true" tabindex="-1"></a><span class="fu">#### STATA File</span></span>
+<span id="cb57-398"><a href="#cb57-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-399"><a href="#cb57-399" aria-hidden="true" tabindex="-1"></a>If you want export data from R to STATA, you will need to use the **write.dta()** function of the **foreign** package. This package provides functions for r</span>
+<span id="cb57-400"><a href="#cb57-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-403"><a href="#cb57-403" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-404"><a href="#cb57-404" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write.dta()" </span></span>
+<span id="cb57-405"><a href="#cb57-405" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-406"><a href="#cb57-406" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-407"><a href="#cb57-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-408"><a href="#cb57-408" aria-hidden="true" tabindex="-1"></a><span class="co"># Load foreign package</span></span>
+<span id="cb57-409"><a href="#cb57-409" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb57-410"><a href="#cb57-410" aria-hidden="true" tabindex="-1"></a><span class="co"># define data folder</span></span>
+<span id="cb57-411"><a href="#cb57-411" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-412"><a href="#cb57-412" aria-hidden="true" tabindex="-1"></a><span class="co"># write dta file</span></span>
+<span id="cb57-413"><a href="#cb57-413" aria-hidden="true" tabindex="-1"></a>foreign<span class="sc">::</span><span class="fu">write.dta</span>(rice.data, <span class="at">file=</span> <span class="fu">paste0</span>(dataFolder,<span class="st">"rice_data.dta"</span>))</span>
+<span id="cb57-414"><a href="#cb57-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-415"><a href="#cb57-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-416"><a href="#cb57-416" aria-hidden="true" tabindex="-1"></a><span class="fu">#### SPSS File</span></span>
+<span id="cb57-417"><a href="#cb57-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-418"><a href="#cb57-418" aria-hidden="true" tabindex="-1"></a>Haven enables R to read and write various data formats used by other statistical packages by wrapping with <span class="co">[</span><span class="ot">ReadStat</span><span class="co">](https://github.com/WizardMac/ReadStat)</span> C library.  written b Haven is part of the tidyverse. Current it support **SAS**, **SPSS** and **Stata** files</span>
+<span id="cb57-419"><a href="#cb57-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-420"><a href="#cb57-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-421"><a href="#cb57-421" aria-hidden="true" tabindex="-1"></a>The **write_sav()** function of **haven** package can be used to export R-object to SPSS</span>
+<span id="cb57-422"><a href="#cb57-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-425"><a href="#cb57-425" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-426"><a href="#cb57-426" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write_sva()" </span></span>
+<span id="cb57-427"><a href="#cb57-427" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-428"><a href="#cb57-428" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-429"><a href="#cb57-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-430"><a href="#cb57-430" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb57-431"><a href="#cb57-431" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb57-432"><a href="#cb57-432" aria-hidden="true" tabindex="-1"></a><span class="co"># write .sav file</span></span>
+<span id="cb57-433"><a href="#cb57-433" aria-hidden="true" tabindex="-1"></a>haven<span class="sc">::</span><span class="fu">write_sav</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.sav"</span>)</span>
+<span id="cb57-434"><a href="#cb57-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-435"><a href="#cb57-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-436"><a href="#cb57-436" aria-hidden="true" tabindex="-1"></a><span class="fu">#### SAS File</span></span>
+<span id="cb57-437"><a href="#cb57-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-438"><a href="#cb57-438" aria-hidden="true" tabindex="-1"></a>The **write_sas()** function of **haven** package can be used to export R-object to SAS (.sas7bdat)</span>
+<span id="cb57-439"><a href="#cb57-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-442"><a href="#cb57-442" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-443"><a href="#cb57-443" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write_sva()" </span></span>
+<span id="cb57-444"><a href="#cb57-444" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-445"><a href="#cb57-445" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-446"><a href="#cb57-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-447"><a href="#cb57-447" aria-hidden="true" tabindex="-1"></a><span class="co"># Load haven package</span></span>
+<span id="cb57-448"><a href="#cb57-448" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb57-449"><a href="#cb57-449" aria-hidden="true" tabindex="-1"></a><span class="co"># write .sav file</span></span>
+<span id="cb57-450"><a href="#cb57-450" aria-hidden="true" tabindex="-1"></a>haven<span class="sc">::</span><span class="fu">write_sas</span>(rice.data, <span class="st">"D:/Dropbox/GitHub/Data/rice_data.sas7bdat"</span>)</span>
+<span id="cb57-451"><a href="#cb57-451" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-452"><a href="#cb57-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-453"><a href="#cb57-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-454"><a href="#cb57-454" aria-hidden="true" tabindex="-1"></a><span class="fu">## data.table: Extension of 'data.frame'</span></span>
+<span id="cb57-455"><a href="#cb57-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-456"><a href="#cb57-456" aria-hidden="true" tabindex="-1"></a>The R-package <span class="co">[</span><span class="ot">data.tabel</span><span class="co">](https://rdatatable.gitlab.io/data.table/)</span> a improved version of data.frame, the a R-base function. It has following advantages:</span>
+<span id="cb57-457"><a href="#cb57-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-458"><a href="#cb57-458" aria-hidden="true" tabindex="-1"></a>• concise syntax: fast to type, fast to read • fast speed • memory efficient</span>
+<span id="cb57-459"><a href="#cb57-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-460"><a href="#cb57-460" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("data.table")</span></span>
+<span id="cb57-461"><a href="#cb57-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-462"><a href="#cb57-462" aria-hidden="true" tabindex="-1"></a>We will use two important functions of data.table to read and write CSV files in R.</span>
+<span id="cb57-463"><a href="#cb57-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-464"><a href="#cb57-464" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reaing CSV file with **fread**</span></span>
+<span id="cb57-465"><a href="#cb57-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-466"><a href="#cb57-466" aria-hidden="true" tabindex="-1"></a>**fread**: This function is capable of reading CSV files quickly and conveniently.</span>
+<span id="cb57-467"><a href="#cb57-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-468"><a href="#cb57-468" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; fread(input, file,....)</span></span>
+<span id="cb57-469"><a href="#cb57-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-472"><a href="#cb57-472" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-473"><a href="#cb57-473" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "fread()" </span></span>
+<span id="cb57-474"><a href="#cb57-474" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-475"><a href="#cb57-475" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-476"><a href="#cb57-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-477"><a href="#cb57-477" aria-hidden="true" tabindex="-1"></a><span class="co"># Load library</span></span>
+<span id="cb57-478"><a href="#cb57-478" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb57-479"><a href="#cb57-479" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb57-480"><a href="#cb57-480" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-481"><a href="#cb57-481" aria-hidden="true" tabindex="-1"></a><span class="co"># read with fread()</span></span>
+<span id="cb57-482"><a href="#cb57-482" aria-hidden="true" tabindex="-1"></a>DT<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>) </span>
+<span id="cb57-483"><a href="#cb57-483" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(DT)</span>
+<span id="cb57-484"><a href="#cb57-484" aria-hidden="true" tabindex="-1"></a><span class="co">#DT&lt;-fread("usa_geochemical.csv", header= TRUE) </span></span>
+<span id="cb57-485"><a href="#cb57-485" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-486"><a href="#cb57-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-487"><a href="#cb57-487" aria-hidden="true" tabindex="-1"></a>You cam compare data reading time of **fread()** and **read.csv()** functions:</span>
+<span id="cb57-488"><a href="#cb57-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-489"><a href="#cb57-489" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-490"><a href="#cb57-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-491"><a href="#cb57-491" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function read.csv</span></span>
+<span id="cb57-492"><a href="#cb57-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-495"><a href="#cb57-495" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-496"><a href="#cb57-496" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-497"><a href="#cb57-497" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-498"><a href="#cb57-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-499"><a href="#cb57-499" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>)) </span>
+<span id="cb57-500"><a href="#cb57-500" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-501"><a href="#cb57-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-502"><a href="#cb57-502" aria-hidden="true" tabindex="-1"></a><span class="fu">#### data.table fread</span></span>
+<span id="cb57-503"><a href="#cb57-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-506"><a href="#cb57-506" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-507"><a href="#cb57-507" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-508"><a href="#cb57-508" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-509"><a href="#cb57-509" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"LBC_data.csv"</span>), <span class="at">header=</span> <span class="cn">TRUE</span>))</span>
+<span id="cb57-510"><a href="#cb57-510" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-511"><a href="#cb57-511" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-512"><a href="#cb57-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-513"><a href="#cb57-513" aria-hidden="true" tabindex="-1"></a><span class="fu">### Writing CSV file with **fwrite**</span></span>
+<span id="cb57-514"><a href="#cb57-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-515"><a href="#cb57-515" aria-hidden="true" tabindex="-1"></a>**fwrite()**: This capable to write CSV field very fast!</span>
+<span id="cb57-516"><a href="#cb57-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-517"><a href="#cb57-517" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; fwrite(x, file = "", append = FALSE, quote ="auto", .....)</span></span>
+<span id="cb57-518"><a href="#cb57-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-521"><a href="#cb57-521" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-522"><a href="#cb57-522" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "fwrite()" </span></span>
+<span id="cb57-523"><a href="#cb57-523" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-524"><a href="#cb57-524" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-525"><a href="#cb57-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-526"><a href="#cb57-526" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb57-527"><a href="#cb57-527" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-528"><a href="#cb57-528" aria-hidden="true" tabindex="-1"></a><span class="co"># read with fread()</span></span>
+<span id="cb57-529"><a href="#cb57-529" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F, <span class="at">quote=</span><span class="cn">TRUE</span>)</span>
+<span id="cb57-530"><a href="#cb57-530" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-531"><a href="#cb57-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-532"><a href="#cb57-532" aria-hidden="true" tabindex="-1"></a>Now we compare writing time of **frwite** functions with write.csv functions.</span>
+<span id="cb57-533"><a href="#cb57-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-534"><a href="#cb57-534" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-535"><a href="#cb57-535" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base function write.csv</span></span>
+<span id="cb57-536"><a href="#cb57-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-539"><a href="#cb57-539" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-540"><a href="#cb57-540" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-541"><a href="#cb57-541" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-542"><a href="#cb57-542" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb57-543"><a href="#cb57-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-544"><a href="#cb57-544" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">write.csv</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F))</span>
+<span id="cb57-545"><a href="#cb57-545" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-546"><a href="#cb57-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-547"><a href="#cb57-547" aria-hidden="true" tabindex="-1"></a><span class="fu">#### data.table fwrite</span></span>
+<span id="cb57-548"><a href="#cb57-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-551"><a href="#cb57-551" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-552"><a href="#cb57-552" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-553"><a href="#cb57-553" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-554"><a href="#cb57-554" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT,  <span class="fu">paste0</span>(dataFolder, <span class="st">"DT.csv"</span>), <span class="at">row.names=</span>F, <span class="at">quote=</span><span class="cn">TRUE</span>))</span>
+<span id="cb57-555"><a href="#cb57-555" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-556"><a href="#cb57-556" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-557"><a href="#cb57-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-558"><a href="#cb57-558" aria-hidden="true" tabindex="-1"></a><span class="fu">## Feather: A Fast On-Disk Format for Data Frames</span></span>
+<span id="cb57-559"><a href="#cb57-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-560"><a href="#cb57-560" aria-hidden="true" tabindex="-1"></a>Feather is a fast, lightweight, and easy-to-use binary file format for storing data frames. It has a few specific design goals:</span>
+<span id="cb57-561"><a href="#cb57-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-562"><a href="#cb57-562" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Lightweight, minimal API: make pushing data frames in and out of memory as simple as possible</span>
+<span id="cb57-563"><a href="#cb57-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-564"><a href="#cb57-564" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Language agnostic: Feather files are the same whether written by Python or R code. Other languages can read and write Feather files, too.</span>
+<span id="cb57-565"><a href="#cb57-565" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-566"><a href="#cb57-566" aria-hidden="true" tabindex="-1"></a>Feather is extremely fast. Since Feather does not currently use any compression internally, it works best when used with solid-state drives as come with most of today's laptop computers. For this first release, we prioritized a simple implementation and are thus writing unmodified Arrow memory to disk <span class="co">[</span><span class="ot">source</span><span class="co">](https://www.rstudio.com/blog/feather/)</span>.</span>
+<span id="cb57-567"><a href="#cb57-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-568"><a href="#cb57-568" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("feather")</span></span>
+<span id="cb57-569"><a href="#cb57-569" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-570"><a href="#cb57-570" aria-hidden="true" tabindex="-1"></a><span class="in">```{r message=FALSE, warning=FALSE}</span></span>
+<span id="cb57-571"><a href="#cb57-571" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("feather")</span></span>
+<span id="cb57-572"><a href="#cb57-572" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feather)</span>
+<span id="cb57-573"><a href="#cb57-573" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-574"><a href="#cb57-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-575"><a href="#cb57-575" aria-hidden="true" tabindex="-1"></a>First we have to create feather data using **write_feather()** function</span>
+<span id="cb57-576"><a href="#cb57-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-577"><a href="#cb57-577" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; write_feather(x, path)</span></span>
+<span id="cb57-578"><a href="#cb57-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-581"><a href="#cb57-581" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-582"><a href="#cb57-582" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "write_feather()" </span></span>
+<span id="cb57-583"><a href="#cb57-583" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-584"><a href="#cb57-584" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-585"><a href="#cb57-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-586"><a href="#cb57-586" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb57-587"><a href="#cb57-587" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-588"><a href="#cb57-588" aria-hidden="true" tabindex="-1"></a><span class="co"># Load feather</span></span>
+<span id="cb57-589"><a href="#cb57-589" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feather)</span>
+<span id="cb57-590"><a href="#cb57-590" aria-hidden="true" tabindex="-1"></a><span class="co"># write_feather()</span></span>
+<span id="cb57-591"><a href="#cb57-591" aria-hidden="true" tabindex="-1"></a>feather<span class="sc">::</span><span class="fu">write_feather</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>))</span>
+<span id="cb57-592"><a href="#cb57-592" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-593"><a href="#cb57-593" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-594"><a href="#cb57-594" aria-hidden="true" tabindex="-1"></a>We can read this feather data with lighting speed using read_feather function()</span>
+<span id="cb57-595"><a href="#cb57-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-598"><a href="#cb57-598" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-599"><a href="#cb57-599" aria-hidden="true" tabindex="-1"></a>DT_feather <span class="ot">&lt;-</span> feather<span class="sc">::</span><span class="fu">read_feather</span>(<span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>))</span>
+<span id="cb57-600"><a href="#cb57-600" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(DT_feather)</span>
+<span id="cb57-601"><a href="#cb57-601" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-602"><a href="#cb57-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-603"><a href="#cb57-603" aria-hidden="true" tabindex="-1"></a>Compare to and **write.csv()** as well as **frwite()**, **write_feather()** is very fast:</span>
+<span id="cb57-604"><a href="#cb57-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-605"><a href="#cb57-605" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-606"><a href="#cb57-606" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R-base write.csv</span></span>
+<span id="cb57-607"><a href="#cb57-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-610"><a href="#cb57-610" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-611"><a href="#cb57-611" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">write.csv</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.csv"</span>)))</span>
+<span id="cb57-612"><a href="#cb57-612" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-613"><a href="#cb57-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-614"><a href="#cb57-614" aria-hidden="true" tabindex="-1"></a><span class="fu">#### data.table fwrite</span></span>
+<span id="cb57-615"><a href="#cb57-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-618"><a href="#cb57-618" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-619"><a href="#cb57-619" aria-hidden="true" tabindex="-1"></a><span class="co"># CSV file with fwrite</span></span>
+<span id="cb57-620"><a href="#cb57-620" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(data.table<span class="sc">::</span><span class="fu">fwrite</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.csv"</span>)))</span>
+<span id="cb57-621"><a href="#cb57-621" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-622"><a href="#cb57-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-623"><a href="#cb57-623" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Feather write_feather</span></span>
+<span id="cb57-624"><a href="#cb57-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-627"><a href="#cb57-627" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-628"><a href="#cb57-628" aria-hidden="true" tabindex="-1"></a><span class="co"># feather file with </span></span>
+<span id="cb57-629"><a href="#cb57-629" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(feather<span class="sc">::</span><span class="fu">write_feather</span>(DT, <span class="fu">paste0</span>(dataFolder, <span class="st">"LBC_data.feather"</span>)))</span>
+<span id="cb57-630"><a href="#cb57-630" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-631"><a href="#cb57-631" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-632"><a href="#cb57-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-633"><a href="#cb57-633" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tidyverse Package: Data Import and Export</span></span>
+<span id="cb57-634"><a href="#cb57-634" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-635"><a href="#cb57-635" aria-hidden="true" tabindex="-1"></a>The tidyverse is an collection of several R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures <span class="co">[</span><span class="ot">(Source)</span><span class="co">](https://www.tidyverse.org/)</span>.</span>
+<span id="cb57-636"><a href="#cb57-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-637"><a href="#cb57-637" aria-hidden="true" tabindex="-1"></a>The core tidyverse includes the packages that you're likely to use in everyday data analyses. As of tidyverse 1.3.0, the following packages are included in the core tidyverse:</span>
+<span id="cb57-638"><a href="#cb57-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-639"><a href="#cb57-639" aria-hidden="true" tabindex="-1"></a><span class="al">![Core R-Packages](Image/tidyverse.png)</span>{#fig-rpkages}</span>
+<span id="cb57-640"><a href="#cb57-640" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-641"><a href="#cb57-641" aria-hidden="true" tabindex="-1"></a><span class="fu">### Installation and use</span></span>
+<span id="cb57-642"><a href="#cb57-642" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-643"><a href="#cb57-643" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Install all the packages in the tidyverse by running install.packages("tidyverse").</span>
+<span id="cb57-644"><a href="#cb57-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-645"><a href="#cb57-645" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Run library(tidyverse) to load the core tidyverse with and make it available in your current R session.</span>
+<span id="cb57-646"><a href="#cb57-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-647"><a href="#cb57-647" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; install.packages("tidyverse")</span></span>
+<span id="cb57-648"><a href="#cb57-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-649"><a href="#cb57-649" aria-hidden="true" tabindex="-1"></a><span class="in">```{r message=FALSE, warning=FALSE}</span></span>
+<span id="cb57-650"><a href="#cb57-650" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb57-651"><a href="#cb57-651" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-652"><a href="#cb57-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-653"><a href="#cb57-653" aria-hidden="true" tabindex="-1"></a>As well as **readr**, for reading flat files, the tidyverse package installs a number of other packages for reading data:</span>
+<span id="cb57-654"><a href="#cb57-654" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-655"><a href="#cb57-655" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**DBI** for relational databases. You'll need to pair DBI with a database specific backends like *RSQLite*, *RMariaDB*, *RPostgres*, or *odbc*. Learn more at https://db.rstudio.com.</span>
+<span id="cb57-656"><a href="#cb57-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-657"><a href="#cb57-657" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**haven** for SPSS, Stata, and SAS data.</span>
+<span id="cb57-658"><a href="#cb57-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-659"><a href="#cb57-659" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**httr** for web APIs.</span>
+<span id="cb57-660"><a href="#cb57-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-661"><a href="#cb57-661" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**readxl** for .xls and .xlsx sheets.</span>
+<span id="cb57-662"><a href="#cb57-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-663"><a href="#cb57-663" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**googlesheets4** for Google Sheets via the Sheets API v4.</span>
+<span id="cb57-664"><a href="#cb57-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-665"><a href="#cb57-665" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**googledrive** for Google Drive files.</span>
+<span id="cb57-666"><a href="#cb57-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-667"><a href="#cb57-667" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**rvest** for web scraping.</span>
+<span id="cb57-668"><a href="#cb57-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-669"><a href="#cb57-669" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**jsonlite** for JSON. (Maintained by Jeroen Ooms.)</span>
+<span id="cb57-670"><a href="#cb57-670" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-671"><a href="#cb57-671" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**xml2** for XML</span>
+<span id="cb57-672"><a href="#cb57-672" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-673"><a href="#cb57-673" aria-hidden="true" tabindex="-1"></a><span class="fu">### Read CSV files with readr</span></span>
+<span id="cb57-674"><a href="#cb57-674" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-675"><a href="#cb57-675" aria-hidden="true" tabindex="-1"></a>A **tibble**, or **tbl_df**, is the latest method for reimagining of modern data-frame and It keeps all the crucial features regarding the data frame. Since R is an old language, and some things that were useful 10 or 20 years ago now get in your way. It's difficult to change base R without breaking existing code, so most innovation occurs in **tibble()** data-frame with tibble package.</span>
+<span id="cb57-676"><a href="#cb57-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-677"><a href="#cb57-677" aria-hidden="true" tabindex="-1"></a>*Key features of Tibble*</span>
+<span id="cb57-678"><a href="#cb57-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-679"><a href="#cb57-679" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A Tibble never alters the input type.</span>
+<span id="cb57-680"><a href="#cb57-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-681"><a href="#cb57-681" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>With Tibble, there is no need for us to be bothered about the automatic changing of characters to strings.</span>
+<span id="cb57-682"><a href="#cb57-682" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-683"><a href="#cb57-683" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Tibbles can also contain columns that are the lists.</span>
+<span id="cb57-684"><a href="#cb57-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-685"><a href="#cb57-685" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>We can also use non-standard variable names in Tibble.</span>
+<span id="cb57-686"><a href="#cb57-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-687"><a href="#cb57-687" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>We can start the name of a Tibble with a number, or we can also contain space.</span>
+<span id="cb57-688"><a href="#cb57-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-689"><a href="#cb57-689" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>To utilize these names, we must mention them in backticks.</span>
+<span id="cb57-690"><a href="#cb57-690" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-691"><a href="#cb57-691" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Tibble only recycles the vectors with a length of 1.</span>
+<span id="cb57-692"><a href="#cb57-692" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-693"><a href="#cb57-693" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Tibble can never generate the names of rows.</span>
+<span id="cb57-694"><a href="#cb57-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-695"><a href="#cb57-695" aria-hidden="true" tabindex="-1"></a>source: https://www.educative.io/answers/what-is-tibble-versus-data-frame-in-r</span>
+<span id="cb57-696"><a href="#cb57-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-697"><a href="#cb57-697" aria-hidden="true" tabindex="-1"></a>We can use following functions **readr** package to import tabular data into R as tibble:</span>
+<span id="cb57-698"><a href="#cb57-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-699"><a href="#cb57-699" aria-hidden="true" tabindex="-1"></a><span class="al">![read() Functions](Image/read_readr_function.png)</span>{#fig-read}</span>
+<span id="cb57-700"><a href="#cb57-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-701"><a href="#cb57-701" aria-hidden="true" tabindex="-1"></a>**read_csv()** and **read_tsv()** are special cases of the more general **read_delim()**. They're useful for reading the most common types of flat file data, comma separated values and tab separated values, respectively. **read_csv2()** uses ⁠;⁠ for the field separator and ⁠,⁠ for the decimal point. This format is common in some European countries.</span>
+<span id="cb57-702"><a href="#cb57-702" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-703"><a href="#cb57-703" aria-hidden="true" tabindex="-1"></a>For example, we will use **read_csv()** to import CSV file and see use **glimpse()** functions of **dplyr** package to explore the file structure.</span>
+<span id="cb57-704"><a href="#cb57-704" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-705"><a href="#cb57-705" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb57-706"><a href="#cb57-706" aria-hidden="true" tabindex="-1"></a><span class="fu">#### read_csv()</span></span>
+<span id="cb57-707"><a href="#cb57-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-710"><a href="#cb57-710" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-711"><a href="#cb57-711" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read_csv()" </span></span>
+<span id="cb57-712"><a href="#cb57-712" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-713"><a href="#cb57-713" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-714"><a href="#cb57-714" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb57-715"><a href="#cb57-715" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-716"><a href="#cb57-716" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb57-717"><a href="#cb57-717" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-718"><a href="#cb57-718" aria-hidden="true" tabindex="-1"></a>df.chem_01<span class="ot">&lt;-</span>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>))</span>
+<span id="cb57-719"><a href="#cb57-719" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(df.chem_01)</span>
+<span id="cb57-720"><a href="#cb57-720" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-721"><a href="#cb57-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-722"><a href="#cb57-722" aria-hidden="true" tabindex="-1"></a><span class="fu">#### read.csv()</span></span>
+<span id="cb57-723"><a href="#cb57-723" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-726"><a href="#cb57-726" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-727"><a href="#cb57-727" aria-hidden="true" tabindex="-1"></a><span class="co">#| title: "read.csv()" </span></span>
+<span id="cb57-728"><a href="#cb57-728" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb57-729"><a href="#cb57-729" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb57-730"><a href="#cb57-730" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-731"><a href="#cb57-731" aria-hidden="true" tabindex="-1"></a><span class="co"># define data location</span></span>
+<span id="cb57-732"><a href="#cb57-732" aria-hidden="true" tabindex="-1"></a>dataFolder<span class="ot">&lt;-</span><span class="st">"D:/Dropbox/GitHub/Data/"</span></span>
+<span id="cb57-733"><a href="#cb57-733" aria-hidden="true" tabindex="-1"></a>df.chem_02<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>))</span>
+<span id="cb57-734"><a href="#cb57-734" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(df.chem_02)</span>
+<span id="cb57-735"><a href="#cb57-735" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-736"><a href="#cb57-736" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-737"><a href="#cb57-737" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-738"><a href="#cb57-738" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb57-739"><a href="#cb57-739" aria-hidden="true" tabindex="-1"></a>glimps() of dplyr is a improved function of r-base str().</span>
+<span id="cb57-740"><a href="#cb57-740" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb57-741"><a href="#cb57-741" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-742"><a href="#cb57-742" aria-hidden="true" tabindex="-1"></a><span class="fu">### Write CSV files with readr</span></span>
+<span id="cb57-743"><a href="#cb57-743" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-744"><a href="#cb57-744" aria-hidden="true" tabindex="-1"></a>The **write()**⁠ family functions of are an improvement to analogous function such as write.csv() because they are approximately twice as fast. Unlike write.csv(), these functions do not include row names as a column in the written file. A generic function, output_column(), is applied to each variable to coerce columns to suitable output.</span>
+<span id="cb57-745"><a href="#cb57-745" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-746"><a href="#cb57-746" aria-hidden="true" tabindex="-1"></a>We can use following functions **readr** package to extort tabular data from R:</span>
+<span id="cb57-747"><a href="#cb57-747" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-748"><a href="#cb57-748" aria-hidden="true" tabindex="-1"></a><span class="al">![write() Functions](Image\write_readr_function.png)</span>{#fig-write}</span>
+<span id="cb57-749"><a href="#cb57-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-752"><a href="#cb57-752" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-753"><a href="#cb57-753" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(df.chem_02, <span class="st">"df.chem_02"</span>)</span>
+<span id="cb57-754"><a href="#cb57-754" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-755"><a href="#cb57-755" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-756"><a href="#cb57-756" aria-hidden="true" tabindex="-1"></a>We can also use **as_tibble()** function of **tibble** package</span>
+<span id="cb57-757"><a href="#cb57-757" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-760"><a href="#cb57-760" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb57-761"><a href="#cb57-761" aria-hidden="true" tabindex="-1"></a>df.chem_03<span class="ot">&lt;-</span>tibble<span class="sc">::</span><span class="fu">as_tibble</span>(<span class="fu">read.csv</span>(<span class="fu">paste0</span>(dataFolder,<span class="st">"PAHdata.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb57-762"><a href="#cb57-762" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df.chem_03)</span>
+<span id="cb57-763"><a href="#cb57-763" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb57-764"><a href="#cb57-764" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-765"><a href="#cb57-765" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
+<span id="cb57-766"><a href="#cb57-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-767"><a href="#cb57-767" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span><span class="co">[</span><span class="ot">How do I read data into R?</span><span class="co">](https://www.datafiles.samhsa.gov/get-help/format-specific-issues/how-do-i-read-data-r)</span></span>
+<span id="cb57-768"><a href="#cb57-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-769"><a href="#cb57-769" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span><span class="co">[</span><span class="ot">R Coder</span><span class="co">](https://r-coder.com/export-data-r/)</span></span>
+<span id="cb57-770"><a href="#cb57-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-771"><a href="#cb57-771" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span><span class="co">[</span><span class="ot">Introduction to bioinformatics</span><span class="co">](https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html)</span></span>
+<span id="cb57-772"><a href="#cb57-772" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-773"><a href="#cb57-773" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span><span class="co">[</span><span class="ot">Many Ways of Reading Data Into R — 1</span><span class="co">](https://medium.com/analytics-vidhya/many-ways-of-reading-data-into-r-1-52b02825cb27)</span></span>
+<span id="cb57-774"><a href="#cb57-774" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-775"><a href="#cb57-775" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span><span class="co">[</span><span class="ot">readr</span><span class="co">](https://readr.tidyverse.org/)</span> </span>
+<span id="cb57-776"><a href="#cb57-776" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-777"><a href="#cb57-777" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span><span class="co">[</span><span class="ot">feather</span><span class="co">](https://posit.co/blog/feather/)</span></span>
+<span id="cb57-778"><a href="#cb57-778" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-779"><a href="#cb57-779" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span><span class="co">[</span><span class="ot">data.tabler</span><span class="co">](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)</span></span>
+<span id="cb57-780"><a href="#cb57-780" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-781"><a href="#cb57-781" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span><span class="co">[</span><span class="ot">foreign</span><span class="co">](https://www.oreilly.com/library/view/r-in-a/9781449377502/apas06.html)</span></span>
+<span id="cb57-782"><a href="#cb57-782" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-783"><a href="#cb57-783" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span><span class="co">[</span><span class="ot">haven</span><span class="co">](https://haven.tidyverse.org/)</span></span>
+<span id="cb57-784"><a href="#cb57-784" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© CC-By Zia Ahmed, Unversity at Buffalo 2023</div>   
+    <div class="nav-footer-right">This page is built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
